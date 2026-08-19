@@ -20,18 +20,17 @@ import Base from '../../layouts/Base.astro'
 </Base>
 <script>
   import { getOwnerKey, setOwnerKey, clearOwnerKey } from '../../lib/identity'
-  import { getPeerInfo } from '../../lib/peer'
+  import { OWNER_PUBKEY } from '../../lib/config'
   import { shortIdent } from '../../lib/ident'
   const root = document.querySelector<HTMLElement>('.me')!
   const status = root.querySelector<HTMLElement>('.status')!
   const form = root.querySelector<HTMLFormElement>('form')!
   const ta = form.querySelector<HTMLTextAreaElement>('textarea')!
   async function show() {
-    const [k, p] = await Promise.all([getOwnerKey(), getPeerInfo()])
+    const k = await getOwnerKey()
     if (!k) { status.textContent = 'no owner key in this browser'; return }
-    const ok = p?.ownerPubkey === k.pubkey
     status.textContent = `loaded key #${shortIdent(k.pubkey).id}`
-      + (p ? (ok ? " – matches the peer's owner key" : ' – WARNING: the peer has a different OWNER_PUBKEY, reactions and moderation will be rejected') : '')
+      + (k.pubkey === OWNER_PUBKEY ? " – matches the site's owner key" : ' – WARNING: the site was built with a different PUBLIC_OWNER_PUBKEY, readers will reject your reactions and moderation')
   }
   form.addEventListener('submit', async e => {
     e.preventDefault()

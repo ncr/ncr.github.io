@@ -4,15 +4,12 @@ services:
       context: .
       args:
         SITE_URL: ${SITE_URL:-http://localhost:8080}
+        PUBLIC_OWNER_PUBKEY: ${OWNER_PUBKEY:-}
+        PUBLIC_POW_BITS: ${POW_BITS:-18}
+        PUBLIC_ROOM_NS: ${ROOM_NS:-ncr-blog}
+        PUBLIC_SIGNALS: ${SIGNALS:-}
     environment:
-      OWNER_PUBKEY: ${OWNER_PUBKEY:?ustaw OWNER_PUBKEY w .env (node peer/tools/keygen.mjs)}
-      SITE_URL: ${SITE_URL:-http://localhost:8080}
-      POW_BITS: ${POW_BITS:-18}
-      RATE_IP: ${RATE_IP:-5}
-      RATE_KEY: ${RATE_KEY:-3}
-      RATE_WINDOW_MIN: ${RATE_WINDOW_MIN:-10}
-      TRUST_PROXY: ${TRUST_PROXY:-0}
-      AKISMET_KEY: ${AKISMET_KEY:-}
+      SIGNALS: ws://localhost:8080/signal
     ports:
       - "8080:8080"
     volumes:

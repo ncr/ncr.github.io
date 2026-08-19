@@ -29,25 +29,11 @@ export async function importPrivateJwk(jwk) {
 }
 
 /**
- * Kanoniczna serializacja do podpisu autora: klucze posortowane, bez `sig` i `attest`.
- * Obie strony muszą odtworzyć identyczne bajty.
+ * Kanoniczna serializacja do podpisu: klucze posortowane, bez `sig`.
+ * Wszyscy muszą odtworzyć identyczne bajty.
  */
 export function canonical(obj) {
-  return canonicalExcept(obj, ['sig', 'attest'])
-}
-
-/** Atestacja peera: podpis nad wszystkim poza `attest` (obejmuje więc `sig` autora). */
-export async function attest(priv, obj) {
-  return b64u.enc(await subtle.sign({ name: 'Ed25519' }, priv, canonicalExcept(obj, ['attest'])))
-}
-export async function verifyAttest(obj, peerPubB64u) {
-  try {
-    if (typeof obj?.attest !== 'string') return false
-    const pub = await importPublicKey(peerPubB64u)
-    return await subtle.verify({ name: 'Ed25519' }, pub, b64u.dec(obj.attest), canonicalExcept(obj, ['attest']))
-  } catch {
-    return false
-  }
+  return canonicalExcept(obj, ['sig'])
 }
 
 export async function sign(priv, obj) {
@@ -68,7 +54,7 @@ export async function verify(obj, pubB64u = obj.pubkey) {
 export const randomId = () => b64u.enc(crypto.getRandomValues(new Uint8Array(12)))
 
 // ---------- proof-of-work (hashcash) ----------
-// Hash liczony z kanonicznej postaci bez `sig` i `attest` (ale z `nonce`).
+// Hash liczony z kanonicznej postaci bez `sig` (ale z `nonce`).
 // Wymagamy `bits` zer wiodących. Koszt ponosi autor, sprawdzenie jest darmowe.
 
 export function canonicalExcept(obj, omit) {
@@ -91,7 +77,7 @@ export async function sha256(bytes) {
 }
 
 export async function powBits(obj) {
-  return leadingZeroBits(await sha256(canonicalExcept(obj, ['sig', 'attest'])))
+  return leadingZeroBits(await sha256(canonicalExcept(obj, ['sig'])))
 }
 
 /** Szuka nonce; `onProgress(n)` co 4096 prób. Mutuje i zwraca obj. */

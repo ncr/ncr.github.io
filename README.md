@@ -1,78 +1,43 @@
 # blog
 
-Strona „o mnie" + blog (Astro, statyka; układ wzorowany na world.hey.com) z komentarzami
-i statystykami bez bazy danych: dane żyją w przeglądarkach czytelników i synchronizują się
-przez CRDT (Yjs). Treść „o mnie" edytujesz w `site/src/site.ts`, awatar w `site/public/avatar.svg`.
+Strona „o mnie" + blog (Astro, statyka; układ wzorowany na world.hey.com) z komentarzami,
+głosami i statystykami **bez serwera**: dane żyją w przeglądarkach czytelników, synchronizują
+się bezpośrednio po WebRTC (CRDT – Yjs) i każdy uczestnik sam weryfikuje każdy wpis.
+Autor bloga utrzymuje jednego zawsze-włączonego uczestnika („wiecznego czytelnika"), ale ten
+niczym nie różni się od pozostałych – wykonuje ten sam kod weryfikacji i nie ma żadnej władzy.
 
 ```
-site/         Astro – strona, wpisy (src/content/blog/*.md), wyspy: komentarze (src/lib/comments.ts), statystyki (src/lib/stats.ts)
-shared/       crypto.js (Ed25519, PoW, atestacja) i rules.js (reguły ważności) – wspólne dla przeglądarki i peera
-peer/         „wieczny peer": jeden proces Node = statyka + /submit + /visit + /sync (odczyt) + /signal
-peer/tools/   keygen.mjs (klucz właściciela), moderate.mjs (list/hide/unhide), selftest.mjs (test bramki)
+site/            Astro – strona, wpisy (src/content/blog/*.md), wyspy (src/lib/*)
+shared/          crypto.js (Ed25519, PoW), rules.js (reguły ważności), replica.js (kopiowanie
+                 net->view po weryfikacji) – wspólne dla przeglądarki i wiecznego czytelnika
+peer/server.mjs  infrastruktura bez danych: statyka + signaling WebRTC (/signal)
+peer/visitor.mjs wieczny czytelnik: replika w Node (WebRTC przez @roamhq/wrtc), zapis do pliku
+peer/tools/      keygen.mjs – klucz właściciela
 ```
 
-## Jak to działa
+## Model danych
 
-Jeden dokument Yjs na wpis (`room = blog/<slug>`).
+Jeden pokój na wpis (`blog/<slug>`) + pokój `site` (statystyki). Każdy uczestnik trzyma dwa
+dokumenty Yjs na pokój:
 
-| warstwa | co robi |
-|---|---|
-| peer (kontener) | **jedyny pisarz.** `POST /submit` sprawdza komentarz, atestuje go swoim kluczem i wpisuje do dokumentu. `WS /sync` tylko rozdaje – update'y od klientów ignoruje. Trwałość: LevelDB w `/data`. |
-| przeglądarka, `viewDoc` | kopia zaufana, w IndexedDB; podpięty WebSocket do peera; renderowana |
-| przeglądarka, `netDoc` | kopia sieciowa w pamięci; WebRTC do innych przeglądarek; do `viewDoc` przechodzą z niej tylko pojedyncze, sprawdzone wpisy (nigdy nadpisania ani usunięcia) |
+- **netDoc** – to, co krąży po WebRTC; każdy może tam wpisać cokolwiek, żyje w pamięci
+- **viewDoc** – kopia zaufana i trwała (IndexedDB / plik u wiecznego czytelnika); trafiają
+  do niej wyłącznie wpisy, które przeszły reguły z `shared/rules.js`
 
-Co musi spełniać komentarz, żeby go ktokolwiek zobaczył:
+Zasady kopiowania (`shared/replica.js`): komentarze i wizyty są niezmienne per klucz
+(pierwszy ważny wygrywa), głosy/moderacja/reakcje – „nowszy ts wygrywa". viewDoc jest
+rozgłaszany dalej, więc dane wędrują zakaźnie i autor nie musi być online.
 
-1. **Kształt**: ≤40 znaków nick, ≤2000 znaków treść, dokładnie 9 pól, `room` zgodny z wpisem.
-2. **Proof-of-work**: SHA-256 kanonicznej postaci ma `POW_BITS` zer wiodących (liczone w Web Workerze).
-3. **Podpis autora** (Ed25519, klucz generowany w przeglądarce, nieeksportowalny).
-4. **Atestacja peera** – podpis peera nad całością. Bez niej wpis jest niewidoczny, więc
-   wstrzyknięcie czegokolwiek z pominięciem `/submit` (np. po WebRTC) nic nie daje.
-5. **Nieukryty** przez właściciela (`mod`, podpis kluczem `OWNER_PUBKEY`) i nie powyżej
-   5 komentarzy z tego samego klucza na 10 minut (reguła liczona lokalnie, deterministyczna).
+Ważny wpis musi mieć: poprawny kształt (limity długości), **dowód pracy** (SHA-256 z
+`POW_BITS` zer wiodących; komentarz ~1 s, głos/wizyta 16× lżejsze) i **podpis Ed25519**
+kluczem wygenerowanym w przeglądarce autora (nieeksportowalnym). Moderacja i reakcje
+dodatkowo muszą być podpisane kluczem właściciela (`PUBLIC_OWNER_PUBKEY` wbudowany w build).
+Do tego reguła przeciw zalewowi: ten sam klucz > 5 widocznych komentarzy / 10 min → ukryte.
 
-Dodatkowo w `/submit`: limity na IP i na klucz autora (okno przesuwne), limit globalny
-na minutę, tani screener treści (≥3 linki, duplikat, nie-tekst, powtórzenia) i opcjonalnie
-Akismet. Odrzucenie wraca do przeglądarki jako komunikat („za dużo linków" itd.).
-
-Czego to nie daje: komentowania, gdy peer leży (czytanie działa z cache i po WebRTC).
-Spam tani jak ziemia (botnet, dużo IP) nadal może się przebić w tempie
-`RATE_IP` × liczba adresów – wtedy podnieś `POW_BITS` albo włącz Akismet.
-
-## Wątki, „Steam Charts"
-
-- Strona jest po angielsku; napisy generowane w JS są w `src/lib/i18n.ts`, treść w `src/site.ts` i `src/content/blog/`.
-- **Wątki**: jeden poziom – „odpowiedz" pod komentarzem pierwszego rzędu, odpowiedzi liniowo pod nim
-  (`parent` w komentarzu; peer sprawdza, że rodzic istnieje i sam nie jest odpowiedzią).
-- **Strona główna**: blok w duchu Steam Charts – czyta teraz, szczyt 24 h, szczyt 7 dni, rekord z datą
-  (`online.peak`, pisze peer), wizyt łącznie, wykres 7 dni.
-
-## Głosy, reakcje autora, profile, ksywki
-
-- **▲/▼** – mapa `votes`, klucz `<komentarz>|<głosujący>`, jeden głos na tożsamość, drugie
-  kliknięcie cofa. `POST /vote`: PoW 16× lżejszy niż komentarz (`votePowBits`), limity na IP i klucz,
-  atestacja. Wynik = suma najnowszych ważnych głosów (liczona u czytelnika).
-- **Reakcja autora** – mapa `reactions`, jedna na komentarz, podpisana kluczem właściciela
-  (`POST /react`), pokazywana jako wyróżniona plakietka pod treścią. Żeby reagować i moderować
-  z przeglądarki: wklej JWK właściciela na `/me/` (importowany jako nieeksportowalny CryptoKey).
-  Właściciel widzi też ukryte komentarze (wyszarzone) i może je odkryć.
-- **Profil** `/u/?k=<klucz>` – wszystkie komentarze jednej tożsamości; strona statyczna, skrypt
-  przegląda repliki wszystkich wpisów (lista z `/posts.json`).
-- **Ksywka** pamiętana w localStorage po pierwszym komentarzu; „zmień ksywkę" → pole, blur/Enter zapisuje.
-  Obok ksywki krótkie id `#xxxx` (16 bitów klucza, 65 536 wartości) i kolorowa plakietka z klucza.
-
-## Statystyki (online, online w czasie, wizyty)
-
-Ten sam schemat co komentarze, dokument `site`, pisze tylko peer, każdy wpis atestowany:
-
-- `online.now` – liczba przeglądarek podłączonych po WebSocket do `site` (dwie karty = jedna osoba,
-  id przeglądarki w `?c=`), odświeżane przy każdej zmianie;
-- `history.<minuta>` – próbka co minutę, trzymana 7 dni; stopka rysuje z tego ostatnie 24 h
-  (maksimum w koszykach 15-minutowych);
-- `visits.<ścieżka>` i `visits._total` – `POST /visit` z każdej strony, liczone raz na IP i stronę na 30 min.
-
-Przeglądarka przyjmuje po WebRTC tylko wpisy z ważną atestacją i nowszym `ts`, więc nikt nie
-„dopisze" sobie wizyt ani osób online z pominięciem peera.
+Czego ten model NIE daje: limitów na adres IP (nie ma bramki). Ktoś z botnetem może
+generować klucze i płacić PoW; obroną jest podnoszenie `POW_BITS` i moderacja. Statystyka
+„czyta teraz" (awareness WebRTC) jest ulotna i niepodpisana – da się ją zawyżyć; wizyty są
+podpisane i opłacone PoW (liczymy unikalne tożsamości dziennie), ale tożsamości można mnożyć.
 
 ## Uruchomienie
 
@@ -82,21 +47,25 @@ cp .env.example .env                                         # wpisz OWNER_PUBKE
 docker compose up -d --build                                 # http://localhost:8080
 ```
 
+Kontener = statyka + signaling + wieczny czytelnik (dwa procesy node). Zaufane kopie pokojów
+w wolumenie `/data` (pliki `*.yupdate`). `POW_BITS`, `ROOM_NS` i klucz właściciela wchodzą
+w build strony i muszą być identyczne we wszystkich kopiach (inaczej wzajemne odrzucanie wpisów).
+
 Dev bez dockera:
 
 ```bash
-cd peer && npm i && DATA_DIR=./data OWNER_PUBKEY=... POW_BITS=12 node server.mjs   # :8080
-cd site && npm i && cp .env.example .env && npm run dev                           # :4321 → peer :8080
+cd site && npm i && PUBLIC_POW_BITS=12 PUBLIC_OWNER_PUBKEY=... npm run build
+cd peer && npm i
+STATIC_DIR=../site/dist node server.mjs &
+STATIC_DIR=../site/dist DATA_DIR=./data POW_BITS=12 OWNER_PUBKEY=... node visitor.mjs
 ```
 
-Moderacja i test (z dowolnej maszyny, która widzi peera):
+Moderacja i reakcje: wklej JWK właściciela na `/me/` (import jako nieeksportowalny CryptoKey);
+przy komentarzach pojawią się reakcje ❤️👍😂🎯🤔 i „ukryj/pokaż".
 
-```bash
-cd peer
-PEER_URL=https://twoja-domena node tools/moderate.mjs list blog/pierwszy-wpis
-OWNER_KEY=~/.config/blog-owner.jwk.json PEER_URL=https://twoja-domena node tools/moderate.mjs hide blog/pierwszy-wpis <id>
-PEER_URL=http://localhost:8080 node tools/selftest.mjs     # bramka: PoW, podpis, linki, duplikat, limity, wizyty, głosy, WS read-only
-```
+## GitHub Pages (ncr.github.io)
 
-Za HTTPS odpowiada reverse proxy przed kontenerem (Caddy/Traefik): przepuszcza WebSocket
-na `/sync/*` i `/signal`; ustaw wtedy `TRUST_PROXY=1`.
+`.github/workflows/pages.yml` publikuje statykę przy pushu na `main`. Zmienne repozytorium
+(Settings → Variables): `OWNER_PUBKEY`, `SIGNALS` (CSV adresów `wss://…/signal` – np. tunel
+do kontenera). Signaling to jedyna infrastruktura: przedstawia peerów sobie, nie widzi treści.
+Bez działającego signalingu czytelnicy widzą tylko swój lokalny cache.

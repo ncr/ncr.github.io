@@ -1,6 +1,7 @@
-# Statyczna strona na GitHub Pages (ncr.github.io). Peer (komentarze, statystyki) musi stać osobno
-# pod HTTPS – jego adres podaje zmienna repozytorium PEER_URL (Settings → Variables), np.
-# https://blog-peer.example.com. Bez niej strona działa, a komentarze pokazują „peer niedostępny".
+# Statyczna strona na GitHub Pages (ncr.github.io). Komentarze i statystyki są P2P (WebRTC);
+# jedyna potrzebna infrastruktura to signaling – adresy wss:// podaje zmienna repozytorium
+# SIGNALS (CSV). Bez niej peery nie mają się jak znaleźć i strona pokazuje tylko lokalny cache.
+# OWNER_PUBKEY (zmienna repo) i POW_BITS wchodzą do builda i muszą być zgodne u wszystkich kopii.
 name: Deploy to GitHub Pages
 on:
   push:
@@ -28,7 +29,10 @@ jobs:
         working-directory: site
         env:
           SITE_URL: https://ncr.github.io
-          PUBLIC_PEER_URL: ${{ vars.PEER_URL }}
+          PUBLIC_OWNER_PUBKEY: ${{ vars.OWNER_PUBKEY }}
+          PUBLIC_SIGNALS: ${{ vars.SIGNALS }}
+          PUBLIC_POW_BITS: '18'
+          PUBLIC_ROOM_NS: ncr-blog
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
