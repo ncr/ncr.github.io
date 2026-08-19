@@ -1,0 +1,12 @@
+---
+// Przełącznik języka w prawym górnym rogu.
+---
+<nav class="lang" aria-label="Language">
+  <button type="button" data-set="pl" lang="pl">PL</button>
+  <span class="sep">/</span>
+  <button type="button" data-set="en" lang="en">EN</button>
+</nav>
+<script>
+  import { setLang } from '../lib/i18n'
+  document.querySelectorAll<HTMLButtonElement>('.lang button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.set as 'pl' | 'en')))
+</script>

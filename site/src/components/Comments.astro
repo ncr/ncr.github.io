@@ -1,0 +1,27 @@
+---
+// Wyspa komentarzy. `room` identyfikuje dokument Yjs (jeden na wpis; wersje językowe wpisu dzielą room).
+import T from './T.astro'
+interface Props { room: string }
+const { room } = Astro.props
+---
+<section class="comments" data-room={room}>
+  <h2><T pl="Komentarze" en="Comments" /> <span class="count"></span></h2>
+  <div class="list"></div>
+  <form class="composer" autocomplete="off">
+    <div class="replying"><T pl="Odpowiadasz na" en="Replying to" /> <b class="to"></b> · <button type="button" class="link cancel"><T pl="anuluj" en="cancel" /></button></div>
+    <div class="who">
+      <span class="me-badge"></span>
+      <span class="as"><T pl="Piszesz jako" en="Posting as" /> <b class="nick"></b> <span class="myid"></span><button type="button" class="link change"><T pl="zmień ksywkę" en="change nickname" /></button></span>
+      <input name="author" maxlength="40" />
+    </div>
+    <textarea name="text" maxlength="2000" required></textarea>
+    <div class="actions">
+      <button class="send"><T pl="Dodaj komentarz" en="Post comment" /></button>
+      <span class="status"></span>
+    </div>
+  </form>
+</section>
+<script>
+  import { mountComments } from '../lib/comments'
+  document.querySelectorAll<HTMLElement>('.comments').forEach(mountComments)
+</script>

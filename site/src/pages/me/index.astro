@@ -1,0 +1,46 @@
+---
+// Strona właściciela: wklejenie klucza prywatnego (JWK z peer/tools/keygen.mjs) do tej
+// przeglądarki. Potem pod komentarzami pojawiają się reakcje autora i „ukryj".
+import Base from '../../layouts/Base.astro'
+import T from '../../components/T.astro'
+---
+<Base title="Klucz właściciela">
+  <section class="me">
+    <h1><T pl="Klucz właściciela" en="Owner key" /></h1>
+    <p class="status">…</p>
+    <form class="load">
+      <textarea name="jwk" placeholder='{"crv":"Ed25519", …}' rows="4"></textarea>
+      <div class="actions">
+        <button class="send"><T pl="Załaduj do tej przeglądarki" en="Load into this browser" /></button>
+        <button type="button" class="clear link"><T pl="usuń klucz z tej przeglądarki" en="remove key from this browser" /></button>
+      </div>
+    </form>
+    <p class="hint"><T pl="Klucz jest importowany jako nieeksportowalny CryptoKey w IndexedDB tej przeglądarki – skrypt strony może nim podpisywać, nie może go odczytać. Plik JWK trzymaj poza repo." en="The key is imported as a non-extractable CryptoKey in this browser's IndexedDB – the page script can sign with it but cannot read it. Keep the JWK file out of the repo." /></p>
+  </section>
+</Base>
+<script>
+  import { getOwnerKey, setOwnerKey, clearOwnerKey } from '../../lib/identity'
+  import { getPeerInfo } from '../../lib/peer'
+  import { shortIdent } from '../../lib/ident'
+  import { getLang } from '../../lib/i18n'
+  const root = document.querySelector<HTMLElement>('.me')!
+  const status = root.querySelector<HTMLElement>('.status')!
+  const form = root.querySelector<HTMLFormElement>('form')!
+  const ta = form.querySelector<HTMLTextAreaElement>('textarea')!
+  const pl = () => getLang() === 'pl'
+  async function show() {
+    const [k, p] = await Promise.all([getOwnerKey(), getPeerInfo()])
+    if (!k) { status.textContent = pl() ? 'w tej przeglądarce nie ma klucza właściciela' : 'no owner key in this browser'; return }
+    const ok = p?.ownerPubkey === k.pubkey
+    status.textContent = (pl() ? `załadowany klucz #${shortIdent(k.pubkey).id}` : `loaded key #${shortIdent(k.pubkey).id}`)
+      + (p ? (ok ? (pl() ? ' – zgodny z kluczem właściciela u peera' : " – matches the peer's owner key") : (pl() ? ' – UWAGA: peer ma inny OWNER_PUBKEY, reakcje i moderacja będą odrzucane' : ' – WARNING: the peer has a different OWNER_PUBKEY, reactions and moderation will be rejected')) : '')
+  }
+  form.addEventListener('submit', async e => {
+    e.preventDefault()
+    try { await setOwnerKey(JSON.parse(ta.value)); ta.value = ''; await show() }
+    catch (err) { status.textContent = `${pl() ? 'nie udało się' : 'failed'}: ${(err as Error).message}` }
+  })
+  root.querySelector('.clear')!.addEventListener('click', async () => { await clearOwnerKey(); await show() })
+  document.addEventListener('blog:lang', show)
+  show()
+</script>

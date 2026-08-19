@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro'
+import T from '../components/T.astro'
+import { getCollection } from 'astro:content'
+import { site } from '../site'
+import { excerpt } from '../lib/excerpt'
+const posts = (await getCollection('blog', p => !p.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+// Wersje językowe: wpisy z tym samym `key` to jeden wpis; karta ma data-key i data-lang,
+// CSS pokazuje wersję w języku strony, a gdy jej nie ma – jedyną dostępną (data-only).
+const byKey = new Map<string, typeof posts>()
+for (const p of posts) { const k = p.data.key || p.id; if (!byKey.has(k)) byKey.set(k, []); byKey.get(k)!.push(p) }
+const fmt = (d: Date, loc: string) => d.toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
+---
+<Base>
+  <Fragment slot="bio">
+    <div class="bio"><span data-lang="pl" set:html={site.bio.pl} /><span data-lang="en" set:html={site.bio.en} /></div>
+    <hr class="rule" />
+  </Fragment>
+  <section class="steam" hidden>
+    <div class="stat"><span class="label"><T pl="Czyta teraz" en="Reading now" /></span><span class="value now">–</span></div>
+    <div class="stat"><span class="label"><T pl="Szczyt 24 h" en="24 h peak" /></span><span class="value peak24">–</span></div>
+    <div class="stat"><span class="label"><T pl="Szczyt 7 dni" en="7-day peak" /></span><span class="value peak7">–</span></div>
+    <div class="stat"><span class="label"><T pl="Rekord" en="All-time peak" /></span><span class="value record">–</span><span class="when"></span></div>
+    <div class="stat"><span class="label"><T pl="Wizyt łącznie" en="Total visits" /></span><span class="value visits">–</span></div>
+    <div class="chart7"><span class="label"><T pl="Czytający, ostatnie 7 dni" en="Readers, last 7 days" /> <span class="max"></span></span><svg width="780" height="80" role="img"></svg></div>
+  </section>
+  {[...byKey.values()].map(versions => versions.map(p => (
+    <article class="card" data-lang={p.data.lang} data-only={versions.length === 1 ? '' : undefined}>
+      <header>
+        <div class="date"><span data-lang="pl">{fmt(p.data.date, 'pl-PL')}</span><span data-lang="en">{fmt(p.data.date, 'en-GB')}</span></div>
+        <h2><a class="undecorated" href={`/blog/${p.id}/`}>{p.data.title}</a></h2>
+      </header>
+      <div class="content">{p.data.description || excerpt(p.body || '')}</div>
+      <a class="btn" href={`/blog/${p.id}/`}><T pl="Czytaj dalej" en="Read more" /></a>
+    </article>
+  )))}
+</Base>

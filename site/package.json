@@ -1,0 +1,17 @@
+{
+  "name": "blog-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.2.4",
+    "yjs": "^13.6.32",
+    "y-webrtc": "^10.3.0",
+    "y-websocket": "^3.1.0",
+    "y-indexeddb": "^9.0.12"
+  }
+}

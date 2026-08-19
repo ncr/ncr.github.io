@@ -1,0 +1,22 @@
+services:
+  blog:
+    build:
+      context: .
+      args:
+        SITE_URL: ${SITE_URL:-http://localhost:8080}
+    environment:
+      OWNER_PUBKEY: ${OWNER_PUBKEY:?ustaw OWNER_PUBKEY w .env (node peer/tools/keygen.mjs)}
+      SITE_URL: ${SITE_URL:-http://localhost:8080}
+      POW_BITS: ${POW_BITS:-18}
+      RATE_IP: ${RATE_IP:-5}
+      RATE_KEY: ${RATE_KEY:-3}
+      RATE_WINDOW_MIN: ${RATE_WINDOW_MIN:-10}
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      AKISMET_KEY: ${AKISMET_KEY:-}
+    ports:
+      - "8080:8080"
+    volumes:
+      - blog-data:/data
+    restart: unless-stopped
+volumes:
+  blog-data:
