@@ -61,12 +61,11 @@ export async function mountProfile(root: HTMLElement) {
   const nPosts = results.filter(r => r.comments.length).length
   const renderSub = () => {
     sub.textContent = all.length
-      ? `${all.length} ${plural(all.length, { pl: ['komentarz', 'komentarze', 'komentarzy'], en: ['comment', 'comments'] })} ${t('profile.title') === 'comments' ? 'in' : 'w'} ${nPosts} ${plural(nPosts, { pl: ['wpisie', 'wpisach', 'wpisach'], en: ['post', 'posts'] })}`
+      ? `${all.length} ${plural(all.length, { en: ['comment', 'comments'] })} in ${nPosts} ${plural(nPosts, { en: ['post', 'posts'] })}`
         + (nicks.length > 1 ? ` · ${t('profile.earlierAs')} ${nicks.slice(1).join(', ')}` : '')
       : t('profile.none')
   }
   renderSub()
-  document.addEventListener('blog:lang', () => { renderSub(); for (const tm of list.querySelectorAll('time')) tm.textContent = fmt(Date.parse(tm.dateTime)) })
 
   const fmt = (ts: number) => new Date(ts).toLocaleString(locale(), { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
   for (const { post, comments } of results.filter(r => r.comments.length).sort((a, b) => b.post.date.localeCompare(a.post.date))) {

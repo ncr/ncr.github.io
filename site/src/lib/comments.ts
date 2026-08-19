@@ -61,7 +61,6 @@ export async function mountComments(root: HTMLElement) {
     list.dataset.empty = t('comments.empty')
   }
   applyLang()
-  document.addEventListener('blog:lang', () => { applyLang(); render() })
 
   // --- ksywka: raz wpisana, pamiętana (localStorage); „zmień ksywkę" pokazuje pole z powrotem ---
   const NICK_KEY = 'blog:author'

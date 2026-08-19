@@ -39,14 +39,9 @@ Czego to nie daje: komentowania, gdy peer leży (czytanie działa z cache i po W
 Spam tani jak ziemia (botnet, dużo IP) nadal może się przebić w tempie
 `RATE_IP` × liczba adresów – wtedy podnieś `POW_BITS` albo włącz Akismet.
 
-## Dwa języki, wątki, „Steam Charts"
+## Wątki, „Steam Charts"
 
-- **PL/EN**: przełącznik w prawym górnym rogu, wybór pamiętany (`localStorage blog:lang`), domyślnie z języka
-  przeglądarki. Statyczne napisy są w HTML w obu wersjach (`<T pl en/>`, CSS pokazuje jedną wg `<html lang>`,
-  bez mignięcia – język ustawia inline skrypt w `<head>`); napisy z JS przez `t()` w `src/lib/i18n.ts`.
-  Bio w `src/site.ts` ma `pl` i `en`. Wpis może mieć wersję w drugim języku: drugi plik `.md` z `lang: en`
-  i tym samym `key` – lista pokazuje wersję w języku strony, strona wpisu linkuje do drugiej; komentarze
-  są wspólne (room = `key`).
+- Strona jest po angielsku; napisy generowane w JS są w `src/lib/i18n.ts`, treść w `src/site.ts` i `src/content/blog/`.
 - **Wątki**: jeden poziom – „odpowiedz" pod komentarzem pierwszego rzędu, odpowiedzi liniowo pod nim
   (`parent` w komentarzu; peer sprawdza, że rodzic istnieje i sam nie jest odpowiedzią).
 - **Strona główna**: blok w duchu Steam Charts – czyta teraz, szczyt 24 h, szczyt 7 dni, rekord z datą

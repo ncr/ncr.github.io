@@ -15,15 +15,6 @@
   -webkit-font-smoothing: antialiased;
 }
 * { box-sizing: border-box; }
-/* dwa języki w HTML, widoczny jeden */
-html[lang="pl"] [data-lang="en"], html[lang="en"] [data-lang="pl"] { display: none !important; }
-html[lang="pl"] .card[data-lang="en"]:not([data-only]), html[lang="en"] .card[data-lang="pl"]:not([data-only]) { display: none; }
-.lang { position: fixed; top: .9rem; right: 1rem; font-size: .7rem; letter-spacing: .15em; color: var(--subtle); z-index: 2; }
-.lang button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: .2rem .3rem; cursor: pointer; }
-.lang .sep { opacity: .5; }
-html[lang="pl"] .lang button[data-set="pl"], html[lang="en"] .lang button[data-set="en"] { color: var(--ink); font-weight: 600; }
-.post .alt-lang { font-size: .8rem; margin: .6rem 0 0; }
-.post .alt-lang a { color: var(--subtle); }
 body { margin: 0; padding: 0 0 70px; }
 .page { max-width: 825px; margin: 0 auto; padding: 0 1rem; }
 a { color: var(--ink); }

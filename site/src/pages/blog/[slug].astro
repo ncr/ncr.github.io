@@ -1,26 +1,21 @@
 ---
 import Base from '../../layouts/Base.astro'
 import Comments from '../../components/Comments.astro'
-import T from '../../components/T.astro'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', p => !p.data.draft)
-  return posts.map(p => ({
-    params: { slug: p.id },
-    props: { post: p, sibling: posts.find(o => o.id !== p.id && (o.data.key || o.id) === (p.data.key || p.id)) || null },
-  }))
+  return posts.map(p => ({ params: { slug: p.id }, props: { post: p } }))
 }
-const { post, sibling } = Astro.props
+const { post } = Astro.props
 const { Content } = await render(post)
-const fmt = (d: Date, loc: string) => d.toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
+const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 ---
 <Base title={post.data.title} description={post.data.description}>
-  <article class="post" lang={post.data.lang}>
+  <article class="post">
     <header>
-      <div class="date"><span data-lang="pl">{fmt(post.data.date, 'pl-PL')}</span><span data-lang="en">{fmt(post.data.date, 'en-GB')}</span></div>
+      <div class="date">{fmt(post.data.date)}</div>
       <h1>{post.data.title}</h1>
-      {sibling && <p class="alt-lang"><a href={`/blog/${sibling.id}/`}>{sibling.data.lang === 'en' ? 'Read in English' : 'Przeczytaj po polsku'}</a></p>}
     </header>
     <div class="content">
       <Content />

@@ -65,7 +65,6 @@ export async function mountStats(root: HTMLElement) {
   const totalEl = root.querySelector<HTMLElement>('.visits .total')!
   const chartEl = root.querySelector<SVGSVGElement>('svg')!
   const steam = document.querySelector<HTMLElement>('.steam') // blok „Steam Charts" na stronie głównej
-  document.addEventListener('blog:lang', () => render())
   let scheduled = false
   function render() {
     if (scheduled) return

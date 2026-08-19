@@ -1,12 +1,13 @@
 ---
-title: Komentarze bez bazy danych
+title: Comments without a database
 date: 2026-08-18
-description: Jak ten blog trzyma komentarze w przeglądarkach czytelników i dlaczego nikt ich nie zaspamuje.
+description: How this blog keeps comments in readers' browsers and why nobody can spam them.
 ---
 
-Każdy komentarz pod wpisem jest podpisany kluczem wygenerowanym w przeglądarce autora,
-opłacony dowodem pracy (kilkaset tysięcy hashy SHA-256) i podpisany drugi raz przez
-mój serwer – jeden wiecznie włączony kontener. Czytelnicy synchronizują się między sobą
-przez WebRTC, a kontener trzyma kopię dla tych, którzy przyjdą później.
+Every comment under a post is signed with a key generated in its author's browser,
+paid for with proof of work (a few hundred thousand SHA-256 hashes) and signed a
+second time by my server – one always-on container. Readers sync with each other
+over WebRTC, and the container keeps a copy for whoever comes later.
 
-Bazy danych nie ma. Jest CRDT (Yjs), plik LevelDB w kontenerze i IndexedDB w twojej przeglądarce.
+There is no database. There is a CRDT (Yjs), a LevelDB file in the container and
+IndexedDB in your browser.

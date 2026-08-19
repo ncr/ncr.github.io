@@ -1,10 +1,9 @@
 ---
-title: Pierwszy wpis
+title: First post
 date: 2026-08-19
-description: Blog z komentarzami bez bazy danych.
+description: A blog with comments and no database.
 ---
 
-To jest pierwszy wpis. Komentarze pod spodem żyją w przeglądarkach czytelników
-i synchronizują się między sobą (WebRTC) oraz z jednym wiecznie włączonym
-peerem (WebSocket do kontenera). Każdy komentarz jest podpisany kluczem
-wygenerowanym w przeglądarce autora.
+This is the first post. The comments below live in readers' browsers and sync
+with each other (WebRTC) and with one always-on peer (a WebSocket to the
+container). Every comment is signed with a key generated in its author's browser.

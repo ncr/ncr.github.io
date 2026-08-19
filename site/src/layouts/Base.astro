@@ -1,14 +1,13 @@
 ---
 import { site } from '../site'
 import Stats from '../components/Stats.astro'
-import LangSwitch from '../components/LangSwitch.astro'
 interface Props { title?: string; description?: string }
 const { title, description } = Astro.props
 const peerUrl = import.meta.env.PUBLIC_PEER_URL || ''
 const pageTitle = title ? `${title} — ${site.name}` : site.name
 ---
 <!doctype html>
-<html lang="pl" data-peer={peerUrl}>
+<html lang="en" data-peer={peerUrl}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,17 +15,8 @@ const pageTitle = title ? `${title} — ${site.name}` : site.name
     {description && <meta name="description" content={description} />}
     <link rel="stylesheet" href="/styles.css" />
     <link rel="icon" href={site.avatar} />
-    <script is:inline>
-      // Język przed pierwszym renderem (bez mignięcia): zapamiętany → z przeglądarki (pl → pl, inaczej en)
-      (function () {
-        var s = localStorage.getItem('blog:lang')
-        var l = (s === 'pl' || s === 'en') ? s : (navigator.languages || [navigator.language]).some(function (x) { return /^pl/i.test(x) }) ? 'pl' : 'en'
-        document.documentElement.lang = l
-      })()
-    </script>
   </head>
   <body>
-    <LangSwitch />
     <div class="page">
       <header class="masthead">
         <a class="undecorated" href="/" aria-label={site.name}>
