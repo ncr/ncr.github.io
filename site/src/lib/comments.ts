@@ -6,6 +6,7 @@ import { floodHidden, REACTIONS, LIMITS, voteKey, modKey, reactionKey, latestBy 
 import { getIdentity, getOwnerKey, type OwnerKey } from './identity'
 import { badge, shortIdent } from './ident'
 import { openRoom, publish, type Room } from './room'
+import { joinPresence, othersIn } from './presence'
 import { POW_BITS, VOTE_POW_BITS, OWNER_PUBKEY } from './config'
 import { t, locale } from './i18n'
 
@@ -63,9 +64,11 @@ export async function mountComments(rootEl: HTMLElement) {
   const r: Room = openRoom(roomName)
   r.ready.then(render)
   for (const m of ['comments', 'mod', 'votes', 'reactions']) r.viewDoc.getMap(m).observe(() => render())
-  let rtcPeers = 0
-  r.rtc.on('peers', (e: any) => { rtcPeers = e.webrtcPeers.length; showNet() })
-  const showNet = () => say(rtcPeers ? `${rtcPeers} ${rtcPeers === 1 ? t('status.reading1') : t('status.readingN')}` : '')
+  // status: ilu innych LUDZI czyta ten wpis (bez keepera i bez mnie), na żywo z awareness
+  joinPresence(r, () => {
+    const n = othersIn(r)
+    say(n ? `${n} ${n === 1 ? t('status.reading1') : t('status.readingN')}` : '')
+  })
 
   // --- formularz odpowiedzi (wątki, jeden poziom) ---
   const composerHome = form.parentElement!
