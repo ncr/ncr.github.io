@@ -1,42 +1,86 @@
 ---
-// Strona właściciela: wklejenie klucza prywatnego (JWK z peer/tools/keygen.mjs) do tej
-// przeglądarki. Potem pod komentarzami pojawiają się reakcje autora i „ukryj".
+// Panel właściciela: odblokowanie przez passkey (WebAuthn PRF). Passkey deterministycznie
+// wyprowadza klucz Ed25519 – ten sam, którego klucz publiczny (PUBLIC_OWNER_PUBKEY) jest
+// wbudowany w stronę. Czytelnicy niczego tu nie potrzebują.
 import Base from '../../layouts/Base.astro'
 ---
-<Base title="Owner key">
+<Base title="Owner">
   <section class="me">
-    <h1>Owner key</h1>
+    <h1>Owner</h1>
     <p class="status">…</p>
-    <form class="load">
-      <textarea name="jwk" placeholder='{"crv":"Ed25519", …}' rows="4"></textarea>
+    <div class="actions main">
+      <button class="unlock send">Unlock with passkey</button>
+      <button class="lock link">lock this browser</button>
+    </div>
+    <details>
+      <summary>First-time setup</summary>
+      <p class="hint">Create the passkey <b>on the production domain</b> (the derived key is bound to it),
+        then build the site with the printed <code>PUBLIC_OWNER_PUBKEY</code>. Keep the backup JWK offline –
+        it is the only way to unlock on a different domain (e.g. localhost).</p>
       <div class="actions">
-        <button class="send">Load into this browser</button>
-        <button type="button" class="clear link">remove key from this browser</button>
+        <button type="button" class="create send">Create owner passkey</button>
+        <a class="backup link" hidden download="blog-owner-backup.jwk.json">download backup key (JWK)</a>
       </div>
-    </form>
-    <p class="hint">The key is imported as a non-extractable CryptoKey in this browser's IndexedDB –
-      the page script can sign with it but cannot read it. Keep the JWK file out of the repo.</p>
+      <pre class="setup-out" hidden></pre>
+    </details>
+    <details>
+      <summary>Fallback: paste backup JWK</summary>
+      <form class="load">
+        <textarea name="jwk" placeholder='{"crv":"Ed25519", …}' rows="4"></textarea>
+        <div class="actions"><button class="send">Load into this browser</button></div>
+      </form>
+      <p class="hint">Imported as a non-extractable CryptoKey in this browser's IndexedDB.</p>
+    </details>
   </section>
 </Base>
 <script>
   import { getOwnerKey, setOwnerKey, clearOwnerKey } from '../../lib/identity'
+  import { createOwnerPasskey, deriveOwnerJwk } from '../../lib/webauthn'
   import { OWNER_PUBKEY } from '../../lib/config'
   import { shortIdent } from '../../lib/ident'
   const root = document.querySelector<HTMLElement>('.me')!
   const status = root.querySelector<HTMLElement>('.status')!
-  const form = root.querySelector<HTMLFormElement>('form')!
-  const ta = form.querySelector<HTMLTextAreaElement>('textarea')!
+  const say = (m: string) => { status.textContent = m }
+
   async function show() {
     const k = await getOwnerKey()
-    if (!k) { status.textContent = 'no owner key in this browser'; return }
-    status.textContent = `loaded key #${shortIdent(k.pubkey).id}`
-      + (k.pubkey === OWNER_PUBKEY ? " – matches the site's owner key" : ' – WARNING: the site was built with a different PUBLIC_OWNER_PUBKEY, readers will reject your reactions and moderation')
+    if (!k) return say('locked – this browser has no owner key')
+    say(`unlocked as #${shortIdent(k.pubkey).id}`
+      + (k.pubkey === OWNER_PUBKEY ? ' – admin tools are active under comments' : ` – WARNING: the site was built with a different PUBLIC_OWNER_PUBKEY (#${OWNER_PUBKEY ? shortIdent(OWNER_PUBKEY).id : 'none'}), readers will ignore this key`))
   }
+
+  root.querySelector('.unlock')!.addEventListener('click', async () => {
+    try {
+      say('touch your passkey…')
+      const jwk = await deriveOwnerJwk()
+      await setOwnerKey(jwk)
+      await show()
+    } catch (e) { say(`failed: ${(e as Error).message}`) }
+  })
+  root.querySelector('.lock')!.addEventListener('click', async () => { await clearOwnerKey(); await show() })
+
+  root.querySelector('.create')!.addEventListener('click', async () => {
+    try {
+      say('creating passkey – follow the browser prompts…')
+      await createOwnerPasskey()
+      say('passkey created; touch it once more to derive the key…')
+      const jwk = await deriveOwnerJwk()
+      await setOwnerKey(jwk)
+      const out = root.querySelector<HTMLElement>('.setup-out')!
+      out.hidden = false
+      out.textContent = `PUBLIC_OWNER_PUBKEY=${jwk.x}\n\nSet this as the OWNER_PUBKEY repo variable (GitHub) and in the container .env, then rebuild.`
+      const a = root.querySelector<HTMLAnchorElement>('.backup')!
+      a.hidden = false
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(jwk)], { type: 'application/json' }))
+      await show()
+    } catch (e) { say(`failed: ${(e as Error).message}`) }
+  })
+
+  const form = root.querySelector<HTMLFormElement>('form.load')!
   form.addEventListener('submit', async e => {
     e.preventDefault()
-    try { await setOwnerKey(JSON.parse(ta.value)); ta.value = ''; await show() }
-    catch (err) { status.textContent = `failed: ${(err as Error).message}` }
+    try { await setOwnerKey(JSON.parse(form.querySelector('textarea')!.value)); form.querySelector('textarea')!.value = ''; await show() }
+    catch (err) { say(`failed: ${(err as Error).message}`) }
   })
-  root.querySelector('.clear')!.addEventListener('click', async () => { await clearOwnerKey(); await show() })
   show()
 </script>

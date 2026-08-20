@@ -114,6 +114,10 @@ a.undecorated { text-decoration: none; }
 
 /* strona /me/ */
 .me h1 { font-size: 1.4rem; text-align: center; }
+.me .actions.main { justify-content: center; margin: 1.2rem 0 2rem; }
+.me details { margin: 1rem 0; font-size: .9rem; }
+.me details summary { cursor: pointer; color: var(--subtle); }
+.me .setup-out { font-size: .75rem; background: #f6f5f3; border-radius: 4px; padding: .8rem; overflow-x: auto; white-space: pre-wrap; }
 .me textarea { width: 100%; font: inherit; font-size: .8rem; border: 1px solid var(--rule); border-radius: 4px; padding: .6rem .8rem; }
 .me .actions { display: flex; gap: 1rem; align-items: center; margin-top: .6rem; }
 .me .send { font: inherit; font-size: .85rem; border: 1px solid var(--rule); border-radius: 999px; padding: .45rem 1.2rem; background: var(--paper); cursor: pointer; }
