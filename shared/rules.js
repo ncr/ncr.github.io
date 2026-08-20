@@ -129,6 +129,42 @@ export async function checkReaction(r, { room, ownerPubkey }) {
   return null
 }
 
+// ---------- wipe (podpis właściciela): „skasujcie wszystko sprzed ts" ----------
+// Wpis w pokoju 'site'; każdy klient po weryfikacji usuwa lokalnie wpisy z ts <= wipeTs
+// i nie przyjmuje takich z sieci. Głównie do developmentu.
+export const wipeKey = w => `wipe|${w.ts}`
+export function wipeShape(w) {
+  if (!w || typeof w !== 'object') return 'not-object'
+  if (w.v !== 1 || w.room !== 'site' || w.scope !== 'all') return 'room'
+  if (typeof w.ts !== 'number' || !Number.isFinite(w.ts)) return 'ts'
+  if (typeof w.pubkey !== 'string' || typeof w.sig !== 'string') return 'sig'
+  return null
+}
+export async function checkWipe(w, { ownerPubkey }) {
+  const shape = wipeShape(w)
+  if (shape) return `shape:${shape}`
+  if (!ownerPubkey || w.pubkey !== ownerPubkey) return 'not-owner'
+  if (!await verify(w)) return 'sig'
+  return null
+}
+
+/** Największy ważny wipeTs z mapy 'wipe' (wpisy już zweryfikowane przez replikę). */
+export function wipeTsOf(wipeMap) {
+  let max = 0
+  for (const w of wipeMap.values()) if (w.ts > max) max = w.ts
+  return max
+}
+
+/** Usuwa z dokumentu wszystkie wpisy użytkowników sprzed wipeTs (mapa 'wipe' zostaje). */
+export function purgeDoc(doc, wipeTs) {
+  let removed = 0
+  for (const map of ['comments', 'votes', 'visits', 'mod', 'reactions']) {
+    const m = doc.getMap(map)
+    for (const [k, v] of [...m.entries()]) if (!v || typeof v.ts !== 'number' || v.ts <= wipeTs) { m.delete(k); removed++ }
+  }
+  return removed
+}
+
 /**
  * Ten sam klucz publiczny może mieć najwyżej `max` widocznych komentarzy w oknie `windowMs`
  * (deterministyczne – u wszystkich ten sam wynik). Zwraca Set id ukrytych.

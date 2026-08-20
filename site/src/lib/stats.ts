@@ -51,8 +51,9 @@ export async function mountStats(root: HTMLElement) {
       const visits = [...r.viewDoc.getMap<Visit>('visits').values()]
       const now = Date.now()
       onlineEl.textContent = String(online)
+      // „czytelnicy" = unikalne tożsamości (przeglądarki): na tej stronie / na całej stronie
       hereEl.textContent = String(new Set(visits.filter(v => v.path === page).map(v => v.pubkey)).size)
-      totalEl.textContent = String(visits.length)
+      totalEl.textContent = String(new Set(visits.map(v => v.pubkey)).size)
       drawChart(chartEl, visits, now, 24 * 3600e3, 3600e3) // stopka: 24 h co godzinę
       if (steam) {
         steam.hidden = false
@@ -67,7 +68,7 @@ export async function mountStats(root: HTMLElement) {
         steam.querySelector('.peak7')!.textContent = String(peak7)
         steam.querySelector('.record')!.textContent = String(record.n)
         steam.querySelector('.when')!.textContent = record.d ? new Date(record.d).toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric' }) : ''
-        steam.querySelector('.visits')!.textContent = String(visits.length)
+        steam.querySelector('.visits')!.textContent = String(new Set(visits.map(v => v.pubkey)).size)
         drawChart(steam.querySelector('svg')!, visits, now, 7 * 24 * 3600e3, 24 * 3600e3) // 7 dni po dniach
       }
     }, 0)
@@ -93,7 +94,10 @@ function drawChart(svg: SVGSVGElement, visits: Visit[], now: number, span: numbe
     const h = (s.size / max) * (H - 4)
     bars += `<rect x="${(i * bw + bw * 0.15).toFixed(1)}" y="${(H - 1 - h).toFixed(1)}" width="${(bw * 0.7).toFixed(1)}" height="${h.toFixed(1)}" fill="currentColor" opacity=".75" rx="1"/>`
   })
-  svg.innerHTML = `<line x1="0" y1="${H - 1}" x2="${W}" y2="${H - 1}" stroke="currentColor" stroke-width=".75" opacity=".35"/>` + bars
+  const base = `<line x1="0" y1="${H - 1}" x2="${W}" y2="${H - 1}" stroke="currentColor" stroke-width=".75" opacity=".35"/>`
+  svg.innerHTML = bars
+    ? base + bars
+    : base + `<text x="${W / 2}" y="${H / 2 + 1}" text-anchor="middle" font-size="${Math.min(10, H / 3)}" fill="currentColor" opacity=".45">${t('stats.noHistory')}</text>`
   const maxEl = svg.parentElement!.querySelector('.max'); if (maxEl) maxEl.textContent = bars ? `${t('stats.max')} ${max}` : ''
   svg.setAttribute('aria-label', bars ? `${t('stats.max')} ${max}` : t('stats.noHistory'))
 }

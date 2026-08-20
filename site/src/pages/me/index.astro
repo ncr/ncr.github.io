@@ -23,6 +23,16 @@ import Base from '../../layouts/Base.astro'
       </div>
       <pre class="setup-out" hidden></pre>
     </details>
+    <details class="danger">
+      <summary>Danger zone: wipe all data</summary>
+      <p class="hint">Publishes a signed wipe order. Every client (including the keeper) deletes all
+        comments, votes and visit stats older than now, and refuses older entries from the network.
+        Mainly for development. Type <b>WIPE</b> to arm.</p>
+      <div class="actions">
+        <input class="arm" placeholder="WIPE" autocomplete="off" />
+        <button type="button" class="wipe send" disabled>Wipe everything</button>
+      </div>
+    </details>
     <details>
       <summary>Fallback: paste backup JWK</summary>
       <form class="load">
@@ -35,6 +45,9 @@ import Base from '../../layouts/Base.astro'
 </Base>
 <script>
   import { getOwnerKey, setOwnerKey, clearOwnerKey } from '../../lib/identity'
+  import { openRoom, publish } from '../../lib/room'
+  import { sign } from '../../../../shared/crypto.js'
+  import { wipeKey } from '../../../../shared/rules.js'
   import { createOwnerPasskey, deriveOwnerJwk } from '../../lib/webauthn'
   import { OWNER_PUBKEY } from '../../lib/config'
   import { shortIdent } from '../../lib/ident'
@@ -73,6 +86,24 @@ import Base from '../../layouts/Base.astro'
       a.hidden = false
       a.href = URL.createObjectURL(new Blob([JSON.stringify(jwk)], { type: 'application/json' }))
       await show()
+    } catch (e) { say(`failed: ${(e as Error).message}`) }
+  })
+
+  // wipe: uzbrojenie napisem WIPE, wykonanie = podpisany wpis do pokoju 'site'
+  const armInput = root.querySelector<HTMLInputElement>('.arm')!
+  const wipeBtn = root.querySelector<HTMLButtonElement>('.wipe')!
+  armInput.addEventListener('input', () => { wipeBtn.disabled = armInput.value !== 'WIPE' })
+  wipeBtn.addEventListener('click', async () => {
+    const k = await getOwnerKey()
+    if (!k) return say('unlock first')
+    try {
+      const entry = { v: 1, room: 'site', scope: 'all', ts: Date.now(), pubkey: k.pubkey }
+      const signed = { ...entry, sig: await sign(k.priv, entry) }
+      const r = openRoom('site')
+      await r.ready
+      publish(r, 'wipe', wipeKey(signed), signed)
+      armInput.value = ''; wipeBtn.disabled = true
+      say('wipe published – all data older than now will be deleted everywhere')
     } catch (e) { say(`failed: ${(e as Error).message}`) }
   })
 

@@ -122,6 +122,9 @@ a.undecorated { text-decoration: none; }
 .me .actions { display: flex; gap: 1rem; align-items: center; margin-top: .6rem; }
 .me .send { font: inherit; font-size: .85rem; border: 1px solid var(--rule); border-radius: 999px; padding: .45rem 1.2rem; background: var(--paper); cursor: pointer; }
 .me .hint, .me .status { font-size: .8rem; color: var(--subtle); }
+.me .danger .arm { width: 7rem; font: inherit; font-size: .85rem; border: 1px solid var(--rule); border-radius: 4px; padding: .45rem .8rem; text-transform: uppercase; letter-spacing: .1em; }
+.me .danger .wipe { border-color: #b3402a; color: #b3402a; }
+.me .danger .wipe:disabled { opacity: .4; cursor: not-allowed; }
 
 /* wątki: jeden poziom, liniowo */
 .thread { border-top: 1px solid var(--rule); }

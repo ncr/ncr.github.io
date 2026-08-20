@@ -7,12 +7,14 @@
 // viewDoc -> netDoc idzie w całości (rozdajemy dalej to, co sami uznaliśmy za ważne),
 // więc dane wędrują zakaźnie między uczestnikami, nawet gdy autora już nie ma online.
 // Moduł dostaje yjs z zewnątrz (Y), żeby istniała jedna instancja yjs na proces.
-import { checkComment, checkVote, checkVisit, checkMod, checkReaction, voteKey, visitKey, modKey, reactionKey } from './rules.js'
+import { checkComment, checkVote, checkVisit, checkMod, checkReaction, checkWipe, voteKey, visitKey, modKey, reactionKey, wipeKey } from './rules.js'
 
 const FROM_VIEW = 'replica-from-view'
 
 /**
- * Spina netDoc z viewDoc. ctx: { room, powBits, votePowBits, ownerPubkey }.
+ * Spina netDoc z viewDoc. ctx: { room, powBits, votePowBits, ownerPubkey, minTs? }.
+ * ctx.minTs() – wpisy użytkowników z ts <= minTs() są odrzucane (wipe właściciela).
+ * Pokój 'site' replikuje też mapę 'wipe' (tylko podpis właściciela, bez minTs).
  * Zwraca { verdicts } – cache wyników weryfikacji (klucz: sig).
  */
 export function wireReplica(Y, viewDoc, netDoc, ctx) {
@@ -31,10 +33,15 @@ export function wireReplica(Y, viewDoc, netDoc, ctx) {
     reactions: r => cached(r, x => checkReaction(x, { room: ctx.room, ownerPubkey: ctx.ownerPubkey })),
   }
   const keyOf = { comments: c => c.id, votes: voteKey, visits: visitKey, mod: modKey, reactions: reactionKey }
+  if (ctx.room === 'site') {
+    checks.wipe = w => cached(w, x => checkWipe(x, { ownerPubkey: ctx.ownerPubkey }))
+    keyOf.wipe = wipeKey
+  }
 
   async function consider(map, key) {
     const value = netDoc.getMap(map).get(key)
     if (!value || keyOf[map](value) !== key) return
+    if (map !== 'wipe' && ctx.minTs && value.ts <= ctx.minTs()) return
     const view = viewDoc.getMap(map)
     if (view.has(key)) return
     if (!await checks[map](value)) return

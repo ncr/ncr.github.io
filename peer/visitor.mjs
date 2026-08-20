@@ -8,6 +8,7 @@ import wrtc from '@roamhq/wrtc'
 import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { wireReplica } from '../shared/replica.js'
+import { wipeTsOf, purgeDoc } from '../shared/rules.js'
 
 const STATIC_DIR = path.resolve(process.env.STATIC_DIR || '../site/dist')
 const DATA_DIR = process.env.DATA_DIR || './data'
@@ -18,6 +19,19 @@ const VOTE_POW_BITS = Math.max(8, POW_BITS - 4)
 const OWNER_PUBKEY = process.env.OWNER_PUBKEY || ''
 
 fs.mkdirSync(DATA_DIR, { recursive: true })
+
+// wipe właściciela: obserwujemy mapę 'wipe' w pokoju 'site', czyścimy wszystkie pokoje
+const wipeFile = path.join(DATA_DIR, 'wipe-ts')
+let wipeTs = fs.existsSync(wipeFile) ? Number(fs.readFileSync(wipeFile, 'utf8')) || 0 : 0
+function applyWipe(ts) {
+  if (ts <= wipeTs) return
+  wipeTs = ts
+  fs.writeFileSync(wipeFile, String(ts))
+  for (const [room, r] of open) {
+    const n = purgeDoc(r.viewDoc, ts)
+    if (n) console.log(`wipe: ${room} – usunięto ${n} wpisów sprzed ${new Date(ts).toISOString()}`)
+  }
+}
 
 function rooms() {
   const list = ['site']
@@ -37,8 +51,14 @@ function join(room) {
   if (fs.existsSync(file)) {
     try { Y.applyUpdate(viewDoc, new Uint8Array(fs.readFileSync(file))) } catch (e) { console.error(`${room}: zepsuty plik, zaczynam od zera (${e.message})`) }
   }
-  const { seed } = wireReplica(Y, viewDoc, netDoc, { room, powBits: POW_BITS, votePowBits: VOTE_POW_BITS, ownerPubkey: OWNER_PUBKEY })
+  const { seed } = wireReplica(Y, viewDoc, netDoc, { room, powBits: POW_BITS, votePowBits: VOTE_POW_BITS, ownerPubkey: OWNER_PUBKEY, minTs: () => wipeTs })
+  purgeDoc(viewDoc, wipeTs)
   seed()
+  if (room === 'site') {
+    const wipes = viewDoc.getMap('wipe')
+    wipes.observe(() => applyWipe(wipeTsOf(wipes)))
+    applyWipe(wipeTsOf(wipes))
+  }
   // zapis: po każdej zmianie zaufanej kopii, z odstępem
   let timer = null
   viewDoc.on('update', () => {

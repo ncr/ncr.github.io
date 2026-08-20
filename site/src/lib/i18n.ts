@@ -22,7 +22,7 @@ const dict = {
   'err.stale': 'the peer already has a newer entry – refresh',
   'profile.loading': 'loading comments…', 'profile.badId': 'invalid identifier', 'profile.none': 'this identity has no visible comments yet',
   'profile.noComments': 'no comments', 'profile.earlierAs': 'earlier as', 'profile.title': 'comments',
-  'stats.noHistory': 'no history', 'stats.max': 'max',
+  'stats.noHistory': 'no data yet', 'stats.max': 'max',
 } as const
 export type Key = keyof typeof dict
 export const t = (k: Key): string => (dict as Record<string, string>)[k] ?? k
