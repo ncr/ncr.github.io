@@ -9,7 +9,8 @@ services:
         PUBLIC_ROOM_NS: ${ROOM_NS:-ncr-blog}
         PUBLIC_SIGNALS: ${SIGNALS:-}
     environment:
-      SIGNALS: ws://localhost:8080/signal
+      # wieczny czytelnik musi siedzieć w tym samym signalingu co czytelnicy strony
+      SIGNALS: ${SIGNALS:-ws://localhost:8080/signal}
     ports:
       - "8080:8080"
     volumes:

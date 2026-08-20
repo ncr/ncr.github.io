@@ -2,7 +2,7 @@
 // jest równorzędny: pisze u siebie (podpis + dowód pracy), rozgłasza po WebRTC, a każdy
 // odbiorca sam weryfikuje wpisy zanim je pokaże i utrwali (shared/replica.js).
 import { sign, randomId } from '../../../shared/crypto.js'
-import { floodHidden, REACTIONS, LIMITS, voteKey as voteKeyOf } from '../../../shared/rules.js'
+import { floodHidden, REACTIONS, LIMITS, voteKey, modKey, reactionKey, latestBy } from '../../../shared/rules.js'
 import { getIdentity, getOwnerKey, type OwnerKey } from './identity'
 import { badge, shortIdent } from './ident'
 import { openRoom, publish, type Room } from './room'
@@ -101,20 +101,25 @@ export async function mountComments(rootEl: HTMLElement) {
       const votes = r.viewDoc.getMap<Vote>('votes')
       const reactions = r.viewDoc.getMap<Reaction>('reactions')
 
+      // stan = redukcja niezmiennych wpisów: najnowszy per komentarz (mod, reakcje)
+      const modNow = latestBy(mod.values(), (m: ModEntry) => m.id)
       const hidden = new Set<string>()
-      for (const [id, m] of mod) if (m.action === 'hide') hidden.add(id)
+      for (const [id, m] of modNow) if (m.action === 'hide') hidden.add(id)
       const all = [...comments.values()]
       const flood = floodHidden(all) // ten sam klucz: max 5 widocznych na 10 min (deterministyczne)
       const rows = all.filter(c => (owner || !hidden.has(c.id)) && !flood.has(c.id)).sort((a, b) => a.ts - b.ts)
 
+      // głos = najnowszy wpis danego głosującego dla danego komentarza
+      const voteNow = latestBy(votes.values(), (v: Vote) => `${v.id}|${v.pubkey}`)
       const score = new Map<string, number>(), myVote = new Map<string, number>()
-      for (const v of votes.values()) {
+      for (const v of voteNow.values()) {
         score.set(v.id, (score.get(v.id) ?? 0) + v.value)
         if (v.pubkey === me) myVote.set(v.id, v.value)
       }
+      const reactionNow = latestBy(reactions.values(), (x: Reaction) => x.id)
       const state = (c: Comment) => ({
         mine: c.pubkey === me, score: score.get(c.id) ?? 0, myVote: myVote.get(c.id) ?? 0,
-        reaction: reactions.get(c.id)?.emoji || '', hidden: hidden.has(c.id),
+        reaction: reactionNow.get(c.id)?.emoji || '', hidden: hidden.has(c.id),
       })
       count.textContent = rows.length ? String(rows.filter(c => !hidden.has(c.id)).length) : ''
       // wątki: pierwszy rząd chronologicznie, pod nim jego odpowiedzi liniowo
@@ -196,10 +201,11 @@ export async function mountComments(rootEl: HTMLElement) {
     wrap.append(hide)
     return wrap
   }
-  async function ownerWrite(map: string, entry: Record<string, unknown>) {
+  async function ownerWrite(map: 'mod' | 'reactions', entry: Record<string, unknown>) {
     if (!owner) return
     const full = { ...entry, ts: Date.now(), pubkey: owner.pubkey }
-    publish(r, map, String(entry.id), { ...full, sig: await sign(owner.priv, full) })
+    const signed = { ...full, sig: await sign(owner.priv, full) }
+    publish(r, map, (map === 'mod' ? modKey : reactionKey)(signed as never), signed)
   }
 
   // --- dowód pracy w workerze ---
@@ -222,7 +228,8 @@ export async function mountComments(rootEl: HTMLElement) {
       const id = await getIdentity()
       const draft = { v: 1, room: roomName, id: c.id, value: next, ts: Date.now(), pubkey: id.pubkey, nonce: 0 }
       const mined = await mineInWorker(draft, VOTE_POW_BITS, () => {})
-      publish(r, 'votes', voteKeyOf(mined), { ...mined, sig: await sign(id.priv, mined) })
+      const signed = { ...mined, sig: await sign(id.priv, mined) }
+      publish(r, 'votes', voteKey(signed), signed)
     } catch (e) {
       say(`${t('status.failed')}: ${(e as Error).message}`)
     } finally {

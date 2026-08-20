@@ -2,13 +2,12 @@
 // Dwa dokumenty Yjs na pokój:
 //   netDoc  – to, co krąży po WebRTC; każdy może tam wpisać cokolwiek, żyje w pamięci
 //   viewDoc – kopia zaufana i trwała; trafiają do niej wyłącznie wpisy, które przeszły reguły
-// Zasady kopiowania netDoc -> viewDoc (per mapa):
-//   comments, visits – wpis pod danym kluczem jest niezmienny: kopiujemy tylko nowe klucze
-//   votes, mod, reactions – „nowszy ts wygrywa": kopiujemy, gdy ważny i nowszy niż obecny
+// Zasady kopiowania netDoc -> viewDoc: KAŻDY wpis jest niezmienny (klucze zawierają ts),
+// kopiujemy tylko nowe klucze po weryfikacji; stan bieżący to redukcja przy renderowaniu.
 // viewDoc -> netDoc idzie w całości (rozdajemy dalej to, co sami uznaliśmy za ważne),
 // więc dane wędrują zakaźnie między uczestnikami, nawet gdy autora już nie ma online.
 // Moduł dostaje yjs z zewnątrz (Y), żeby istniała jedna instancja yjs na proces.
-import { checkComment, checkVote, checkVisit, checkMod, checkReaction, voteKey, visitKey } from './rules.js'
+import { checkComment, checkVote, checkVisit, checkMod, checkReaction, voteKey, visitKey, modKey, reactionKey } from './rules.js'
 
 const FROM_VIEW = 'replica-from-view'
 
@@ -31,19 +30,15 @@ export function wireReplica(Y, viewDoc, netDoc, ctx) {
     mod: m => cached(m, x => checkMod(x, { room: ctx.room, ownerPubkey: ctx.ownerPubkey })),
     reactions: r => cached(r, x => checkReaction(x, { room: ctx.room, ownerPubkey: ctx.ownerPubkey })),
   }
-  const keyOf = { comments: c => c.id, votes: voteKey, visits: visitKey, mod: m => m.id, reactions: r => r.id }
-  const immutable = { comments: true, visits: true, votes: false, mod: false, reactions: false }
+  const keyOf = { comments: c => c.id, votes: voteKey, visits: visitKey, mod: modKey, reactions: reactionKey }
 
   async function consider(map, key) {
     const value = netDoc.getMap(map).get(key)
     if (!value || keyOf[map](value) !== key) return
     const view = viewDoc.getMap(map)
-    const current = view.get(key)
-    if (current && (immutable[map] || current.ts >= value.ts)) return
+    if (view.has(key)) return
     if (!await checks[map](value)) return
-    const again = view.get(key) // stan mógł się zmienić w trakcie weryfikacji
-    if (again && (immutable[map] || again.ts >= value.ts)) return
-    view.set(key, value)
+    if (!view.has(key)) view.set(key, value)
   }
 
   for (const map of Object.keys(checks)) {

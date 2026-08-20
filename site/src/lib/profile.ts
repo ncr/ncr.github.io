@@ -1,6 +1,7 @@
 // Wszystkie komentarze jednej tożsamości (klucza) we wszystkich wpisach.
 // Otwiera pokoje wpisów (cache + WebRTC), czeka chwilę na synchronizację i filtruje po kluczu.
 import { openRoom } from './room'
+import { latestBy } from '../../../shared/rules.js'
 import { badge, shortIdent } from './ident'
 import { t, locale, plural } from './i18n'
 import type { Comment, ModEntry } from './comments'
@@ -23,7 +24,7 @@ export async function mountProfile(root: HTMLElement) {
     await r.ready
     await new Promise(res => setTimeout(res, 4000)) // daj mesh WebRTC szansę się zsynchronizować
     const hidden = new Set<string>()
-    for (const [id, m] of r.viewDoc.getMap<ModEntry>('mod')) if (m.action === 'hide') hidden.add(id)
+    for (const [id, m] of latestBy(r.viewDoc.getMap<ModEntry>('mod').values(), (x: ModEntry) => x.id)) if (m.action === 'hide') hidden.add(id)
     const out = [...r.viewDoc.getMap<Comment>('comments').values()].filter(c => c.pubkey === pubkey && !hidden.has(c.id))
     r.destroy()
     return out

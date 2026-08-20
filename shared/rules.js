@@ -5,7 +5,24 @@ import { verify, powBits } from './crypto.js'
 
 export const LIMITS = { author: 40, text: 2000, id: 32 }
 export const REACTIONS = ['❤️', '👍', '😂', '🎯', '🤔']
-export const voteKey = v => `${v.id}|${v.pubkey}`
+// Klucze wpisów zawierają ts: wpis jest niezmienny, zmiana = nowy wpis, a stan
+// (aktualny głos, reakcja, ukrycie) to redukcja „najnowszy ts wygrywa" po wartościach.
+// Dzięki temu nie ma nadpisań tego samego klucza w CRDT – nadpisanie może przegrać
+// konflikt map Yjs (rozstrzygany po id klienta, nie po czasie) i zniknąć u części peerów.
+export const voteKey = v => `${v.id}|${v.pubkey}|${v.ts}`
+export const modKey = m => `${m.id}|${m.ts}`
+export const reactionKey = r => `${r.id}|${r.ts}`
+
+/** Najnowszy wpis per grupa (np. głos per komentarz+głosujący). */
+export function latestBy(values, groupFn) {
+  const out = new Map()
+  for (const v of values) {
+    const g = groupFn(v)
+    const cur = out.get(g)
+    if (!cur || v.ts > cur.ts || (v.ts === cur.ts && v.sig > cur.sig)) out.set(g, v)
+  }
+  return out
+}
 export const visitKey = v => `${v.day}|${v.path}|${v.pubkey}`
 export const dayOf = ts => new Date(ts).toISOString().slice(0, 10)
 

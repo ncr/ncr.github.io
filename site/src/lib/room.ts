@@ -19,7 +19,7 @@ export function openRoom(room: string): Room {
   const viewDoc = new Y.Doc()
   const netDoc = new Y.Doc()
   const { seed } = wireReplica(Y, viewDoc, netDoc, { room, powBits: POW_BITS, votePowBits: VOTE_POW_BITS, ownerPubkey: OWNER_PUBKEY })
-  const idb = new IndexeddbPersistence(`blog:v3:${room}`, viewDoc)
+  const idb = new IndexeddbPersistence(`blog:v4:${room}`, viewDoc)
   // WebRTC od razu (mesh buduje się kilka sekund); seed netDoc po wczytaniu cache
   const rtc = new WebrtcProvider(`${ROOM_NS}:${room}`, netDoc, { signaling: signals() })
   const ready = idb.whenSynced.then(() => { seed() })
