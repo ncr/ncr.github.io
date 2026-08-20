@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro'
-import Comments from '../../components/Comments.astro'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
@@ -21,5 +20,4 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
       <Content />
     </div>
   </article>
-  <Comments room={`blog/${post.data.key || post.id}`} />
 </Base>

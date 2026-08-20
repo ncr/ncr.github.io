@@ -12,14 +12,6 @@ const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 
     <div class="bio" set:html={site.bio} />
     <hr class="rule" />
   </Fragment>
-  <section class="steam" hidden>
-    <div class="stat"><span class="label">Reading now</span><span class="value now">–</span></div>
-    <div class="stat"><span class="label">Today</span><span class="value today">–</span></div>
-    <div class="stat"><span class="label">7-day peak</span><span class="value peak7">–</span></div>
-    <div class="stat"><span class="label">Best day</span><span class="value record">–</span><span class="when"></span></div>
-    <div class="stat"><span class="label">Readers all-time</span><span class="value visits">–</span></div>
-    <div class="chart7"><span class="label">Readers per day, last 7 days <span class="max"></span></span><svg width="780" height="80" role="img"></svg></div>
-  </section>
   {posts.map(p => (
     <article class="card">
       <header>

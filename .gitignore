@@ -1,7 +1,3 @@
 node_modules/
 site/dist/
 site/.astro/
-site/.env
-peer/data/
-*.jwk.json
-.env

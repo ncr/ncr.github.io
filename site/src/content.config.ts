@@ -8,7 +8,6 @@ const blog = defineCollection({
     date: z.coerce.date(),
     description: z.string().optional(),
     draft: z.boolean().default(false),
-    key: z.string().optional(), // wspólny klucz wersji językowych tego samego wpisu (domyślnie slug)
   }),
 })
 

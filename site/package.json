@@ -8,11 +8,6 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@noble/ed25519": "^2.3.0",
-    "astro": "^7.2.4",
-    "y-indexeddb": "^9.0.12",
-    "y-webrtc": "^10.3.0",
-    "y-websocket": "^3.1.0",
-    "yjs": "^13.6.32"
+    "astro": "^7.2.4"
   }
 }
