@@ -25,7 +25,7 @@ jobs:
       - name: Build
         working-directory: site
         env:
-          SITE_URL: https://ncr.github.io
+          SITE_URL: https://jacekbecela.com
         run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
