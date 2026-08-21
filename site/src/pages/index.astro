@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { site } from '../site'
+import ThemeDots from '../components/ThemeDots.astro'
 const posts = (await getCollection('blog', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5)
@@ -19,6 +20,7 @@ const links = [
     <div class="who">
       <img class="avatar" src={site.avatar} alt="" width="48" height="48" />
       <h1>{site.name}</h1>
+      <ThemeDots />
     </div>
     <p class="intro">{site.intro}</p>
     <nav class="nav">

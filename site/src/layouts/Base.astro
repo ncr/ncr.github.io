@@ -1,6 +1,6 @@
 ---
 import { site } from '../site'
-import themes from '../data/omarchy-themes.json'
+import ThemeDots from '../components/ThemeDots.astro'
 interface Props { title?: string; description?: string; home?: boolean }
 const { title, description, home = false } = Astro.props
 const pageTitle = title ? `${title} — ${site.name}` : site.name
@@ -33,16 +33,6 @@ const links = [
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
   </head>
   <body>
-    <div class="themes-dock" aria-label="Omarchy themes">
-      <button type="button" data-value="auto" title="default (follows your light/dark preference)">
-        <span class="swatch-auto" style="width:100%;height:100%;border-radius:50%"></span>
-      </button>
-      {themes.map(t => (
-        <button type="button" data-value={t.name} title={t.name} style={`background:${t.bg}`}>
-          <span style={`background:${t.accent}`}></span>
-        </button>
-      ))}
-    </div>
     <div class="page">
       {!home && (
         <nav class="topnav">
@@ -54,6 +44,7 @@ const links = [
               <a href={l.href}>{l.label}</a>
             </>
           ))}
+          <ThemeDots />
         </nav>
       )}
       <main>
@@ -65,7 +56,7 @@ const links = [
     </div>
     <script>
       const root = document.documentElement
-      const dock = document.querySelector('.themes-dock')!
+      const dock = document.querySelector('.theme-line')!
       const buttons = dock.querySelectorAll<HTMLButtonElement>('button[data-value]')
       const mark = (v: string) => buttons.forEach(b => b.classList.toggle('on', b.dataset.value === v))
       const saved = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)

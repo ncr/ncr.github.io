@@ -1,0 +1,9 @@
+---
+import themes from '../data/omarchy-themes.json'
+---
+<div class="theme-line" aria-label="Omarchy themes">
+  <button type="button" data-value="auto" title="default" aria-label="default theme"></button>
+  {themes.map(t => (
+    <button type="button" data-value={t.name} title={t.name} aria-label={`${t.name} theme`} style={`background:${t.bg}`}></button>
+  ))}
+</div>
