@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro'
 import commits from '../data/automat-commits.json'
 
 const max = Math.max(...commits.map(c => c.c))
-const BAR = 5, GAP = 1, H = 90, LABEL = 14
+const BAR = 5, GAP = 1, H = 90
 const width = commits.length * (BAR + GAP)
 const bars = commits.map((c, i) => ({
   x: i * (BAR + GAP),
@@ -25,29 +25,177 @@ const bars = commits.map((c, i) => ({
   <div class="project">
     <h2>Automat<span class="status">active</span></h2>
     <p>
-      The internal software that runs TrixBrix. It started with one question: how do
-      you plan printing when orders are made of products, products are made of parts,
-      and every printer prints one part at a time? Then it grew. Today it handles:
+      The internal software that runs TrixBrix. It started in December 2017 with one
+      question: how do you plan printing when orders are made of products, products
+      are made of parts, and every printer prints one part at a time? Then it grew.
+      One Rails app, ~70k lines of Ruby, 140 database tables, 3,913 commits — nearly
+      all of them mine. Here is what it actually does, and the list is long on purpose:
     </p>
+
+    <h3>production planning</h3>
     <ul>
-      <li>production planning — exploding orders into products into printable parts</li>
-      <li>print farm scheduling: which part, on which printer, from which material, on which tray</li>
-      <li>material and filament tracking, down to individual AMS slots</li>
-      <li>failed prints and reprints, tracked across work shifts</li>
-      <li>power management for the whole hall: smart outlets, paced power-on, auto-shutdown of idle printers</li>
-      <li>warehouse stock, storage locations, and a recommender that suggests where to put things</li>
-      <li>marketplace integrations, including Amazon FBA</li>
-      <li>automatic repricing</li>
-      <li>couriers, shipping labels, QR-based dispatch</li>
-      <li>invoices and tax reports</li>
-      <li>HR: shifts, absences, leave quotas</li>
-      <li>a photo studio that triggers the cameras for product photos</li>
-      <li>an internal knowledge base</li>
-      <li>a Pip-Boy — the shop-floor terminal UI</li>
-      <li>and everything in between</li>
+      <li>plans the whole next day every night at 22:00: bin-packs sliced trays onto ~150 printers across up to four shifts</li>
+      <li>explodes orders into products into printable parts, and traces every printed part back to the customer order that justified it</li>
+      <li>schedules by a strict priority ladder: customer orders first, stock replenishment last</li>
+      <li>sizes stock targets to the seasonal peak — the busiest rolling sales window of the last 365 days — so Christmas isn't diluted by July</li>
+      <li>splits products too big for one shift into single-tray pseudo-products</li>
+      <li>duplicates historically risky trays, but only for order work, never for stock</li>
+      <li>follows the "if you're reprinting one, print two" rule for spares</li>
+      <li>interleaves product queues so many SKUs progress evenly instead of one monopolizing the night</li>
+      <li>rolls unfulfilled requests forward instead of silently dropping them</li>
+      <li>sweeps every shift at its end: closes forgotten prints, writes off trays nobody started</li>
+      <li>titles each plan from a joke list: Plan Balcerowicza, Plan Marshalla, Plan przejęcia kontroli nad światem</li>
     </ul>
+
+    <h3>the printer fleet</h3>
+    <ul>
+      <li>live board of the whole farm: every printer's status, current tray, elapsed time, error state</li>
+      <li>ingests telemetry every couple of seconds through a LAN daemon that talks to the machines and dispatches their jobs</li>
+      <li>refuses to send two jobs to one bed (learned from an incident where a second upload overwrote a print mid-run)</li>
+      <li>decodes Bambu HMS hex error codes and classifies them: fault, service, routine, transient</li>
+      <li>tracks per-printer reliability streaks and 14-day trends</li>
+      <li>a wall of live camera snapshots from the printers</li>
+      <li>lets a printer be reserved for prototyping, or retired when it's physically sold</li>
+    </ul>
+
+    <h3>Pip-Boy — the operators' mobile app</h3>
+    <ul>
+      <li>an operator points a phone at a printer's QR sticker and gets its next job, with material and finish-time estimate</li>
+      <li>start, finish, or fail a print from three big buttons; a failed print returns the printer's queue to the pool</li>
+      <li>report machine events from a screen of big buttons, including "Wywaliło prąd" (power tripped)</li>
+      <li>a printer with nothing left to do offers tomorrow's work: "if you start now it finishes ~17:40"</li>
+      <li>refuses to book a print on a printer whose power outlet is off</li>
+      <li>stock corrections from the phone, station chore checklists behind QR stickers, and a vibration on every successful scan</li>
+    </ul>
+
+    <h3>Assembly Line — the assemblers' app</h3>
+    <ul>
+      <li>a touch app for the people physically putting products together</li>
+      <li>order-driven work comes first, then only what can actually be built from parts on the shelf right now</li>
+      <li>tap +10 / +1 / −1 to record assembled units; part stock is deducted automatically and everyone on the line sees the count move live</li>
+      <li>records defective parts as they're discovered, per part, per plan</li>
+      <li>assembles anything ad-hoc, outside the day's plan</li>
+    </ul>
+
+    <h3>warehouse</h3>
+    <ul>
+      <li>typo-tolerant fuzzy search over everything on the shelves ("spol holder" finds "Spool Holder 52mm")</li>
+      <li>racks modeled as shelves and drawers, with human-readable slot codes like A1/P3/M7</li>
+      <li>recommends where to shelve each item using six ranked strategies, from "same product family" down to "nearest free slot"</li>
+      <li>a report of which products are often bought together, so they can be shelved together</li>
+      <li>a daily stocktaking portion, so the whole warehouse gets counted continuously in small pieces</li>
+      <li>stock is allowed to go negative on purpose — negative means the system disagrees with reality, and that should be visible</li>
+      <li>prints sticker sheets in three formats, with photos, QR codes and cut guides</li>
+    </ul>
+
+    <h3>slicing, materials, colours</h3>
+    <ul>
+      <li>imports sliced Bambu 3MF and Zortrax plates, identified by G-code hash so renaming a file doesn't create a duplicate</li>
+      <li>generates the second, third… colour variant of a plate from one source file</li>
+      <li>refuses to "recolour" an ABS plate with PLA, which would ruin the print and possibly the hotend</li>
+      <li>tracks AMS slots per printer and matches loaded spools to catalogued materials by preset and hex colour together</li>
+      <li>surgically rewrites 3MF G-code so a plate sliced for an AMS printer prints on one without</li>
+      <li>models one physical shape printed in many colours as one geometry with named colour roles ("rim", "spokes")</li>
+    </ul>
+
+    <h3>power management</h3>
+    <ul>
+      <li>controls the hall's smart outlets over MQTT and cuts power to printers once the day's print work is done</li>
+      <li>the "operational day" rolls over at the 06:30 shift start, not midnight, because evening prints overrun</li>
+      <li>verifies outlets actually reached the commanded state and re-sends — after a night when four outlets said "off" and burned power until morning</li>
+      <li>refuses to cut power to a printer that is mid-print, and names it</li>
+      <li>one button powers the whole farm up in a paced sequence; the air conditioning goes on last and off when the last printer goes dark</li>
+      <li>an interactive SVG floor plan of the hall with live outlet and printer state</li>
+    </ul>
+
+    <h3>orders and the shop</h3>
+    <ul>
+      <li>imports orders hourly and walks them through seventeen states</li>
+      <li>checks payments every 10 minutes — and re-reads the order live before dunning, since the customer who paid 86 seconds after checkout</li>
+      <li>maps the free-text product names marketplaces send back onto real catalogue products, with AI-suggested matches and a human triage queue</li>
+      <li>tracks parcels through eleven courier states and flags the dormant ones</li>
+      <li>syncs the catalogue to the webshop, and can diff a product against the live shop page attribute by attribute before pushing</li>
+    </ul>
+
+    <h3>marketplaces</h3>
+    <ul>
+      <li>eBay listings across 13 country sites, with templates and cross-site cloning</li>
+      <li>Amazon listings across 10 marketplaces, plus a flat-file exporter speaking Amazon's newest field format</li>
+      <li>eMAG (Romania and Hungary) with SLA-aware order acknowledgement and shipping labels</li>
+      <li>Kaufland across 5 countries, with signed requests and a compliance gate that refuses to push an electrical product missing WEEE or battery registrations</li>
+      <li>Etsy, with its field limits enforced</li>
+      <li>a shared media library with a streaming public proxy for marketplaces that insist on fetching images themselves</li>
+    </ul>
+
+    <h3>shipping cost control</h3>
+    <ul>
+      <li>parses courier invoices — FedEx PDFs, DPD spreadsheets, DHL statements — down to the single parcel</li>
+      <li>compares four numbers per shipment: what the customer paid, what the courier billed, the contract rate, and the average of similar parcels</li>
+      <li>reverse-engineers undisclosed courier price increases from the median gap between billed and contract rates</li>
+      <li>flags likely billing errors (has caught 600 zł and 1000 zł mischarges) and, in the other direction, routes where customers overpay</li>
+      <li>notices a missing invoice by finding calendar gaps between invoice periods</li>
+    </ul>
+
+    <h3>finance</h3>
+    <ul>
+      <li>imports bank statements from three providers, multi-currency, converted to PLN at the booking date's NBP rate</li>
+      <li>auto-categorises transactions with a user-defined rules engine that previews its matches before saving</li>
+      <li>detects and pairs internal transfers between own accounts across five distinct patterns, so they never count as income</li>
+      <li>yearly category reports — and an AI pass that reads the year and names what stands out, instructed to quote real amounts and admit when it's guessing</li>
+    </ul>
+
+    <h3>taxes and customs</h3>
+    <ul>
+      <li>archives a complete document dossier per order: invoice, corrections, shipping label, delivery confirmation, customs export confirmation</li>
+      <li>email robots read incoming customs confirmations from three couriers and file them against the right shipment — retrying for six weeks, because the paperwork arrives after the parcel</li>
+      <li>patches accounting interchange files for the accountant's software, quirk by quirk</li>
+      <li>assembles the accountant's monthly package and leaves it as a ready-to-send Gmail draft</li>
+    </ul>
+
+    <h3>pricing</h3>
+    <ul>
+      <li>values every part and product by five methods, from bill-of-materials decomposition to market comparables</li>
+      <li>costs a 3D-printed part directly from print telemetry: grams and minutes against PLN per kilogram</li>
+      <li>applies psychological rounding, then re-checks the margin floor</li>
+      <li>observes every price change for a fixed window and records the outcome — with cooldowns after a bad one</li>
+      <li>backtests the valuation model against current prices, leave-one-out</li>
+    </ul>
+
+    <h3>HR</h3>
+    <ul>
+      <li>leave requests that generate a filled-in Polish wniosek urlopowy PDF and email it to the employer</li>
+      <li>auto-converts a leave request filed under 48 hours ahead into "urlop na żądanie", per labour law</li>
+      <li>timesheets are still paper — the app OCRs the scans with a vision model and cross-checks them against the digital leave calendar, flagging every discrepancy</li>
+      <li>splits the payroll clerk's bulk PDF uploads per employee by surname, reading the name from inside the PDF when the filename only has initials</li>
+      <li>a shared vacation calendar with drag-to-request</li>
+    </ul>
+
+    <h3>photo studio and UV printing</h3>
+    <ul>
+      <li>a desktop camera app streams product photos into live sessions; a session commits straight into the shop gallery</li>
+      <li>recovered UV-print production files reviewed one keystroke at a time: 1 ok, 2 unsure, 3 wrong, 4 old version</li>
+      <li>renders spot-colour PDFs correctly by splitting them into per-colorant plates — a naive rasteriser paints White and Varnish as fluorescent yellow</li>
+    </ul>
+
+    <h3>analytics</h3>
+    <ul>
+      <li>a build-your-own chart tool over the fleet's faults and services, with saved views shared by everyone</li>
+      <li>two print-reliability lists: "popular bleeders" (highest absolute failure count) and "rare landmines" (rarely printed, nearly always fail)</li>
+      <li>median and p95 of how long each printer error takes to get cleared</li>
+      <li>a margins table for every product: raw cost, overhead, price, income</li>
+    </ul>
+
+    <h3>odds and ends</h3>
+    <ul>
+      <li>the QR codes printed on physical product manuals resolve through the app, so a tutorial video can be re-pointed without reprinting packaging</li>
+      <li>a homemade dead-code detector: every controller action, job and rake task records hits, and a probe can be "armed" so genuinely dead code fails loudly instead of rotting quietly</li>
+      <li>multi-user session switching for shared shop-floor terminals</li>
+      <li>an internal wiki, social media analytics with per-video retention, fine-grained permissions, an impersonation mode for debugging what a user sees</li>
+      <li>says "OK" out loud in a Polish text-to-speech voice when it finishes syncing files onto a Zortrax SD card</li>
+    </ul>
+
     <div class="chart">
-      <svg viewBox={`0 0 ${width} ${H + LABEL}`} role="img" aria-label="Monthly commits to Automat since 2017">
+      <svg viewBox={`0 0 ${width} ${H}`} role="img" aria-label="Monthly commits to Automat since 2017">
         {bars.map(b => (
           <rect class="bar" x={b.x} y={H - b.h} width={BAR} height={b.h} />
         ))}
