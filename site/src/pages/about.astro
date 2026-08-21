@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro'
+import { site } from '../site'
+---
+<Base title="About" description="Who I am and what this site is.">
+  <p class="section-label">about</p>
+  <p>
+    I'm Jacek Becela. I've been programming for most of my life and spent a large
+    part of it building <a href="https://trixbrix.eu">TrixBrix</a> — a company that
+    manufactures physical products.
+  </p>
+  <p>
+    I like software, machines, production, old computers, AI, and understanding how
+    things work. This site is where I put the things I make and the things I find
+    out along the way.
+  </p>
+  <p>
+    Born in 1980. Husband and father of two boys.
+  </p>
+  <p>
+    You can write me at <a href={`mailto:${site.email}`}>{site.email}</a> or find my
+    code on <a href={site.github}>GitHub</a>.
+  </p>
+</Base>

@@ -1,0 +1,90 @@
+---
+import Base from '../layouts/Base.astro'
+import commits from '../data/automat-commits.json'
+
+const max = Math.max(...commits.map(c => c.c))
+const BAR = 5, GAP = 1, H = 90, LABEL = 14
+const width = commits.length * (BAR + GAP)
+const bars = commits.map((c, i) => ({
+  x: i * (BAR + GAP),
+  h: Math.max(c.c > 0 ? 1 : 0, Math.round((c.c / max) * H)),
+}))
+---
+<Base title="Projects" description="Things I build and maintain.">
+  <p class="section-label">projects</p>
+
+  <div class="project">
+    <h2><a href="https://trixbrix.eu">TrixBrix</a><span class="status">active</span></h2>
+    <p>
+      LEGO-compatible train tracks and accessories. I've been building the company
+      and its manufacturing for years: a farm of ~150 3D printers, a webshop, and
+      everything needed to turn filament into parcels.
+    </p>
+  </div>
+
+  <div class="project">
+    <h2>Automat<span class="status">active</span></h2>
+    <p>
+      The internal software that runs TrixBrix. It started with one question: how do
+      you plan printing when orders are made of products, products are made of parts,
+      and every printer prints one part at a time? Then it grew. Today it handles:
+    </p>
+    <ul>
+      <li>production planning — exploding orders into products into printable parts</li>
+      <li>print farm scheduling: which part, on which printer, from which material, on which tray</li>
+      <li>material and filament tracking, down to individual AMS slots</li>
+      <li>failed prints and reprints, tracked across work shifts</li>
+      <li>power management for the whole hall: smart outlets, paced power-on, auto-shutdown of idle printers</li>
+      <li>warehouse stock, storage locations, and a recommender that suggests where to put things</li>
+      <li>marketplace integrations, including Amazon FBA</li>
+      <li>automatic repricing</li>
+      <li>couriers, shipping labels, QR-based dispatch</li>
+      <li>invoices and tax reports</li>
+      <li>HR: shifts, absences, leave quotas</li>
+      <li>a photo studio that triggers the cameras for product photos</li>
+      <li>an internal knowledge base</li>
+      <li>a Pip-Boy — the shop-floor terminal UI</li>
+      <li>and everything in between</li>
+    </ul>
+    <div class="chart">
+      <svg viewBox={`0 0 ${width} ${H + LABEL}`} role="img" aria-label="Monthly commits to Automat since 2017">
+        {bars.map(b => (
+          <rect class="bar" x={b.x} y={H - b.h} width={BAR} height={b.h} />
+        ))}
+      </svg>
+    </div>
+    <p class="chart-caption">
+      3,913 commits, monthly, 2017 → today. Guess when AI agents showed up.
+    </p>
+  </div>
+
+  <div class="project">
+    <h2><a href="https://github.com/ncr/omarchy-headphones">Omaphones</a><span class="status">active</span></h2>
+    <p>
+      Headphone controls in the Omarchy bar: per-earbud battery over Google Fast Pair,
+      noise-cancelling modes over protocols I had to reverse engineer first.
+    </p>
+  </div>
+
+  <div class="project">
+    <h2><a href="https://github.com/ncr/rack-proxy">rack-proxy</a><span class="status">old</span></h2>
+    <p>
+      A small Ruby library I wrote years ago that accidentally became plumbing for
+      much bigger projects.
+    </p>
+  </div>
+
+  <p class="section-label">electronics</p>
+  <div class="project">
+    <ul>
+      <li>an automatic SD card changer for 3D printers</li>
+      <li>an old-school game console with an ESP32 as USB host, so it takes ordinary USB game controllers</li>
+      <li>the electronics inside TrixBrix products</li>
+      <li>a machine that places pixels</li>
+      <li>a rocking cradle that rinses ABS-clogged printer nozzles in acetone</li>
+      <li>a brick color sorter with a triple color sensor — it tells brick colors apart much better than I can</li>
+      <li>a smartwatch that does exactly one thing: show telemetry from my Onewheel</li>
+    </ul>
+    <p>This list keeps growing.</p>
+  </div>
+</Base>

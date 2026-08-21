@@ -8,6 +8,7 @@ const blog = defineCollection({
     date: z.coerce.date(),
     description: z.string().optional(),
     draft: z.boolean().default(false),
+    x: z.string().url().optional(), // link to the post's tweet → "Discuss this on X"
   }),
 })
 

@@ -1,8 +1,15 @@
 ---
 import { site } from '../site'
-interface Props { title?: string; description?: string }
-const { title, description } = Astro.props
+interface Props { title?: string; description?: string; home?: boolean }
+const { title, description, home = false } = Astro.props
 const pageTitle = title ? `${title} — ${site.name}` : site.name
+const links = [
+  { href: '/writing/', label: 'writing' },
+  { href: '/projects/', label: 'projects' },
+  { href: '/about/', label: 'about' },
+  { href: site.github, label: 'github' },
+  ...(site.x ? [{ href: site.x, label: 'x' }] : []),
+]
 ---
 <!doctype html>
 <html lang="en">
@@ -13,19 +20,28 @@ const pageTitle = title ? `${title} — ${site.name}` : site.name
     {description && <meta name="description" content={description} />}
     <link rel="stylesheet" href="/styles.css" />
     <link rel="icon" href={site.avatar} />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
   </head>
   <body>
     <div class="page">
-      <header class="masthead">
-        <a class="undecorated" href="/" aria-label={site.name}>
-          <img class="avatar" src={site.avatar} alt="" width="50" height="50" />
-          <p class="name">{site.name}</p>
-        </a>
-        <slot name="bio" />
-      </header>
+      {!home && (
+        <nav class="topnav">
+          <a class="undecorated" href="/">{site.name.toLowerCase()}</a>
+          <span class="sep">{' — '}</span>
+          {links.map((l, i) => (
+            <>
+              {i > 0 && <span class="sep">{' / '}</span>}
+              <a href={l.href}>{l.label}</a>
+            </>
+          ))}
+        </nav>
+      )}
       <main>
         <slot />
       </main>
+      <footer class="footer">
+        <a href="/rss.xml">rss</a> · static files, no javascript · since 2026
+      </footer>
     </div>
   </body>
 </html>

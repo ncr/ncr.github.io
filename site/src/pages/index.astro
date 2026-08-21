@@ -2,24 +2,42 @@
 import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { site } from '../site'
-import { excerpt } from '../lib/excerpt'
 const posts = (await getCollection('blog', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-const fmt = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  .slice(0, 5)
+const fmt = (d: Date) => d.toISOString().slice(0, 10)
+const links = [
+  { href: '/writing/', label: 'writing' },
+  { href: '/projects/', label: 'projects' },
+  { href: '/about/', label: 'about' },
+  { href: site.github, label: 'github' },
+  ...(site.x ? [{ href: site.x, label: 'x' }] : []),
+]
 ---
-<Base>
-  <Fragment slot="bio">
-    <div class="bio" set:html={site.bio} />
-    <hr class="rule" />
-  </Fragment>
-  {posts.map(p => (
-    <article class="card">
-      <header>
-        <div class="date">{fmt(p.data.date)}</div>
-        <h2><a class="undecorated" href={`/blog/${p.id}/`}>{p.data.title}</a></h2>
-      </header>
-      <div class="content">{p.data.description || excerpt(p.body || '')}</div>
-      <a class="btn" href={`/blog/${p.id}/`}>Read more</a>
-    </article>
-  ))}
+<Base home description={site.intro}>
+  <header class="hero">
+    <div class="who">
+      <img class="avatar" src={site.avatar} alt="" width="48" height="48" />
+      <h1>{site.name}</h1>
+    </div>
+    <p class="intro">{site.intro}</p>
+    <nav class="nav">
+      {links.map((l, i) => (
+        <>
+          {i > 0 && <span class="sep">{' / '}</span>}
+          <a href={l.href}>{l.label}</a>
+        </>
+      ))}
+    </nav>
+  </header>
+
+  <p class="section-label">latest</p>
+  <ul class="postlist">
+    {posts.map(p => (
+      <li>
+        <span class="date">{fmt(p.data.date)}</span>
+        <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+      </li>
+    ))}
+  </ul>
 </Base>

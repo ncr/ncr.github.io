@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro'
+import { getCollection } from 'astro:content'
+const posts = (await getCollection('blog', p => !p.data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+const fmt = (d: Date) => d.toISOString().slice(0, 10)
+---
+<Base title="Writing">
+  <p class="section-label">writing</p>
+  <ul class="postlist">
+    {posts.map(p => (
+      <li>
+        <span class="date">{fmt(p.data.date)}</span>
+        <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+      </li>
+    ))}
+  </ul>
+</Base>
