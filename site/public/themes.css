@@ -1,0 +1,221 @@
+/* Generated from Omarchy themes by scripts/build-themes.mjs — do not edit by hand. */
+
+:root[data-theme="catppuccin"] {
+  --bg: #1e1e2e;
+  --fg: #cdd6f4;
+  --muted: #6c7086;
+  --link: #89b4fa;
+  --hairline: #45475a;
+  --code-bg: #313244;
+  color-scheme: dark;
+}
+
+:root[data-theme="catppuccin-latte"] {
+  --bg: #eff1f5;
+  --fg: #4c4f69;
+  --muted: #9ca0b0;
+  --link: #1e66f5;
+  --hairline: #ccd0da;
+  --code-bg: #e3e4e8;
+  color-scheme: light;
+}
+
+:root[data-theme="ethereal"] {
+  --bg: #060B1E;
+  --fg: #ffcead;
+  --muted: #6d7db6;
+  --link: #7d82d9;
+  --hairline: #252e56;
+  --code-bg: #131a3a;
+  color-scheme: dark;
+}
+
+:root[data-theme="everforest"] {
+  --bg: #2d353b;
+  --fg: #d3c6aa;
+  --muted: #4f585e;
+  --link: #7fbbb3;
+  --hairline: #3d484d;
+  --code-bg: #343f44;
+  color-scheme: dark;
+}
+
+:root[data-theme="flexoki-light"] {
+  --bg: #FFFCF0;
+  --fg: #100F0F;
+  --muted: #878580;
+  --link: #205EA6;
+  --hairline: #CECDC3;
+  --code-bg: #f2efe4;
+  color-scheme: light;
+}
+
+:root[data-theme="gruvbox"] {
+  --bg: #282828;
+  --fg: #d4be98;
+  --muted: #7c6f64;
+  --link: #7daea3;
+  --hairline: #504945;
+  --code-bg: #3c3836;
+  color-scheme: dark;
+}
+
+:root[data-theme="hackerman"] {
+  --bg: #0B0C16;
+  --fg: #ddf7ff;
+  --muted: #6a6e95;
+  --link: #82FB9C;
+  --hairline: #1f253a;
+  --code-bg: #151828;
+  color-scheme: dark;
+}
+
+:root[data-theme="kanagawa"] {
+  --bg: #1f1f28;
+  --fg: #dcd7ba;
+  --muted: #727169;
+  --link: #dcd7ba;
+  --hairline: #363646;
+  --code-bg: #223249;
+  color-scheme: dark;
+}
+
+:root[data-theme="last-horizon"] {
+  --bg: #0c0b0c;
+  --fg: #FAFCFB;
+  --muted: #584e51;
+  --link: #b59790;
+  --hairline: #584e51;
+  --code-bg: #0c0b0c;
+  color-scheme: dark;
+}
+
+:root[data-theme="lumon"] {
+  --bg: #16242d;
+  --fg: #d6e2ee;
+  --muted: #4d86b0;
+  --link: #8bc9eb;
+  --hairline: #243d56;
+  --code-bg: #1b2d40;
+  color-scheme: dark;
+}
+
+:root[data-theme="lupine"] {
+  --bg: #fafafa;
+  --fg: #212121;
+  --muted: #757575;
+  --link: #3264eb;
+  --hairline: #d0d0d0;
+  --code-bg: #ececec;
+  color-scheme: light;
+}
+
+:root[data-theme="matte-black"] {
+  --bg: #121212;
+  --fg: #bebebe;
+  --muted: #555555;
+  --link: #e68e0d;
+  --hairline: #2a2a2a;
+  --code-bg: #1e1e1e;
+  color-scheme: dark;
+}
+
+:root[data-theme="miasma"] {
+  --bg: #222222;
+  --fg: #c2c2b0;
+  --muted: #555555;
+  --link: #78824b;
+  --hairline: #383838;
+  --code-bg: #2c2c2c;
+  color-scheme: dark;
+}
+
+:root[data-theme="nord"] {
+  --bg: #2e3440;
+  --fg: #d8dee9;
+  --muted: #667080;
+  --link: #81a1c1;
+  --hairline: #434c5e;
+  --code-bg: #3b4252;
+  color-scheme: dark;
+}
+
+:root[data-theme="osaka-jade"] {
+  --bg: #111c18;
+  --fg: #C1C497;
+  --muted: #81B8A8;
+  --link: #509475;
+  --hairline: #32473B;
+  --code-bg: #23372B;
+  color-scheme: dark;
+}
+
+:root[data-theme="retro-82"] {
+  --bg: #05182e;
+  --fg: #f6dcac;
+  --muted: #3f8f8a;
+  --link: #faa968;
+  --hairline: #134e5a;
+  --code-bg: #0a2540;
+  color-scheme: dark;
+}
+
+:root[data-theme="ristretto"] {
+  --bg: #2c2525;
+  --fg: #e6d9db;
+  --muted: #72696a;
+  --link: #f38d70;
+  --hairline: #403e41;
+  --code-bg: #3d2f2a;
+  color-scheme: dark;
+}
+
+:root[data-theme="rose-pine"] {
+  --bg: #faf4ed;
+  --fg: #575279;
+  --muted: #9893a5;
+  --link: #56949f;
+  --hairline: #dfdad9;
+  --code-bg: #ede7e1;
+  color-scheme: light;
+}
+
+:root[data-theme="solitude"] {
+  --bg: #101315;
+  --fg: #cacccc;
+  --muted: #4b4e55;
+  --link: #798186;
+  --hairline: #343d41;
+  --code-bg: #101315;
+  color-scheme: dark;
+}
+
+:root[data-theme="tokyo-night"] {
+  --bg: #1a1b26;
+  --fg: #a9b1d6;
+  --muted: #565f89;
+  --link: #7aa2f7;
+  --hairline: #292e42;
+  --code-bg: #24283b;
+  color-scheme: dark;
+}
+
+:root[data-theme="vantablack"] {
+  --bg: #000000;
+  --fg: #ffffff;
+  --muted: #505050;
+  --link: #8d8d8d;
+  --hairline: #1a1a1a;
+  --code-bg: #1a1a1a;
+  color-scheme: dark;
+}
+
+:root[data-theme="white"] {
+  --bg: #ffffff;
+  --fg: #000000;
+  --muted: #c0c0c0;
+  --link: #6e6e6e;
+  --hairline: #c0c0c0;
+  --code-bg: #f5f5f5;
+  color-scheme: light;
+}

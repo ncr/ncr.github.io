@@ -1,5 +1,6 @@
 ---
 import { site } from '../site'
+import themes from '../data/omarchy-themes.json'
 interface Props { title?: string; description?: string; home?: boolean }
 const { title, description, home = false } = Astro.props
 const pageTitle = title ? `${title} — ${site.name}` : site.name
@@ -18,7 +19,13 @@ const links = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
+    <script is:inline>
+      // Before first paint: apply the saved theme, if any.
+      const saved = localStorage.getItem('theme')
+      if (saved && saved !== 'auto') document.documentElement.dataset.theme = saved
+    </script>
     <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/themes.css" />
     <link rel="icon" href={site.avatar} />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
   </head>
@@ -40,8 +47,30 @@ const links = [
         <slot />
       </main>
       <footer class="footer">
-        <a href="/rss.xml">rss</a> · static files, no javascript · since 2026
+        <a href="/rss.xml">rss</a>
+        <span>·</span>
+        <label for="theme">theme:</label>
+        <select id="theme" class="theme-picker" aria-label="Theme">
+          <option value="auto">auto</option>
+          <option value="light">light</option>
+          <option value="dark">dark</option>
+          <optgroup label="omarchy">
+            {themes.map(t => <option value={t.name}>{t.name}</option>)}
+          </optgroup>
+        </select>
+        <span>·</span>
+        <span>since 2026</span>
       </footer>
     </div>
+    <script>
+      const picker = document.getElementById('theme') as HTMLSelectElement
+      picker.value = localStorage.getItem('theme') || 'auto'
+      picker.addEventListener('change', () => {
+        const v = picker.value
+        localStorage.setItem('theme', v)
+        if (v === 'auto') delete document.documentElement.dataset.theme
+        else document.documentElement.dataset.theme = v
+      })
+    </script>
   </body>
 </html>

@@ -1,0 +1,90 @@
+[
+  {
+    "name": "catppuccin",
+    "mode": "dark"
+  },
+  {
+    "name": "catppuccin-latte",
+    "mode": "light"
+  },
+  {
+    "name": "ethereal",
+    "mode": "dark"
+  },
+  {
+    "name": "everforest",
+    "mode": "dark"
+  },
+  {
+    "name": "flexoki-light",
+    "mode": "light"
+  },
+  {
+    "name": "gruvbox",
+    "mode": "dark"
+  },
+  {
+    "name": "hackerman",
+    "mode": "dark"
+  },
+  {
+    "name": "kanagawa",
+    "mode": "dark"
+  },
+  {
+    "name": "last-horizon",
+    "mode": "dark"
+  },
+  {
+    "name": "lumon",
+    "mode": "dark"
+  },
+  {
+    "name": "lupine",
+    "mode": "light"
+  },
+  {
+    "name": "matte-black",
+    "mode": "dark"
+  },
+  {
+    "name": "miasma",
+    "mode": "dark"
+  },
+  {
+    "name": "nord",
+    "mode": "dark"
+  },
+  {
+    "name": "osaka-jade",
+    "mode": "dark"
+  },
+  {
+    "name": "retro-82",
+    "mode": "dark"
+  },
+  {
+    "name": "ristretto",
+    "mode": "dark"
+  },
+  {
+    "name": "rose-pine",
+    "mode": "light"
+  },
+  {
+    "name": "solitude",
+    "mode": "dark"
+  },
+  {
+    "name": "tokyo-night",
+    "mode": "dark"
+  },
+  {
+    "name": "vantablack",
+    "mode": "dark"
+  },
+  {
+    "name": "white",
+    "mode": "light"
+  }
+]
