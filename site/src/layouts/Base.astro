@@ -12,13 +12,6 @@ const links = [
   { href: site.github, label: 'github' },
   ...(site.x ? [{ href: site.x, label: 'x' }] : []),
 ]
-const fonts = [
-  { value: 'jetbrains-mono', label: 'jetbrains mono', family: 'JetBrains Mono' },
-  { value: 'adwaita-mono', label: 'adwaita mono', family: 'Adwaita Mono' },
-  { value: 'ia-writer-mono-s', label: 'ia writer mono s', family: 'iA Writer Mono S' },
-  { value: 'liberation-mono', label: 'liberation mono', family: 'Liberation Mono' },
-  { value: 'nimbus-mono-ps', label: 'nimbus mono ps', family: 'Nimbus Mono PS' },
-]
 ---
 <!doctype html>
 <html lang="en">
@@ -28,13 +21,10 @@ const fonts = [
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
     <script is:inline>
-      // Before first paint: apply settings saved in cookies.
+      // Before first paint: apply the theme saved in the cookie.
       ;(() => {
-        const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')))
-        const root = document.documentElement
-        if (cookies.site_theme && cookies.site_theme !== 'auto') root.dataset.theme = cookies.site_theme
-        if (cookies.site_mode && cookies.site_mode !== 'auto') root.dataset.mode = cookies.site_mode
-        if (cookies.site_font && cookies.site_font !== 'jetbrains-mono') root.dataset.font = cookies.site_font
+        const m = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
+        if (m && m[1] !== 'auto') document.documentElement.dataset.theme = m[1]
       })()
     </script>
     <link rel="stylesheet" href={`/styles.css?v=${cssv}`} />
@@ -43,33 +33,15 @@ const fonts = [
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
   </head>
   <body>
-    <div class="settings">
-      <button class="settings-btn" id="settings-btn" aria-label="Appearance" aria-expanded="false">◐</button>
-      <div class="settings-panel" id="settings-panel" hidden>
-        <p class="settings-label">mode</p>
-        <div class="segmented" data-setting="mode">
-          <button type="button" data-value="auto">auto</button>
-          <button type="button" data-value="light">light</button>
-          <button type="button" data-value="dark">dark</button>
-        </div>
-        <p class="settings-label">font</p>
-        <div class="choice-list" data-setting="font">
-          {fonts.map(f => (
-            <button type="button" data-value={f.value} style={`font-family: '${f.family}', monospace`}>{f.label}</button>
-          ))}
-        </div>
-        <p class="settings-label">theme <span class="settings-hint">(omarchy)</span></p>
-        <div class="choice-list themes" data-setting="theme">
-          <button type="button" data-value="auto">
-            <span class="swatch swatch-auto"></span>default
-          </button>
-          {themes.map(t => (
-            <button type="button" data-value={t.name}>
-              <span class="swatch" style={`background:${t.bg}`}><span style={`background:${t.accent}`}></span></span>{t.name}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div class="themes-dock" aria-label="Omarchy themes">
+      <button type="button" data-value="auto" title="default (follows your light/dark preference)">
+        <span class="swatch-auto" style="width:100%;height:100%;border-radius:50%"></span>
+      </button>
+      {themes.map(t => (
+        <button type="button" data-value={t.name} title={t.name} style={`background:${t.bg}`}>
+          <span style={`background:${t.accent}`}></span>
+        </button>
+      ))}
     </div>
     <div class="page">
       {!home && (
@@ -88,39 +60,23 @@ const fonts = [
         <slot />
       </main>
       <footer class="footer">
-        <a href="/rss.xml">rss</a> · static files · since 2026
+        <a href="/rss.xml">rss</a> · since 2026
       </footer>
     </div>
     <script>
       const root = document.documentElement
-      const defaults: Record<string, string> = { theme: 'auto', font: 'jetbrains-mono', mode: 'auto' }
-      const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')))
-
-      const btn = document.getElementById('settings-btn')!
-      const panel = document.getElementById('settings-panel')!
-      const setOpen = (open: boolean) => {
-        panel.hidden = !open
-        btn.setAttribute('aria-expanded', String(open))
-      }
-      btn.addEventListener('click', () => setOpen(panel.hidden))
-      document.addEventListener('click', e => {
-        if (!panel.hidden && !(e.target as Element).closest('.settings')) setOpen(false)
-      })
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false) })
-
-      for (const group of document.querySelectorAll<HTMLElement>('[data-setting]')) {
-        const key = group.dataset.setting!
-        const buttons = group.querySelectorAll<HTMLButtonElement>('button[data-value]')
-        const mark = (v: string) => buttons.forEach(b => b.classList.toggle('on', b.dataset.value === v))
-        mark(cookies[`site_${key}`] || defaults[key])
-        buttons.forEach(b => b.addEventListener('click', () => {
-          const v = b.dataset.value!
-          document.cookie = `site_${key}=${v};max-age=31536000;path=/;samesite=lax`
-          if (v === defaults[key]) delete root.dataset[key]
-          else root.dataset[key] = v
-          mark(v)
-        }))
-      }
+      const dock = document.querySelector('.themes-dock')!
+      const buttons = dock.querySelectorAll<HTMLButtonElement>('button[data-value]')
+      const mark = (v: string) => buttons.forEach(b => b.classList.toggle('on', b.dataset.value === v))
+      const saved = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
+      mark(saved ? saved[1] : 'auto')
+      buttons.forEach(b => b.addEventListener('click', () => {
+        const v = b.dataset.value!
+        document.cookie = `site_theme=${v};max-age=31536000;path=/;samesite=lax`
+        if (v === 'auto') delete root.dataset.theme
+        else root.dataset.theme = v
+        mark(v)
+      }))
     </script>
   </body>
 </html>

@@ -3,34 +3,6 @@
    Themes: light/dark auto + manual, plus Omarchy palettes in themes.css. */
 
 @font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/jetbrains-mono-700.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Adwaita Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/adwaita-mono-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Adwaita Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/adwaita-mono-700.woff2') format('woff2');
-}
-@font-face {
   font-family: 'iA Writer Mono S';
   font-style: normal;
   font-weight: 400;
@@ -39,38 +11,17 @@
 }
 @font-face {
   font-family: 'iA Writer Mono S';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ia-writer-mono-s-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'iA Writer Mono S';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
   src: url('/fonts/ia-writer-mono-s-700.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Liberation Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/liberation-mono-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Liberation Mono';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/liberation-mono-700.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Nimbus Mono PS';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/nimbus-mono-ps-400.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Nimbus Mono PS';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/nimbus-mono-ps-700.woff2') format('woff2');
 }
 
 :root {
@@ -80,15 +31,10 @@
   --link: #0044cc;
   --hairline: #e2e2e2;
   --code-bg: #f4f4f4;
-  --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --mono: 'iA Writer Mono S', ui-monospace, Menlo, Consolas, monospace;
   color-scheme: light;
 }
 
-:root[data-font="adwaita-mono"] { --mono: 'Adwaita Mono', ui-monospace, monospace; }
-:root[data-font="ia-writer-mono-s"] { --mono: 'iA Writer Mono S', ui-monospace, monospace; }
-:root[data-font="jetbrains-mono"] { --mono: 'JetBrains Mono', ui-monospace, monospace; }
-:root[data-font="liberation-mono"] { --mono: 'Liberation Mono', ui-monospace, monospace; }
-:root[data-font="nimbus-mono-ps"] { --mono: 'Nimbus Mono PS', ui-monospace, monospace; }
 
 :root[data-mode="dark"] {
   --bg: #121212;
@@ -153,8 +99,9 @@ a.undecorated:hover { text-decoration: underline; }
 /* --- post lists (home + writing) --- */
 .section-label {
   font-family: var(--mono);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   text-transform: lowercase;
+  letter-spacing: 0.08em;
   color: var(--muted);
   margin: 0 0 0.75rem;
 }
@@ -191,6 +138,7 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 2.5rem 0; }
   padding-left: 1rem;
   border-left: 3px solid var(--hairline);
   color: var(--muted);
+  font-style: italic;
 }
 .discuss { margin-top: 2.5rem; font-family: var(--mono); font-size: 0.875rem; }
 
@@ -244,105 +192,49 @@ pre code { background: none; padding: 0; }
 }
 .footer a { color: inherit; }
 
-/* --- appearance widget (top right) --- */
-.settings {
+/* --- theme dock (Omarchy palettes, top right) --- */
+.themes-dock {
   position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 10;
-  font-family: var(--mono);
+  display: grid;
+  grid-template-columns: repeat(6, 1.05rem);
+  gap: 0.4rem;
 }
-.settings-btn {
-  width: 2.1rem;
-  height: 2.1rem;
+.themes-dock button {
+  width: 1.05rem;
+  height: 1.05rem;
+  padding: 0;
+  border: 1px solid var(--hairline);
   border-radius: 50%;
-  border: 1px solid var(--hairline);
-  background: var(--bg);
-  color: var(--fg);
-  font-size: 1rem;
-  line-height: 1;
   cursor: pointer;
-  transition: border-color 120ms ease;
-}
-.settings-btn:hover, .settings-btn[aria-expanded="true"] { border-color: var(--muted); }
-.settings-panel {
-  position: absolute;
-  top: 2.7rem;
-  right: 0;
-  width: 15.5rem;
-  max-height: min(70vh, 30rem);
-  overflow-y: auto;
-  background: var(--bg);
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  padding: 0.75rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
-}
-.settings-label {
-  font-size: 0.6875rem;
-  text-transform: lowercase;
-  color: var(--muted);
-  margin: 0.9rem 0 0.35rem;
-}
-.settings-label:first-child { margin-top: 0; }
-.settings-hint { opacity: 0.6; }
-
-.segmented {
-  display: flex;
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  overflow: hidden;
-}
-.segmented button {
-  flex: 1;
-  padding: 0.3rem 0;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  background: transparent;
-  color: var(--fg);
-  border: 0;
-  border-left: 1px solid var(--hairline);
-  cursor: pointer;
-}
-.segmented button:first-child { border-left: 0; }
-.segmented button.on { background: var(--fg); color: var(--bg); }
-
-.choice-list { display: flex; flex-direction: column; gap: 2px; }
-.choice-list button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-align: left;
-  padding: 0.28rem 0.4rem;
-  font-size: 0.78rem;
-  background: transparent;
-  color: var(--fg);
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.choice-list button:hover { background: var(--code-bg); }
-.choice-list button.on { background: var(--code-bg); }
-.choice-list button.on::after { content: "✓"; margin-left: auto; color: var(--muted); }
-
-.swatch {
-  flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 0.95rem;
-  height: 0.95rem;
-  border-radius: 4px;
-  border: 1px solid var(--hairline);
+  transition: transform 100ms ease;
 }
-.swatch span {
+.themes-dock button:hover { transform: scale(1.25); }
+.themes-dock button.on {
+  outline: 2px solid var(--fg);
+  outline-offset: 1px;
+}
+.themes-dock button span {
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 50%;
 }
-.swatch-auto { background: linear-gradient(135deg, #ffffff 50%, #121212 50%); }
+.themes-dock .swatch-auto { background: linear-gradient(135deg, #ffffff 50%, #121212 50%); }
 
-@media (max-width: 640px) {
-  .settings { top: 0.75rem; right: 0.75rem; }
-  .topnav, .hero .who { padding-right: 2.6rem; }
+@media (max-width: 900px) {
+  .themes-dock {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 1rem 1.25rem 0;
+  }
+  .page { padding-top: 1.5rem; }
 }
