@@ -89,9 +89,9 @@ a.undecorated:hover { text-decoration: underline; }
 
 /* --- homepage header --- */
 .hero { margin-bottom: 3rem; }
-.hero .who { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; }
+.hero .who { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem; margin-bottom: 1rem; }
 .hero .avatar { width: 3rem; height: 3rem; border-radius: 6px; }
-.hero h1 { font-size: 1.75rem; margin: 0; letter-spacing: -0.01em; }
+.hero h1 { font-size: 1.6rem; margin: 0; letter-spacing: -0.01em; white-space: nowrap; }
 .hero .intro { margin: 0 0 1.25rem; }
 .hero .nav { font-family: var(--mono); font-size: 0.875rem; }
 .hero .nav .sep { color: var(--muted); }
@@ -198,20 +198,28 @@ pre code { background: none; padding: 0; }
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.22rem;
+  gap: 0.24rem;
   margin-left: auto;
   padding-left: 1rem;
 }
 .theme-line button {
-  width: 0.42rem;
-  height: 0.42rem;
+  width: 0.62rem;
+  height: 0.62rem;
   padding: 0;
-  border: 0;
+  border: 1px solid var(--hairline);
   border-radius: 50%;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 100ms ease;
 }
-.theme-line button:hover { transform: scale(1.7); }
+.theme-line button span {
+  width: 0.26rem;
+  height: 0.26rem;
+  border-radius: 50%;
+}
+.theme-line button:hover { transform: scale(1.5); }
 .theme-line button.on { box-shadow: 0 0 0 1.5px var(--muted); }
 .theme-line button[data-value="auto"] { background: linear-gradient(135deg, #ffffff 50%, #121212 50%); }
 
