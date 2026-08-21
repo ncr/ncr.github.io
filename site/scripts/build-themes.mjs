@@ -46,5 +46,5 @@ const css = [
 ].join('\n\n') + '\n'
 
 writeFileSync('public/themes.css', css)
-writeFileSync('src/data/omarchy-themes.json', JSON.stringify(themes.map(({ name, mode }) => ({ name, mode })), null, 2))
+writeFileSync('src/data/omarchy-themes.json', JSON.stringify(themes.map(t => ({ name: t.name, mode: t.mode, bg: t.tokens.bg, accent: t.tokens.link })), null, 2))
 console.log(`${themes.length} themes`)

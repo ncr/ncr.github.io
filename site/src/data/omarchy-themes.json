@@ -1,90 +1,134 @@
 [
   {
     "name": "catppuccin",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#1e1e2e",
+    "accent": "#89b4fa"
   },
   {
     "name": "catppuccin-latte",
-    "mode": "light"
+    "mode": "light",
+    "bg": "#eff1f5",
+    "accent": "#1e66f5"
   },
   {
     "name": "ethereal",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#060B1E",
+    "accent": "#7d82d9"
   },
   {
     "name": "everforest",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#2d353b",
+    "accent": "#7fbbb3"
   },
   {
     "name": "flexoki-light",
-    "mode": "light"
+    "mode": "light",
+    "bg": "#FFFCF0",
+    "accent": "#205EA6"
   },
   {
     "name": "gruvbox",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#282828",
+    "accent": "#7daea3"
   },
   {
     "name": "hackerman",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#0B0C16",
+    "accent": "#82FB9C"
   },
   {
     "name": "kanagawa",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#1f1f28",
+    "accent": "#dcd7ba"
   },
   {
     "name": "last-horizon",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#0c0b0c",
+    "accent": "#b59790"
   },
   {
     "name": "lumon",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#16242d",
+    "accent": "#8bc9eb"
   },
   {
     "name": "lupine",
-    "mode": "light"
+    "mode": "light",
+    "bg": "#fafafa",
+    "accent": "#3264eb"
   },
   {
     "name": "matte-black",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#121212",
+    "accent": "#e68e0d"
   },
   {
     "name": "miasma",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#222222",
+    "accent": "#78824b"
   },
   {
     "name": "nord",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#2e3440",
+    "accent": "#81a1c1"
   },
   {
     "name": "osaka-jade",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#111c18",
+    "accent": "#509475"
   },
   {
     "name": "retro-82",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#05182e",
+    "accent": "#faa968"
   },
   {
     "name": "ristretto",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#2c2525",
+    "accent": "#f38d70"
   },
   {
     "name": "rose-pine",
-    "mode": "light"
+    "mode": "light",
+    "bg": "#faf4ed",
+    "accent": "#56949f"
   },
   {
     "name": "solitude",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#101315",
+    "accent": "#798186"
   },
   {
     "name": "tokyo-night",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#1a1b26",
+    "accent": "#7aa2f7"
   },
   {
     "name": "vantablack",
-    "mode": "dark"
+    "mode": "dark",
+    "bg": "#000000",
+    "accent": "#8d8d8d"
   },
   {
     "name": "white",
-    "mode": "light"
+    "mode": "light",
+    "bg": "#ffffff",
+    "accent": "#6e6e6e"
   }
 ]
