@@ -226,3 +226,13 @@ pre code { background: none; padding: 0; }
 .theme-line button.on { box-shadow: 0 0 0 1.5px var(--muted); }
 .theme-line button[data-value="auto"] { background: linear-gradient(135deg, #ffffff 50%, #121212 50%); }
 
+@media (max-width: 640px) {
+  .masthead .who { row-gap: 0.55rem; }
+  .theme-line {
+    flex-basis: 100%;
+    margin: 0;
+    padding-left: 0;
+    justify-content: flex-start;
+  }
+}
+
