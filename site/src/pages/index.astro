@@ -2,37 +2,12 @@
 import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { site } from '../site'
-import ThemeDots from '../components/ThemeDots.astro'
 const posts = (await getCollection('blog', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5)
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
-const links = [
-  { href: '/writing/', label: 'writing' },
-  { href: '/projects/', label: 'projects' },
-  { href: '/about/', label: 'about' },
-  { href: site.github, label: 'github' },
-  ...(site.x ? [{ href: site.x, label: 'x' }] : []),
-]
 ---
 <Base home description={site.intro}>
-  <header class="hero">
-    <div class="who">
-      <img class="avatar" src={site.avatar} alt="" width="48" height="48" />
-      <h1>{site.name}</h1>
-      <ThemeDots />
-    </div>
-    <p class="intro">{site.intro}</p>
-    <nav class="nav">
-      {links.map((l, i) => (
-        <>
-          {i > 0 && <span class="sep">{' / '}</span>}
-          <a href={l.href}>{l.label}</a>
-        </>
-      ))}
-    </nav>
-  </header>
-
   <p class="section-label">latest</p>
   <ul class="postlist">
     {posts.map(p => (

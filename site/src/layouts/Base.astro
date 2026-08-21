@@ -5,6 +5,7 @@ interface Props { title?: string; description?: string; home?: boolean }
 const { title, description, home = false } = Astro.props
 const pageTitle = title ? `${title} — ${site.name}` : site.name
 const cssv = import.meta.env.CSSV || Date.now().toString(36)
+const Name = home ? 'h1' : 'p'
 const links = [
   { href: '/writing/', label: 'writing' },
   { href: '/projects/', label: 'projects' },
@@ -34,19 +35,24 @@ const links = [
   </head>
   <body>
     <div class="page">
-      {!home && (
-        <nav class="topnav">
-          <a class="undecorated" href="/">{site.name.toLowerCase()}</a>
-          <span class="sep">{' — '}</span>
+      <header class="masthead">
+        <div class="who">
+          <a class="undecorated who-link" href="/">
+            <img class="avatar" src={site.avatar} alt="" width="48" height="48" />
+            <Name class="name">{site.name}</Name>
+          </a>
+          <ThemeDots />
+        </div>
+        {home && <p class="intro">{site.intro}</p>}
+        <nav class="nav">
           {links.map((l, i) => (
             <>
               {i > 0 && <span class="sep">{' / '}</span>}
               <a href={l.href}>{l.label}</a>
             </>
           ))}
-          <ThemeDots />
         </nav>
-      )}
+      </header>
       <main>
         <slot />
       </main>
