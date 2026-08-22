@@ -5,12 +5,12 @@ description: AI made programming cheap enough that ideas off the never-worth-it 
 draft: false
 ---
 
-There was no battery level for my earbuds anywhere on my screen, and I wanted
-one in my desktop bar: left, right, case, three separate numbers. Three
-evenings later the bar shows all three, plus noise-cancelling modes, for two
-brands of headphones speaking two undocumented protocols that first had to be
-reverse engineered. Two years ago this would have cost a month of evenings. A
-month of evenings for a number in a bar means: never.
+My earbuds know three battery levels: left, right, and the case. My desktop
+knew none of them. Three evenings later my bar shows all three, plus
+noise-cancelling modes, for two brands of headphones speaking two partially
+undocumented protocols that first had to be reverse engineered. Two years ago
+this would have cost a month of evenings. A month of evenings for a few
+numbers in a bar means: never.
 
 Every programmer carries a list of ideas shaped like this: real itch, absurd
 cost. The list only ever grew. Then AI collapsed the cost. In 1865 Jevons
