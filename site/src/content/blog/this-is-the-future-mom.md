@@ -70,3 +70,7 @@ report the correct battery. The computer is finally clay. The ground is
 moving again, and with it comes that rare feeling of watching the future
 arrive. I had it at nine, in front of a magazine cover. I have it now. Mom,
 come look. This is the future.
+
+---
+
+Discussion: [this post on X](https://x.com/jacekbecela/status/2091103356370489452). Comments, corrections and GEOS memories welcome.
