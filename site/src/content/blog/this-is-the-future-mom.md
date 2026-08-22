@@ -18,7 +18,7 @@ noticed that as steam engines got more efficient, Britain burned more coal,
 not less. Make a resource cheaper to use and demand for it grows. Programming
 time just got an order of magnitude cheaper, and sure enough, I program more.
 At home that means projects straight off the never-worth-it list. At work it
-is the same: I run Trixbrix, a manufacturing business, but I am also its
+is the same: I run [Trixbrix](https://trixbrix.eu), a manufacturing business, but I am also its
 programmer, and I now ship things whose ambition used to require a ten-person
 team and a budget I would never have granted myself (being my own boss, I would know).
 
