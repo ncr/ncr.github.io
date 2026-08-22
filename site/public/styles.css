@@ -1,6 +1,6 @@
 /* jacekbecela.com — a 1999 homepage, built properly.
    IBM Plex (self-hosted), mono as accent.
-   Themes: light/dark auto + manual, plus Omarchy palettes in themes.css. */
+   Themes: light default, plus Omarchy palettes in themes.css. */
 
 @font-face {
   font-family: 'iA Writer Mono S';
@@ -33,29 +33,6 @@
   --code-bg: #f4f4f4;
   --mono: 'iA Writer Mono S', ui-monospace, Menlo, Consolas, monospace;
   color-scheme: light;
-}
-
-
-:root[data-mode="dark"] {
-  --bg: #121212;
-  --fg: #d9d9d9;
-  --muted: #8f8f8f;
-  --link: #82aaff;
-  --hairline: #2c2c2c;
-  --code-bg: #1e1e1e;
-  color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-mode="light"]) {
-    --bg: #121212;
-    --fg: #d9d9d9;
-    --muted: #8f8f8f;
-    --link: #82aaff;
-    --hairline: #2c2c2c;
-    --code-bg: #1e1e1e;
-    color-scheme: dark;
-  }
 }
 
 * { box-sizing: border-box; }

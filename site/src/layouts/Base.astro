@@ -67,12 +67,22 @@ const links = [
       const mark = (v: string) => buttons.forEach(b => b.classList.toggle('on', b.dataset.value === v))
       const saved = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
       mark(saved ? saved[1] : 'auto')
+      // Images with data-light/data-dark follow the active theme's color-scheme.
+      const themeImages = () => {
+        const dark = getComputedStyle(root).colorScheme.includes('dark')
+        document.querySelectorAll<HTMLImageElement>('img[data-light]').forEach(img => {
+          const src = dark ? img.dataset.dark! : img.dataset.light!
+          if (img.getAttribute('src') !== src) img.src = src
+        })
+      }
+      themeImages()
       buttons.forEach(b => b.addEventListener('click', () => {
         const v = b.dataset.value!
         document.cookie = `site_theme=${v};max-age=31536000;path=/;samesite=lax`
         if (v === 'auto') delete root.dataset.theme
         else root.dataset.theme = v
         mark(v)
+        themeImages()
       }))
     </script>
   </body>
