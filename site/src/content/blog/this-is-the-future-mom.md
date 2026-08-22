@@ -73,4 +73,4 @@ come look. This is the future.
 
 ---
 
-Discussion: [this post on X](https://x.com/jacekbecela/status/2091103356370489452). Comments, corrections and GEOS memories welcome.
+Discussion: [this post on X](https://x.com/jacekbecela/status/2091105271636484503). Comments, corrections and GEOS memories welcome.
