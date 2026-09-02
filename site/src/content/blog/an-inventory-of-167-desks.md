@@ -1,7 +1,7 @@
 ---
 title: An Inventory of 167 Desks
 date: 2026-09-02
-description: Two strangers wrote the same treadmill button for the same bar. Five weeks of the Omarchy plugin marketplace as evidence that the malleable computer includes hardware.
+description: Two strangers wrote the same treadmill button for the same bar. Nineteen days of the Omarchy plugin marketplace as evidence that the malleable computer includes hardware.
 draft: false
 ---
 
@@ -23,7 +23,7 @@ I could end the post here, but I got curious: how many stories like this are hid
 
 ## The numbers
 
-The Omarchy plugin marketplace opened on July 28, 2026. Five weeks later: 2,105 plugins, 167 in the Hardware category.
+The plugin marketplace is itself a community project — one person put it up on July 28, 2026, before Omarchy Quattro even shipped on August 14. Nineteen days after Quattro: 2,105 plugins, 167 in the Hardware category.
 
 - **17 headphone plugins.** Sony XM4. Sennheiser Momentum 4 (two of them). Bowers & Wilkins. Shokz. Nothing Ear (two). Galaxy Buds. Pixel Buds (two). Huawei FreeBuds. AirPods (two). One of them is [mine](https://github.com/ncr/omarchy-headphones).
 - **Fan control, one laptop at a time.** Mac T2. MacBook Pro. Framework. MSI GP66. ASUS G14. Lenovo Legion. Acer.
@@ -47,7 +47,7 @@ The WalkingPad is BLE and could have used the Fitness Machine Service. KingSmith
   <img src="/spacewalk-light.webp" data-light="/spacewalk-light.webp" data-dark="/spacewalk-dark.webp" alt="The Omarchy bar with the Spacewalk step counter pill and its panel open: today's numbers, a history grid, speed and incline controls" loading="lazy">
 </div>
 
-In five weeks:
+In those nineteen days:
 
 - Someone reverse-engineered Apple's protocol into a single Python file with no dependencies. AirPods now show per-pod battery, Transparency, Adaptive, Conversation Awareness, and pause the music when you pull one out.
 - Someone else did AirPods again, independently, with a different daemon and a rule that the panel only shows the modes your particular model actually has.
@@ -61,7 +61,7 @@ The AirPods plugins go deep on one device. Omaphones goes wide, one pull request
 
 ## The third option
 
-Omarchy Quattro runs the whole desktop as one Quickshell process, and nearly everything in it is a plugin: the bar, the panels, the lock screen. Yours go in `~/.config/omarchy/plugins/` and load like the built-in ones. So adding your treadmill to the bar takes one QML file and a script. 167 people did it in five weeks, for hardware DHH has never heard of.
+Omarchy Quattro runs the whole desktop as one Quickshell process, and nearly everything in it is a plugin: the bar, the panels, the lock screen. Yours go in `~/.config/omarchy/plugins/` and load like the built-in ones. So adding your treadmill to the bar takes one QML file and a script. 167 people did it in under three weeks, for hardware DHH has never heard of.
 
 <aside>
 How plugins load, the manifest, hot reload: <a href="https://omarchy.org/manual/shell-plugins/">Shell Plugins</a> in the Omarchy manual.
