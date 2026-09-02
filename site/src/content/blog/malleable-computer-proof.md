@@ -1,5 +1,5 @@
 ---
-title: "Malleable computer: proof"
+title: An Inventory of 167 Desks
 date: 2026-09-02
 description: Two strangers wrote the same treadmill button for the same bar. Five weeks of the Omarchy plugin marketplace as evidence that the malleable computer includes hardware.
 draft: false
