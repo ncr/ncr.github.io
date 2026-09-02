@@ -59,7 +59,7 @@ The AirPods plugins go deep on one device. Omaphones goes wide, one pull request
   <img src="/omaphones-light.webp" data-light="/omaphones-light.webp" data-dark="/omaphones-dark.webp" alt="Omaphones plugin in the Omarchy bar: per-earbud battery and listening modes" loading="lazy">
 </div>
 
-## Malleable
+## The third option
 
 Omarchy Quattro runs the whole desktop as one Quickshell process, and nearly everything in it is a plugin: the bar, the panels, the lock screen. Yours go in `~/.config/omarchy/plugins/` and load like the built-in ones. So adding your treadmill to the bar takes one QML file and a script. 167 people did it in five weeks, for hardware DHH has never heard of.
 
