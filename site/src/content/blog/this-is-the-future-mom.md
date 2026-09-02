@@ -3,6 +3,7 @@ title: This Is the Future, Mom
 date: 2026-08-22
 description: AI made programming cheap enough that ideas off the never-worth-it list ship in three evenings. The desktop is moving again, and I know this feeling from 1989.
 draft: false
+x: https://x.com/jacekbecela/status/2091105271636484503
 ---
 
 My earbuds know three battery levels: left, right, and the case. My desktop
@@ -71,6 +72,3 @@ moving again, and with it comes that rare feeling of watching the future
 arrive. I had it at nine, in front of a magazine cover. I have it now. Mom,
 come look. This is the future.
 
----
-
-Discussion: [this post on X](https://x.com/jacekbecela/status/2091105271636484503). Comments, corrections and GEOS memories welcome.
