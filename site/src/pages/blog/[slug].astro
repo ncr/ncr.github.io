@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', p => !p.data.draft)
+  const posts = await getCollection('blog', p => import.meta.env.DEV || !p.data.draft)
   return posts.map(p => ({ params: { slug: p.id }, props: { post: p } }))
 }
 const { post } = Astro.props

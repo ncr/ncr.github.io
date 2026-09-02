@@ -112,6 +112,35 @@ hr { border: 0; border-top: 1px solid var(--hairline); margin: 2.5rem 0; }
 }
 .discuss { margin-top: 2.5rem; font-family: var(--mono); font-size: 0.875rem; }
 
+/* --- side notes (aside) ---
+   Narrow screens: an inset note, visually distinct from blockquotes.
+   Wide screens (>=80rem): floated into the right margin next to the text. */
+.post .content aside {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 1.25rem 0;
+  padding: 0.15rem 0 0.15rem 1rem;
+  border-left: 3px double var(--hairline);
+}
+.post .content aside a { color: inherit; }
+@media (min-width: 80rem) {
+  .post .content aside {
+    float: right;
+    clear: right;
+    width: 17rem;
+    margin: 0.2rem -18.5rem 1.25rem 1.5rem;
+    padding: 0.45rem 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--hairline);
+    overflow-wrap: anywhere;
+  }
+  /* An aside between two markdown lists splits the <ul>; when the aside
+     floats away, close the visual gap so the bullets read as one list. */
+  .post .content ul:has(+ aside) { margin-bottom: 0; }
+  .post .content aside + ul { margin-top: 0; }
+}
+
 /* --- code --- */
 code, pre {
   font-family: var(--mono);
