@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "astro": "^7.2.4"
+    "astro": "^7.2.4",
+    "three": "^0.186.1"
   }
 }

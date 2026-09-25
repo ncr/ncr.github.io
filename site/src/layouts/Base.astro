@@ -43,6 +43,7 @@ const links = [
             <Name class="name">{site.name}</Name>
           </a>
           <ThemeDots />
+          <slot name="header-tools" />
         </div>
         {home && <p class="intro">{site.intro}</p>}
         <nav class="nav">
@@ -53,6 +54,7 @@ const links = [
             </>
           ))}
         </nav>
+        <slot name="header-player" />
       </header>
       <main>
         <slot />

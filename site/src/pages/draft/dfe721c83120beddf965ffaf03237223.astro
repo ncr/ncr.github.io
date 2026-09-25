@@ -8,6 +8,8 @@ if (!post || !post.data.draft) throw new Error('Expected the Destiny draft')
 const { Content } = await render(post)
 ---
 <Base title={post.data.title} description={post.data.description} lang="pl" robots="noindex, nofollow, noarchive">
+  <button slot="header-tools" class="soundtrack-reveal" type="button" aria-label="Pokaż odtwarzacz muzyki" aria-expanded="false" aria-controls="soundtrack-dock" title="Odtwarzacz muzyki"><span aria-hidden="true">♫</span><span class="soundtrack-hint" role="status"></span></button>
+  <div slot="header-player" id="soundtrack-dock" class="music-surface" hidden></div>
   <article class="post">
     <header>
       <p class="date">DRAFT · 25 września 2026 · podgląd dostępny przez link</p>
@@ -19,6 +21,19 @@ const { Content } = await render(post)
 </Base>
 
 <style is:global>
+  .masthead:has(.soundtrack-reveal) .theme-line{order:3}
+  .masthead:has(.soundtrack-reveal){position:sticky;top:0;z-index:20;padding:12px 0;background:var(--bg)}
+  .masthead:has(.soundtrack-reveal)::before{content:"";position:absolute;inset:0 calc((100% - 100vw)/2);background:var(--bg);border-bottom:1px solid var(--hairline);z-index:-1}
+  .soundtrack-reveal{position:relative;margin-left:auto;display:grid;place-items:center;flex:none;width:38px;height:38px;border:1px solid var(--hairline);border-radius:50%;background:transparent;color:var(--fg);cursor:pointer;font:20px system-ui}
+  .soundtrack-reveal:hover,.soundtrack-reveal[aria-expanded=true]{background:var(--code-bg)}
+  .soundtrack-reveal:focus-visible{outline:2px solid var(--link);outline-offset:3px}
+  .soundtrack-reveal.is-sounding::after{content:"";position:absolute;right:1px;top:1px;width:6px;height:6px;border-radius:50%;background:#73bca2;border:2px solid var(--bg);box-sizing:content-box}
+  .soundtrack-hint{position:absolute;right:0;top:calc(100% + 9px);padding:8px 12px;border:1px solid var(--hairline);border-radius:8px;background:var(--bg);color:var(--fg);font:12px/1.4 system-ui;white-space:nowrap;box-shadow:0 6px 25px #0002;pointer-events:none}
+  .soundtrack-hint:empty{display:none}
+  #soundtrack-dock[hidden]{display:none}
+  #soundtrack-dock{font-family:system-ui,sans-serif;color:#eff3fa;color-scheme:dark}
+  @media(max-width:480px){.masthead:has(.soundtrack-reveal) .who{gap:8px}.masthead:has(.soundtrack-reveal) .theme-line{order:3}.masthead:has(.soundtrack-reveal) .name{font-size:1.4rem}}
+
   .destiny-palette { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:24px 0; }
   .destiny-palette span { border-top:12px solid var(--swatch); padding-top:8px; font-size:12px; }
   .destiny-monitor { width:min(1240px,calc(100vw - 40px)); position:relative; left:50%; transform:translateX(-50%); margin:32px 0; }
