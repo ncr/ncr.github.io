@@ -28,3 +28,8 @@ The current draft offers five candidates with one preserved intermediate each (1
 ## Author selection
 
 Keep examples 1, 3 and 4 (Truth Lamp, Proxy, Quantum Simulator). In Proxy final stage, mirror the magnified viewport horizontally, as explicitly requested, to align running direction. The overview retains original orientation and the caption identifies the reflected detail. Original source bytes remain unchanged.
+
+## Gallery and live btop screenshots
+
+Gallery: 42 originals and release thumbnails extracted from project commit f4a51dd, checked against docs/collection/release.json.
+Btop screenshots: real Wayland captures, 1920×1080, losslessly converted to WebP, no metrics edited. Controlled 100-second test: 14 CPU workers, CUDA compute loop, TCP loopback transfer on lo. First frame CPU 87%, GPU 97%; second CPU 69%, GPU 97%. RAM reflects existing machine use, not a synthetic memory test. Theme read from active btop current.theme and project colors.toml. Notifications hidden for capture; original settings restored.

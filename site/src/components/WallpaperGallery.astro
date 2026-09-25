@@ -1,0 +1,112 @@
+---
+import wallpapers from '../data/destiny-gallery.json'
+const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
+---
+<section class="wallpaper-entry" aria-label="Galeria tapet">
+  <button class="gallery-launch" type="button" aria-haspopup="dialog" aria-controls="wallpaper-viewer">
+    <img src={cover.thumb} width="5120" height="2160" alt="" />
+    <span class="gallery-invite"><span><strong>Obejrzyj tapety</strong><small>42 obrazy · bez pośpiechu</small></span><span class="entry-arrow" aria-hidden="true">↗</span></span>
+  </button>
+  <noscript><p><a href={cover.src}>Otwórz tapetę w pełnej rozdzielczości</a> · <a href="https://github.com/ncr/omarchy-destiny-theme/tree/ultrawide/backgrounds">Cała kolekcja</a></p></noscript>
+</section>
+<dialog id="wallpaper-viewer" aria-label="Galeria 42 tapet" data-cover={wallpapers.indexOf(cover)}>
+  <div class="gallery-shell">
+    <header class="viewer-top">
+      <div class="viewer-label" aria-live="polite" aria-atomic="true"><span class="viewer-count"></span><h2 class="viewer-title"></h2></div>
+      <button type="button" class="viewer-close icon-button" aria-label="Zamknij galerię" title="Zamknij (Esc)">✕</button>
+    </header>
+    <div class="viewer-canvas" tabindex="0" aria-label="Tapeta. Strzałki zmieniają obraz, Z przełącza powiększenie.">
+      <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
+    </div>
+    <p class="viewer-error" role="status" hidden>Nie udało się wczytać pełnego obrazu. <button type="button" class="viewer-retry">Spróbuj ponownie</button></p>
+    <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Poprzednia tapeta" title="Poprzednia (←)">‹</button>
+    <button type="button" class="viewer-next edge-nav icon-button" aria-label="Następna tapeta" title="Następna (→)">›</button>
+    <footer class="viewer-bottom">
+      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>Wszystkie 42</span></button>
+      <div class="viewer-tools">
+        <button type="button" class="viewer-zoom" aria-pressed="false" title="Powiększenie (Z)">＋ <span>Detal</span></button>
+        <button type="button" class="viewer-fullscreen" aria-pressed="false" title="Pełny ekran (F)">⛶ <span>Pełny ekran</span></button>
+        <a class="viewer-download" download title="Pobierz oryginał 5120 × 2160">↓ <span>Pobierz</span></a>
+      </div>
+    </footer>
+    <section id="viewer-grid" aria-label="Wybierz tapetę" hidden>
+      <div class="grid-heading"><p>Wybierz kolor. Zostań dla detali.</p><button type="button" class="grid-close icon-button" aria-label="Wróć do dużego obrazu">✕</button></div>
+      <div class="wallpaper-grid">
+        {wallpapers.map((w, i) => <button type="button" data-index={i} aria-label={`${i + 1}. ${w.name}`}><img src={w.thumb} alt="" width="5120" height="2160" loading="lazy" /><span>{w.name}</span></button>)}
+      </div>
+    </section>
+  </div>
+</dialog>
+<script define:vars={{ wallpapers }}>
+  (() => {
+    const dialog = document.querySelector('#wallpaper-viewer');
+    const q = s => dialog.querySelector(s);
+    const launch = document.querySelector('.gallery-launch');
+    const canvas = q('.viewer-canvas'), frame = q('.viewer-frame');
+    const photo = q('.viewer-image'), preview = q('.viewer-preview');
+    const grid = q('#viewer-grid'), gridToggle = q('.viewer-grid-toggle');
+    const zoomButton = q('.viewer-zoom'), fullscreenButton = q('.viewer-fullscreen');
+    let index = Number(dialog.dataset.cover), zoom = false, previousOverflow = '', touchStart = null, drag = null, request = 0, ownsFullscreen = false;
+    function setZoom(value) {
+      zoom = value; canvas.classList.toggle('is-zoomed', zoom);
+      zoomButton.setAttribute('aria-pressed', String(zoom));
+      zoomButton.innerHTML = zoom ? '− <span>Całość</span>' : '＋ <span>Detal</span>';
+      requestAnimationFrame(() => { canvas.scrollLeft = zoom ? (canvas.scrollWidth - canvas.clientWidth) / 2 : 0; canvas.scrollTop = zoom ? (canvas.scrollHeight - canvas.clientHeight) / 2 : 0; });
+    }
+    function setGrid(value) {
+      grid.hidden = !value; gridToggle.setAttribute('aria-expanded',String(value));
+      dialog.classList.toggle('grid-open',value);
+      if(value) { const selected=grid.querySelector(`[data-index="${index}"]`); selected.focus(); selected.scrollIntoView({block:'nearest'}); }
+      else canvas.focus({preventScroll:true});
+    }
+    function show(next) {
+      index = (next + wallpapers.length) % wallpapers.length;
+      const w = wallpapers[index]; const ticket = ++request;
+      setZoom(false); q('.viewer-error').hidden = true;
+      q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
+      q('.viewer-title').textContent=w.name;
+      q('.viewer-download').href=w.src;
+      preview.style.visibility='visible'; preview.src=w.thumb; photo.style.visibility='hidden'; photo.alt=w.name;
+      const load=new Image();
+      load.onload=async()=> { if(ticket!==request) return; photo.src=w.src; try { await photo.decode(); } catch {} if(ticket!==request) return; photo.style.visibility='visible'; preview.style.visibility='hidden'; };
+      load.onerror=()=> {if(ticket===request) q('.viewer-error').hidden=false;};
+      load.src=w.src;
+      grid.querySelectorAll('[data-index]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.index)===index)));
+    }
+    launch.addEventListener('click',()=> { previousOverflow=document.body.style.overflow; document.body.style.overflow='hidden'; dialog.showModal(); grid.hidden=true; dialog.classList.remove('grid-open'); gridToggle.setAttribute('aria-expanded','false'); show(index); q('.viewer-close').focus(); });
+    async function close() { if(ownsFullscreen && document.fullscreenElement) await document.exitFullscreen().catch(()=>{}); ownsFullscreen=false; dialog.close(); }
+    dialog.addEventListener('close',()=> {document.body.style.overflow=previousOverflow; launch.focus({preventScroll:true});});
+    dialog.addEventListener('cancel',e=> {if(!grid.hidden){e.preventDefault();setGrid(false);}else if(zoom){e.preventDefault();setZoom(false);}});
+    q('.viewer-close').onclick=close;
+    q('.viewer-prev').onclick=()=>show(index-1); q('.viewer-next').onclick=()=>show(index+1);
+    q('.viewer-retry').onclick=()=>show(index);
+    gridToggle.onclick=()=>setGrid(grid.hidden); q('.grid-close').onclick=()=>setGrid(false);
+    grid.querySelectorAll('[data-index]').forEach(b=>b.onclick=()=> {show(Number(b.dataset.index));setGrid(false);});
+    zoomButton.onclick=()=>setZoom(!zoom);
+    async function fullscreen() {try {if(document.fullscreenElement) await document.exitFullscreen(); else { await document.documentElement.requestFullscreen(); ownsFullscreen=true; }} catch (error) { console.warn("Fullscreen unavailable:", error); } }
+    if(!document.fullscreenEnabled) fullscreenButton.hidden=true;
+    fullscreenButton.onclick=fullscreen;
+    document.addEventListener('fullscreenchange',()=>fullscreenButton.setAttribute('aria-pressed',String(Boolean(document.fullscreenElement))));
+    dialog.addEventListener('keydown',e=> {
+      if(!grid.hidden) return;
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft') {e.preventDefault();show(index+(e.key==='ArrowRight'?1:-1));}
+      if(e.key.toLowerCase()==='z'){e.preventDefault();setZoom(!zoom);}
+      if(e.key.toLowerCase()==='f'){e.preventDefault();fullscreen();}
+      if(e.key==='Home'){e.preventDefault();show(0);} if(e.key==='End'){e.preventDefault();show(wallpapers.length-1);}
+    });
+    canvas.addEventListener('dblclick',()=>setZoom(!zoom));
+    canvas.addEventListener('touchstart',e=> {if(e.touches.length===1&&!zoom) touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; else touchStart=null;},{passive:true});
+    canvas.addEventListener('touchend',e=> {if(!touchStart||zoom)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.4)show(index+(dx<0?1:-1));touchStart=null;},{passive:true});
+    canvas.addEventListener('pointerdown',e=> {if(zoom&&e.pointerType==='mouse'){drag={x:e.clientX,y:e.clientY,left:canvas.scrollLeft,top:canvas.scrollTop};canvas.setPointerCapture(e.pointerId);e.preventDefault();}});
+    canvas.addEventListener('pointermove',e=> {if(drag){canvas.scrollLeft=drag.left+drag.x-e.clientX;canvas.scrollTop=drag.top+drag.y-e.clientY;}});
+    canvas.addEventListener('pointerup',()=>drag=null); canvas.addEventListener('pointercancel',()=>drag=null);
+    frame.addEventListener('dragstart',e=>e.preventDefault());
+  })();
+</script>
+<style>
+.wallpaper-entry{margin:1.6rem 0 2.6rem}.gallery-launch{position:relative;display:block;width:100%;padding:0;overflow:hidden;border:1px solid #ffffff20;border-radius:16px;background:#090d16;color:white;cursor:pointer;text-align:left;box-shadow:0 14px 40px #00000013}.gallery-launch>img{display:block;width:100%;height:auto;min-height:220px;object-fit:cover;transition:transform .65s ease}.gallery-launch:hover>img{transform:scale(1.035)}.gallery-invite{position:absolute;inset:auto 0 0;display:flex;align-items:end;justify-content:space-between;padding:45px 22px 20px;background:linear-gradient(transparent,#070a11e8);font-family:system-ui,sans-serif}.gallery-invite strong{display:block;font-size:20px;font-weight:500}.gallery-invite small{display:block;color:#bdc7d9;font-size:13px;margin-top:4px}.entry-arrow{border:1px solid #ffffff45;border-radius:50%;width:40px;height:40px;display:grid;place-items:center;font-size:24px}
+#wallpaper-viewer{position:fixed;inset:0;margin:0;width:100%;height:100%;height:100dvh;max-width:none;max-height:none;padding:0;border:0;background:#07090e;color:#eff3fa;font-family:system-ui,sans-serif;color-scheme:dark}#wallpaper-viewer::backdrop{background:#07090e}.gallery-shell{height:100%;position:relative;display:grid;grid-template-rows:auto minmax(0,1fr) auto}button,a{ -webkit-tap-highlight-color:transparent}#wallpaper-viewer button,#wallpaper-viewer a{font:inherit;color:inherit}#wallpaper-viewer button{cursor:pointer;border:1px solid transparent;background:transparent}#wallpaper-viewer button:hover,#wallpaper-viewer a:hover{background:#ffffff12}#wallpaper-viewer :focus-visible,.gallery-launch:focus-visible{outline:2px solid #97caff;outline-offset:-3px}#wallpaper-viewer [hidden]{display:none!important}.viewer-top{display:flex;align-items:center;justify-content:space-between;padding: max(14px,env(safe-area-inset-top)) 24px 12px;z-index:2}.viewer-label{display:flex;align-items:center;gap:18px;min-width:0}.viewer-count{font-size:12px;color:#8992a4;letter-spacing:.12em;white-space:nowrap;font-variant-numeric:tabular-nums}.viewer-title{margin:0;font-size:15px;font-weight:450;color:#dce1ed}.icon-button{width:44px;height:44px;border-radius:50%;flex-shrink:0}.viewer-close{font-size:22px!important}.viewer-canvas{overflow:hidden;position:relative;min-height:0;outline:none;touch-action:pan-y}.viewer-frame{width:100%;height:100%;position:relative}.viewer-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;user-select:none}.viewer-image{transition:opacity .18s}.viewer-canvas.is-zoomed{overflow:auto;cursor:grab;touch-action:pan-x pan-y}.viewer-canvas.is-zoomed:active{cursor:grabbing}.is-zoomed .viewer-frame{width:240%;height:240%}.edge-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;font-size:40px!important;background:#080b12a8!important;border:1px solid #ffffff18!important;backdrop-filter:blur(16px)}.viewer-prev{left:16px}.viewer-next{right:16px}.viewer-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 24px max(14px,env(safe-area-inset-bottom));z-index:2;color:#b4bdce;font-size:13px}.viewer-bottom button,.viewer-bottom a{min-height:44px;padding:10px 14px;border-radius:24px;text-decoration:none;white-space:nowrap}.viewer-tools{display:flex;gap:4px}.viewer-bottom [aria-pressed=true]{background:#ffffff18!important;color:white!important}.viewer-error{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 18px;background:#151a25;border-radius:12px;font-size:13px;z-index:3}.viewer-retry{text-decoration:underline}
+#viewer-grid{position:absolute;inset:70px 0 0;background:#0b0e15f8;z-index:4;overflow:auto;padding:12px max(24px,calc((100vw - 1400px)/2)) 32px;backdrop-filter:blur(20px)}.grid-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:18px;color:#aab3c4;font-size:14px}.grid-heading p{margin:0}.wallpaper-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 16px}.wallpaper-grid button{padding:5px!important;text-align:left;border-radius:10px}.wallpaper-grid img{display:block;width:100%;height:auto;border-radius:6px;aspect-ratio:64/27;object-fit:cover}.wallpaper-grid span{display:block;font-size:12px;margin:8px 4px;color:#acb5c6}.wallpaper-grid [aria-current=true]{border-color:#8eacd5!important;background:#ffffff08!important}.grid-open .edge-nav{display:none}
+@media(max-width:700px){.viewer-top{padding-left:14px;padding-right:10px}.viewer-label{gap:10px}.viewer-title{font-size:13px}.viewer-count{font-size:11px}.viewer-bottom{padding-left:8px;padding-right:8px;font-size:12px;gap:0}.viewer-bottom button,.viewer-bottom a{padding:10px}.viewer-fullscreen span,.viewer-download span{display:none}.viewer-prev{left:6px}.viewer-next{right:6px}.edge-nav{top:auto;bottom:80px;transform:none}.wallpaper-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px}#viewer-grid{padding:10px 12px 24px}.gallery-launch>img{min-height:240px}.gallery-invite{padding:40px 18px 18px}.viewer-error{width:90%;text-align:center}}
+@media(prefers-reduced-motion:reduce){.gallery-launch>img,.viewer-image{transition:none}}
+</style>

@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
+import WallpaperGallery from '../../components/WallpaperGallery.astro'
 import { getEntry, render } from 'astro:content'
 // Explicit opt-in for this one draft; other drafts keep their existing visibility.
 const post = await getEntry('blog', 'omarchy-destiny-theme')
@@ -12,11 +13,19 @@ const { Content } = await render(post)
       <p class="date">DRAFT · 25 września 2026 · podgląd dostępny przez link</p>
       <h1>{post.data.title}</h1>
     </header>
+    <WallpaperGallery />
     <div class="content"><Content /></div>
   </article>
 </Base>
 
 <style is:global>
+  .destiny-palette { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:24px 0; }
+  .destiny-palette span { border-top:12px solid var(--swatch); padding-top:8px; font-size:12px; }
+  .destiny-monitor { width:min(1240px,calc(100vw - 40px)); position:relative; left:50%; transform:translateX(-50%); margin:32px 0; }
+  .destiny-monitor img { width:100%; height:auto; border-radius:8px; }
+  .destiny-monitor figcaption { max-width:42rem; margin:12px auto; }
+  @media(max-width:600px) { .destiny-palette {grid-template-columns:repeat(2,1fr);} }
+
   .detail-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; width: min(1240px, calc(100vw - 40px)); position: relative; left: 50%; transform: translateX(-50%); margin: 2rem 0; }
   .detail-pair .figure { margin: 0; min-width: 0; }
   .detail-pair .figure > p { margin: 0 0 12px; }

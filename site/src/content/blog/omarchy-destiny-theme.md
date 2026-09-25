@@ -21,6 +21,28 @@ Dobrze się przy tym bawiłem. Lubię przyszłość, w której jest miejsce na t
 
 `p(bloom) > p(gloom/doom)`
 
+## Kolory też mają swoją historię
+
+Tapeta to połowa akwarium. Drugą jest motyw kolorystyczny Destiny: prawie czarny granat zamiast czystej czerni, lodowy tekst i kolory, które mają gdzie wybrzmieć.
+
+<div class="destiny-palette" aria-label="Paleta motywu Destiny">
+<span style="--swatch:#4cc9ff">Arc · błękit</span><span style="--swatch:#b97aff">Void · fiolet</span><span style="--swatch:#ff8a3d">Solar · pomarańcz</span><span style="--swatch:#f5c945">Exotic · złoto</span>
+</div>
+
+Błękit, fiolet i pomarańcz nawiązują do Arc, Void i Solar. Złoto do egzotycznego ekwipunku; zieleń i niebieski do niższych klas łupu. To paleta inspirowana grą, przełożona na pulpit: aktywne okno ma obramowanie od błękitu do fioletu, zaznaczenia są chłodne, tekst jasny. Nie wszystko musi świecić tak samo mocno.
+
+W btopie robi się z tego małe centrum dowodzenia. Wykres CPU wspina się od turkusu przez niebieski do fioletu. Temperatura idzie od zieleni przez złoto do czerwieni. Pobieranie jest ciepłe, wysyłanie chłodne — kierunek ruchu widać jeszcze przed przeczytaniem liczb. Złoto nie zawsze oznacza więc, że wypadł egzotyk. Czasem po prostu robi się ciepło.
+
+<figure class="figure destiny-monitor">
+<a href="/draft-assets/destiny/btop-busy.webp"><img src="/draft-assets/destiny/btop-busy.webp" alt="Motyw Destiny w btop: gęste turkusowo-fioletowe wykresy procesora i karty graficznej, zielona pamięć oraz czerwono-turkusowy ruch sieciowy." width="1920" height="1080" loading="lazy" /></a>
+<figcaption>Prawdziwy btop podczas kontrolowanego obciążenia CPU i GPU. Transfer biegnie przez lokalny interfejs lo — to pokaz kolorów pod obciążeniem, nie pomiar szybkości internetu. Kliknij, żeby obejrzeć pikseliki w pełnym rozmiarze.</figcaption>
+</figure>
+
+<figure class="figure destiny-monitor">
+<a href="/draft-assets/destiny/btop-busy-second.webp"><img src="/draft-assets/destiny/btop-busy-second.webp" alt="Drugi moment tego samego testu btop: zmieniające się obciążenie CPU, mocno zajęta karta graficzna i dwukierunkowy transfer lokalny." width="1920" height="1080" loading="lazy" /></a>
+<figcaption>Chwilę później: te same kolory, inny układ kropek. Akwarium pracuje.</figcaption>
+</figure>
+
 <hr />
 
 ## Wybrane porównania
