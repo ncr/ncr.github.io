@@ -25,9 +25,9 @@ Z takich małych doświadczeń bierze się mój optymizm co do AI.
 
 <hr />
 
-## Materiał do wyboru
+## Wybrane porównania
 
-Pięć propozycji ilustracji — do finalnej notki wybierzemy jedną lub dwie. Każdy zestaw pokazuje **pierwszą wersję → etap pośredni → wydanie końcowe**. To rzeczywiste pliki z historii projektu. Żółta ramka wskazuje powiększony fragment; kliknięcie otwiera ilustrację. Kadry i powiększenia dobieramy do danego ujęcia, więc nie jest to porównanie wymiarów.
+Trzy wybrane przykłady: 1, 3 i 4. Każdy zestaw pokazuje **pierwszą wersję → etap pośredni → wydanie końcowe**. To rzeczywiste pliki z historii projektu. Żółta ramka wskazuje powiększony fragment; kliknięcie otwiera ilustrację. Kadry i powiększenia dobieramy do danego ujęcia, więc nie jest to porównanie wymiarów.
 
 ### 1. Kolacja z figur geometrycznych
 
@@ -55,32 +55,6 @@ Postać przy stole. Najbardziej bezpośredni przykład zmiany stylu.
 
 </div>
 
-### 2. Statek dostaje przestrzeń
-
-Pierścień załogowy. Przejście od bocznego schematu do konstrukcji widocznej pod kątem.
-
-<div class="detail-pair detail-triptych">
-
-<figure class="figure detail-comparison">
-<p><strong>Pierwszy koncept · 18 IX</strong></p>
-<a href="/draft-assets/destiny/fusion-before-study.svg"><img src="/draft-assets/destiny/fusion-before-study.svg" alt="2. Statek dostaje przestrzeń: Pierścień jako pionowy pas z podziałami." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Pierścień jako pionowy pas z podziałami.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Etap pośredni · 22 IX</strong></p>
-<a href="/draft-assets/destiny/fusion-middle-study.svg"><img src="/draft-assets/destiny/fusion-middle-study.svg" alt="2. Statek dostaje przestrzeń: Więcej drobnych podziałów i mocowań; główna forma pozostaje płaska." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Więcej drobnych podziałów i mocowań; główna forma pozostaje płaska.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Wydanie końcowe · 25 IX</strong></p>
-<a href="/draft-assets/destiny/fusion-after-study.svg"><img src="/draft-assets/destiny/fusion-after-study.svg" alt="2. Statek dostaje przestrzeń: Obręcz, segmenty i połączenia z osią statku stają się czytelną bryłą." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Obręcz, segmenty i połączenia z osią statku stają się czytelną bryłą.</figcaption>
-</figure>
-
-</div>
-
 ### 3. Robot musi wyglądać, jakby biegł
 
 Nogi i stawy. Dobry przykład, gdy chcemy pokazać, że ładniejszy kontur nie kończy pracy nad pozą.
@@ -101,8 +75,8 @@ Nogi i stawy. Dobry przykład, gdy chcemy pokazać, że ładniejszy kontur nie k
 
 <figure class="figure detail-comparison">
 <p><strong>Wydanie końcowe · 25 IX</strong></p>
-<a href="/draft-assets/destiny/proxy-after-study.svg"><img src="/draft-assets/destiny/proxy-after-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu.</figcaption>
+<a href="/draft-assets/destiny/proxy-after-study.svg"><img src="/draft-assets/destiny/proxy-after-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu. Zbliżenie odbite poziomo, aby porównać ten sam kierunek biegu." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu. Zbliżenie odbite poziomo, aby porównać ten sam kierunek biegu.</figcaption>
 </figure>
 
 </div>
@@ -133,37 +107,19 @@ Moduły obliczeniowe. Tutaj porównujemy tę samą funkcję w dwóch różnych k
 
 </div>
 
-### 5. Wojna o bardziej zielony trawnik
+<details open>
+<summary>Nowe otwarcia do wyboru — robocze</summary>
 
-Kamera na maszcie. Humor zyskuje konkretny rekwizyt.
+**A · Gust**
 
-<div class="detail-pair detail-triptych">
+Mam dość konkretny gust, jeśli chodzi o rzeczy, które nie istnieją. Statek na Marsa powinien wyglądać tak, jakby ktoś musiał go potem serwisować. Robot biegający za właściciela musi przekonująco stawiać nogi. Nawet urządzenie do wygrywania z trawnikiem sąsiada zasługuje na porządną obudowę.
 
-<figure class="figure detail-comparison">
-<p><strong>Pierwszy koncept · 18 IX</strong></p>
-<a href="/draft-assets/destiny/greener-before-study.svg"><img src="/draft-assets/destiny/greener-before-study.svg" alt="5. Wojna o bardziej zielony trawnik: Prostokątna kamera na cienkim słupie." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Prostokątna kamera na cienkim słupie.</figcaption>
-</figure>
+**B · Świat**
 
-<figure class="figure detail-comparison">
-<p><strong>Etap pośredni · 22 IX</strong></p>
-<a href="/draft-assets/destiny/greener-middle-study.svg"><img src="/draft-assets/destiny/greener-middle-study.svg" alt="5. Wojna o bardziej zielony trawnik: Kamera dostaje podziały i detale, lecz zachowuje prostą sylwetkę." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Kamera dostaje podziały i detale, lecz zachowuje prostą sylwetkę.</figcaption>
-</figure>
+Chciałem mieć na pulpicie dokumentację maszyn z przyszłości. Zbliżasz obraz i odkrywasz, jak coś jest połączone, gdzie się otwiera, którędy biegnie przewód. Potem czytasz podpis i okazuje się, że cała ta aparatura służy do utrzymywania trawnika o 4% bardziej zielonego niż u sąsiada.
 
-<figure class="figure detail-comparison">
-<p><strong>Wydanie końcowe · 25 IX</strong></p>
-<a href="/draft-assets/destiny/greener-after-study.svg"><img src="/draft-assets/destiny/greener-after-study.svg" alt="5. Wojna o bardziej zielony trawnik: Przestrzenna obudowa, widoczny obiektyw i teleskopowy maszt. W tle płot między sąsiadami." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Przestrzenna obudowa, widoczny obiektyw i teleskopowy maszt. W tle płot między sąsiadami.</figcaption>
-</figure>
+**C · Reżyseria**
 
-</div>
-
-<details>
-<summary>Dwa alternatywne otwarcia do wyboru</summary>
-
-**Bardziej żartobliwe:** Zrobiłem z AI urządzenie, które pilnuje, żeby trawnik był o 4% bardziej zielony niż u sąsiada. Potem poprawiałem kształt jego kamery. Sąsiedzka zawiść zasługuje na dobry design.
-
-**Bardziej bezpośrednie:** AI napisało kod. Ja kazałem zmienić ludzi przy stole, konstrukcję statku i to, jak robot stawia nogę. W tym projekcie mój smak miał więcej roboty niż moje palce.
+Najciekawszy moment przy pracy z AI jest dla mnie wtedy, kiedy mogę już coś obejrzeć i powiedzieć: tutaj zmieńmy kierunek. Przy tych tapetach czasem oznaczało to odsunięcie podpisu. Czasem — zaprojektowanie maszyny od nowa.
 
 </details>

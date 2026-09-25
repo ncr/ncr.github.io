@@ -24,3 +24,7 @@ Four `*-detail.svg` diagrams embed the exact original WebP bytes. Each shows an 
 ## Expanded selection gallery
 
 The current draft offers five candidates with one preserved intermediate each (15 views total). Sources are Git blobs from 142e4ac, 73f4f01 and f4a51dd. Exact paths, hashes and crop boxes are in destiny-detail-studies.json. The Quantum example compares the same function after an architectural redesign, not the same component. Intermediate versions are historical checkpoints, not claims of approved final work. The gallery and alternate hooks are editorial choices to be narrowed by the author.
+
+## Author selection
+
+Keep examples 1, 3 and 4 (Truth Lamp, Proxy, Quantum Simulator). In Proxy final stage, mirror the magnified viewport horizontally, as explicitly requested, to align running direction. The overview retains original orientation and the caption identifies the reflected detail. Original source bytes remain unchanged.

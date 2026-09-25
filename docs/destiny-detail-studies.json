@@ -9,7 +9,8 @@
       210,
       250
     ],
-    "source_path": "backgrounds/14-truth-lamp.webp"
+    "source_path": "backgrounds/14-truth-lamp.webp",
+    "selected": true
   },
   {
     "image": "truth-middle-study.svg",
@@ -21,7 +22,8 @@
       170,
       240
     ],
-    "source_path": "backgrounds/10-truth-lamp.webp"
+    "source_path": "backgrounds/10-truth-lamp.webp",
+    "selected": true
   },
   {
     "image": "truth-after-study.svg",
@@ -33,7 +35,8 @@
       160,
       190
     ],
-    "source_path": "backgrounds/10-truth-lamp.webp"
+    "source_path": "backgrounds/10-truth-lamp.webp",
+    "selected": true
   },
   {
     "image": "fusion-before-study.svg",
@@ -45,7 +48,8 @@
       240,
       280
     ],
-    "source_path": "backgrounds/05-fusion-transport.webp"
+    "source_path": "backgrounds/05-fusion-transport.webp",
+    "selected": false
   },
   {
     "image": "fusion-middle-study.svg",
@@ -57,7 +61,8 @@
       240,
       280
     ],
-    "source_path": "backgrounds/03-fusion-transport.webp"
+    "source_path": "backgrounds/03-fusion-transport.webp",
+    "selected": false
   },
   {
     "image": "fusion-after-study.svg",
@@ -69,7 +74,8 @@
       240,
       280
     ],
-    "source_path": "backgrounds/03-fusion-transport.webp"
+    "source_path": "backgrounds/03-fusion-transport.webp",
+    "selected": false
   },
   {
     "image": "proxy-before-study.svg",
@@ -81,7 +87,8 @@
       235,
       200
     ],
-    "source_path": "backgrounds/12-proxy.webp"
+    "source_path": "backgrounds/12-proxy.webp",
+    "selected": true
   },
   {
     "image": "proxy-middle-study.svg",
@@ -93,7 +100,8 @@
       235,
       200
     ],
-    "source_path": "backgrounds/13-proxy.webp"
+    "source_path": "backgrounds/13-proxy.webp",
+    "selected": true
   },
   {
     "image": "proxy-after-study.svg",
@@ -105,7 +113,9 @@
       280,
       235
     ],
-    "source_path": "backgrounds/13-proxy.webp"
+    "source_path": "backgrounds/13-proxy.webp",
+    "selected": true,
+    "detail_transform": "Horizontal reflection around crop center x=775; full overview unchanged; caption discloses reflection."
   },
   {
     "image": "quantum-before-study.svg",
@@ -117,7 +127,8 @@
       130,
       150
     ],
-    "source_path": "backgrounds/02-quantum-simulator.webp"
+    "source_path": "backgrounds/02-quantum-simulator.webp",
+    "selected": true
   },
   {
     "image": "quantum-middle-study.svg",
@@ -129,7 +140,8 @@
       130,
       150
     ],
-    "source_path": "backgrounds/01-quantum-simulator.webp"
+    "source_path": "backgrounds/01-quantum-simulator.webp",
+    "selected": true
   },
   {
     "image": "quantum-after-study.svg",
@@ -141,7 +153,8 @@
       195,
       225
     ],
-    "source_path": "backgrounds/01-quantum-simulator.webp"
+    "source_path": "backgrounds/01-quantum-simulator.webp",
+    "selected": true
   },
   {
     "image": "greener-before-study.svg",
@@ -153,7 +166,8 @@
       120,
       140
     ],
-    "source_path": "backgrounds/13-greener.webp"
+    "source_path": "backgrounds/13-greener.webp",
+    "selected": false
   },
   {
     "image": "greener-middle-study.svg",
@@ -165,7 +179,8 @@
       120,
       140
     ],
-    "source_path": "backgrounds/04-greener.webp"
+    "source_path": "backgrounds/04-greener.webp",
+    "selected": false
   },
   {
     "image": "greener-after-study.svg",
@@ -177,6 +192,7 @@
       110,
       130
     ],
-    "source_path": "backgrounds/04-greener.webp"
+    "source_path": "backgrounds/04-greener.webp",
+    "selected": false
   }
 ]
