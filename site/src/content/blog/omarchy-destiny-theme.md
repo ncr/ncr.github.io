@@ -1,58 +1,169 @@
 ---
 title: "AI implementuje. Ja reżyseruję."
 date: 2026-09-25
-description: "42 tapety, własny smak i AI, które przekłada kierunek na kod. Dwa porównania before / after."
+description: "AI napisało kod. Ja miałem uwagi do kolacji. 42 tapety i decyzje, które nadały im charakter."
 draft: true
 ---
 
-AI pisze kod mojego motywu dla Omarchy. Ja patrzę na kolejną wersję i decyduję: te pierścienie mają być ciemniejsze, podpis potrzebuje więcej miejsca, następna tapeta powinna zmienić nastrój całego pulpitu.
+Na pierwszej wersji kolacji ludzie mieli okrągłe głowy i prostokątne tułowie. Kod działał. Kolacja wyglądała jak spotkanie figur geometrycznych.
 
-Z Destiny wziąłem granat, mocne kolory i cienką techniczną kreskę. Chciałem dokumentacji urządzeń z przyszłości, którą ktoś jeszcze później będzie oglądał jak historyczny artefakt. Kolekcja ma teraz 42 tapety. Najwięcej o moim wkładzie mówi różnica między pierwszym konceptem a gotową planszą.
+Robię motyw dla Omarchy inspirowany Destiny. Chciałem tych precyzyjnych, lekko tajemniczych plansz: dokumentacji urządzeń z przyszłości, która dla kogoś żyjącego jeszcze później będzie już archiwum. AI zajęło się implementacją. Ja miałem uwagi do kolacji.
 
-<div class="detail-pair">
+Postacie dostały przeguby i sensowne proporcje. Potem zmieniło się ujęcie, stół i sposób, w jaki przy nim siedzą. Przy statku kosmicznym samo dokładanie kresek też nie wystarczyło. Pierścień załogowy potrzebował formy, którą można odczytać w przestrzeni. Symulator kwantowy przeszedł jeszcze większą zmianę: od pionowego stosu do modułów rozłożonych promieniowo.
 
-<figure class="figure detail-comparison">
-<p><strong>Przed · pierścień załogowy</strong></p>
-<a href="/draft-assets/destiny/fusion-before-detail.svg"><img src="/draft-assets/destiny/fusion-before-detail.svg" alt="Cały Fusion Transport w pierwszej wersji, z zaznaczonym pierścieniem załogowym i jego powiększeniem." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Pierścień załogowy w bocznym schemacie: prosty pas z podziałami. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
-</figure>
+To jest moja część pracy. Patrzę na propozycję i widzę, co mi przeszkadza. Wybieram referencje. Ustalam, gdzie ma iść wzrok, co usunąć i co zrobić jeszcze raz. Smak staje się serią decyzji, które AI potrafi przełożyć na kod.
 
-<figure class="figure detail-comparison">
-<p><strong>Po · pierścień załogowy</strong></p>
-<a href="/draft-assets/destiny/fusion-after-detail.svg"><img src="/draft-assets/destiny/fusion-after-detail.svg" alt="Finalny Fusion Transport, z zaznaczoną przestrzenną konstrukcją pierścienia załogowego i jej powiększeniem." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Ten sam podzespół w ujęciu przestrzennym: obręcz, segmenty i połączenia z kadłubem. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
-</figure>
+Czasem decyzja dotyczy całej maszyny. Czasem kilku pikseli między rysunkiem a podpisem. Jeśli tekst nie mieści się obok urządzenia, pomniejszanie go do nieczytelności rozwiązuje problem wyłącznie dla programu.
 
-</div>
+Powstały 42 tapety. Jest transport na Marsa i urządzenie, które utrzymuje trawnik o 4% bardziej zielony niż u sąsiada. Jest też robot biegający z twoim zegarkiem, kiedy ty śpisz. Głowy nie potrzebuje. Zegarek o nią nie pyta.
 
-Porównujemy ten sam podzespół w różnych ujęciach. Pełna plansza pozwala go umiejscowić, a zbliżenie pokazuje zmianę formy. Kliknięcie otwiera ilustrację w pełnym rozmiarze.
+Lubię tę rolę: AI implementuje, ja reżyseruję. Mogę spędzić uwagę na wyglądzie, użyteczności i absurdalnie poważnej dokumentacji ogrodowego wyścigu zbrojeń. W rezultacie mam coś, czego chcę używać, i dobrze się przy tym bawię.
 
-Smak przekłada się tu na konkretne decyzje. Sylweta musi działać przed detalem. Śruby i przewody należą do części maszyny. Linie pomocnicze mają zejść w tło. Samo dodawanie kresek nie wystarczy.
-
-Przy postaciach zależało mi na technicznych manekinach z czytelnymi przegubami i sensowną pozycją przy stole. AI implementowało kolejne poprawki. Ja wybierałem kierunek i oceniałem efekt.
-
-<div class="detail-pair">
-
-<figure class="figure detail-comparison">
-<p><strong>Przed · postać przy stole</strong></p>
-<a href="/draft-assets/destiny/truth-before-detail.svg"><img src="/draft-assets/destiny/truth-before-detail.svg" alt="Pierwsza plansza Truth Lamp, z zaznaczoną siedzącą postacią i jej powiększeniem." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Sylwetka z prostych figur. Zbliżenie pokazuje sposób połączenia tułowia, nóg i siedziska. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Po · postać przy stole</strong></p>
-<a href="/draft-assets/destiny/truth-after-detail.svg"><img src="/draft-assets/destiny/truth-after-detail.svg" alt="Finalna plansza Truth Lamp, z zaznaczonym siedzącym manekinem i jego powiększeniem." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Techniczny manekin ze stawami i uformowanymi kończynami, osadzony w przestrzennej scenie. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
-</figure>
-
-</div>
-
-Piękno ma też działać w codziennym użyciu. Podpis powinien być blisko ilustracji, której dotyczy. Jeśli się nie mieści, trzeba poprawić układ. Zmniejszanie liter szybko kończy się napisem, którego nikt nie przeczyta.
-
-Jest miejsce na dobrą zabawę. Obok transportu kosmicznego powstała maszyna utrzymująca trawnik o 4% bardziej zielony niż u sąsiada. Obie dostały równie poważną dokumentację.
-
-Reżyserowanie jest wartościowym wkładem. Wnoszę własne preferencje, wybieram spośród propozycji, odrzucam i poprawiam. Z tych decyzji powstaje charakter projektu. AI daje mi możliwość doprowadzenia ich do działającego efektu.
-
-To mały projekt, ale właśnie takie zastosowania AI budzą we mnie optymizm. Mogę zrobić coś użytecznego, dopracować to po swojemu i dobrze się przy tym bawić.
+Z takich małych doświadczeń bierze się mój optymizm co do AI.
 
 `p(bloom) > p(gloom/doom)`
+
+<hr />
+
+## Materiał do wyboru
+
+Pięć propozycji ilustracji — do finalnej notki wybierzemy jedną lub dwie. Każdy zestaw pokazuje **pierwszą wersję → etap pośredni → wydanie końcowe**. To rzeczywiste pliki z historii projektu. Żółta ramka wskazuje powiększony fragment; kliknięcie otwiera ilustrację. Kadry i powiększenia dobieramy do danego ujęcia, więc nie jest to porównanie wymiarów.
+
+### 1. Kolacja z figur geometrycznych
+
+Postać przy stole. Najbardziej bezpośredni przykład zmiany stylu.
+
+<div class="detail-pair detail-triptych">
+
+<figure class="figure detail-comparison">
+<p><strong>Pierwszy koncept · 18 IX</strong></p>
+<a href="/draft-assets/destiny/truth-before-study.svg"><img src="/draft-assets/destiny/truth-before-study.svg" alt="1. Kolacja z figur geometrycznych: Okrąg i prostokąty. Sylwetka jest symbolem człowieka." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Okrąg i prostokąty. Sylwetka jest symbolem człowieka.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Etap pośredni · 22 IX</strong></p>
+<a href="/draft-assets/destiny/truth-middle-study.svg"><img src="/draft-assets/destiny/truth-middle-study.svg" alt="1. Kolacja z figur geometrycznych: Uformowany manekin, przeguby i znaczniki. Scena nadal oglądana na wprost." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Uformowany manekin, przeguby i znaczniki. Scena nadal oglądana na wprost.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Wydanie końcowe · 25 IX</strong></p>
+<a href="/draft-assets/destiny/truth-after-study.svg"><img src="/draft-assets/destiny/truth-after-study.svg" alt="1. Kolacja z figur geometrycznych: Manekin siedzi przy przestrzennym stole. Zmieniła się też kamera i kompozycja." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Manekin siedzi przy przestrzennym stole. Zmieniła się też kamera i kompozycja.</figcaption>
+</figure>
+
+</div>
+
+### 2. Statek dostaje przestrzeń
+
+Pierścień załogowy. Przejście od bocznego schematu do konstrukcji widocznej pod kątem.
+
+<div class="detail-pair detail-triptych">
+
+<figure class="figure detail-comparison">
+<p><strong>Pierwszy koncept · 18 IX</strong></p>
+<a href="/draft-assets/destiny/fusion-before-study.svg"><img src="/draft-assets/destiny/fusion-before-study.svg" alt="2. Statek dostaje przestrzeń: Pierścień jako pionowy pas z podziałami." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Pierścień jako pionowy pas z podziałami.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Etap pośredni · 22 IX</strong></p>
+<a href="/draft-assets/destiny/fusion-middle-study.svg"><img src="/draft-assets/destiny/fusion-middle-study.svg" alt="2. Statek dostaje przestrzeń: Więcej drobnych podziałów i mocowań; główna forma pozostaje płaska." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Więcej drobnych podziałów i mocowań; główna forma pozostaje płaska.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Wydanie końcowe · 25 IX</strong></p>
+<a href="/draft-assets/destiny/fusion-after-study.svg"><img src="/draft-assets/destiny/fusion-after-study.svg" alt="2. Statek dostaje przestrzeń: Obręcz, segmenty i połączenia z osią statku stają się czytelną bryłą." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Obręcz, segmenty i połączenia z osią statku stają się czytelną bryłą.</figcaption>
+</figure>
+
+</div>
+
+### 3. Robot musi wyglądać, jakby biegł
+
+Nogi i stawy. Dobry przykład, gdy chcemy pokazać, że ładniejszy kontur nie kończy pracy nad pozą.
+
+<div class="detail-pair detail-triptych">
+
+<figure class="figure detail-comparison">
+<p><strong>Pierwszy koncept · 18 IX</strong></p>
+<a href="/draft-assets/destiny/proxy-before-study.svg"><img src="/draft-assets/destiny/proxy-before-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Kończyny z prostych brył, stawy oznaczone kółkami." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Kończyny z prostych brył, stawy oznaczone kółkami.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Etap pośredni · 22 IX</strong></p>
+<a href="/draft-assets/destiny/proxy-middle-study.svg"><img src="/draft-assets/destiny/proxy-middle-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Zaokrąglone osłony i zaznaczone przeguby. Układ nóg nadal przypomina wcześniejszy." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Zaokrąglone osłony i zaznaczone przeguby. Układ nóg nadal przypomina wcześniejszy.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Wydanie końcowe · 25 IX</strong></p>
+<a href="/draft-assets/destiny/proxy-after-study.svg"><img src="/draft-assets/destiny/proxy-after-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu.</figcaption>
+</figure>
+
+</div>
+
+### 4. Zmiana pomysłu na całą maszynę
+
+Moduły obliczeniowe. Tutaj porównujemy tę samą funkcję w dwóch różnych konstrukcjach, nie identyczną część.
+
+<div class="detail-pair detail-triptych">
+
+<figure class="figure detail-comparison">
+<p><strong>Pierwszy koncept · 18 IX</strong></p>
+<a href="/draft-assets/destiny/quantum-before-study.svg"><img src="/draft-assets/destiny/quantum-before-study.svg" alt="4. Zmiana pomysłu na całą maszynę: Moduły ułożone w pionowym stosie." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Moduły ułożone w pionowym stosie.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Etap pośredni · 22 IX</strong></p>
+<a href="/draft-assets/destiny/quantum-middle-study.svg"><img src="/draft-assets/destiny/quantum-middle-study.svg" alt="4. Zmiana pomysłu na całą maszynę: Stos pozostaje; przybywa drobnych połączeń i szczegółów." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Stos pozostaje; przybywa drobnych połączeń i szczegółów.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Wydanie końcowe · 25 IX</strong></p>
+<a href="/draft-assets/destiny/quantum-after-study.svg"><img src="/draft-assets/destiny/quantum-after-study.svg" alt="4. Zmiana pomysłu na całą maszynę: Moduły są rozmieszczone promieniowo wewnątrz otwartej obudowy. Zmieniła się architektura ilustracji." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Moduły są rozmieszczone promieniowo wewnątrz otwartej obudowy. Zmieniła się architektura ilustracji.</figcaption>
+</figure>
+
+</div>
+
+### 5. Wojna o bardziej zielony trawnik
+
+Kamera na maszcie. Humor zyskuje konkretny rekwizyt.
+
+<div class="detail-pair detail-triptych">
+
+<figure class="figure detail-comparison">
+<p><strong>Pierwszy koncept · 18 IX</strong></p>
+<a href="/draft-assets/destiny/greener-before-study.svg"><img src="/draft-assets/destiny/greener-before-study.svg" alt="5. Wojna o bardziej zielony trawnik: Prostokątna kamera na cienkim słupie." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Prostokątna kamera na cienkim słupie.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Etap pośredni · 22 IX</strong></p>
+<a href="/draft-assets/destiny/greener-middle-study.svg"><img src="/draft-assets/destiny/greener-middle-study.svg" alt="5. Wojna o bardziej zielony trawnik: Kamera dostaje podziały i detale, lecz zachowuje prostą sylwetkę." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Kamera dostaje podziały i detale, lecz zachowuje prostą sylwetkę.</figcaption>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Wydanie końcowe · 25 IX</strong></p>
+<a href="/draft-assets/destiny/greener-after-study.svg"><img src="/draft-assets/destiny/greener-after-study.svg" alt="5. Wojna o bardziej zielony trawnik: Przestrzenna obudowa, widoczny obiektyw i teleskopowy maszt. W tle płot między sąsiadami." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Przestrzenna obudowa, widoczny obiektyw i teleskopowy maszt. W tle płot między sąsiadami.</figcaption>
+</figure>
+
+</div>
+
+<details>
+<summary>Dwa alternatywne otwarcia do wyboru</summary>
+
+**Bardziej żartobliwe:** Zrobiłem z AI urządzenie, które pilnuje, żeby trawnik był o 4% bardziej zielony niż u sąsiada. Potem poprawiałem kształt jego kamery. Sąsiedzka zawiść zasługuje na dobry design.
+
+**Bardziej bezpośrednie:** AI napisało kod. Ja kazałem zmienić ludzi przy stole, konstrukcję statku i to, jak robot stawia nogę. W tym projekcie mój smak miał więcej roboty niż moje palce.
+
+</details>

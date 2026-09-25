@@ -1,0 +1,182 @@
+[
+  {
+    "image": "truth-before-study.svg",
+    "commit": "142e4ac",
+    "source_sha256": "fb92cdec48f787a4f1288357e620cbeb293e0b2f2730598825eb1e4b7d9407c8",
+    "viewport_1500": [
+      390,
+      235,
+      210,
+      250
+    ],
+    "source_path": "backgrounds/14-truth-lamp.webp"
+  },
+  {
+    "image": "truth-middle-study.svg",
+    "commit": "73f4f01",
+    "source_sha256": "17a57527d4f370344cf2ac5993a2b8f2f27b242e0bcd8ff6dbe20fd488586d1f",
+    "viewport_1500": [
+      405,
+      240,
+      170,
+      240
+    ],
+    "source_path": "backgrounds/10-truth-lamp.webp"
+  },
+  {
+    "image": "truth-after-study.svg",
+    "commit": "f4a51dd",
+    "source_sha256": "870ae0ae61b3086fd2453e822ce4f381941b19a914c7acb7e75569b997219330",
+    "viewport_1500": [
+      580,
+      300,
+      160,
+      190
+    ],
+    "source_path": "backgrounds/10-truth-lamp.webp"
+  },
+  {
+    "image": "fusion-before-study.svg",
+    "commit": "142e4ac",
+    "source_sha256": "14d9d6fb8271902c01b570b04eece360caa7c2c048764f2e11c07b021440c079",
+    "viewport_1500": [
+      380,
+      145,
+      240,
+      280
+    ],
+    "source_path": "backgrounds/05-fusion-transport.webp"
+  },
+  {
+    "image": "fusion-middle-study.svg",
+    "commit": "73f4f01",
+    "source_sha256": "40c111204c07fd12b15b379fc11d9bb25a6bea4a8659bb1c486ab8f7a60eb146",
+    "viewport_1500": [
+      380,
+      145,
+      240,
+      280
+    ],
+    "source_path": "backgrounds/03-fusion-transport.webp"
+  },
+  {
+    "image": "fusion-after-study.svg",
+    "commit": "f4a51dd",
+    "source_sha256": "0f805d425b38674ba34538f8b9a5ca8142bb98382dbd5ae5c69466c3b00427e6",
+    "viewport_1500": [
+      520,
+      215,
+      240,
+      280
+    ],
+    "source_path": "backgrounds/03-fusion-transport.webp"
+  },
+  {
+    "image": "proxy-before-study.svg",
+    "commit": "142e4ac",
+    "source_sha256": "ace2a1ccd5ae657d029a3ff817da196610778ce8242f3334fbcfe60a9892ff84",
+    "viewport_1500": [
+      550,
+      285,
+      235,
+      200
+    ],
+    "source_path": "backgrounds/12-proxy.webp"
+  },
+  {
+    "image": "proxy-middle-study.svg",
+    "commit": "73f4f01",
+    "source_sha256": "54c4a337f5871f44f86c89edbd31020645938396ff6156e9196be972cb4f014d",
+    "viewport_1500": [
+      550,
+      285,
+      235,
+      200
+    ],
+    "source_path": "backgrounds/13-proxy.webp"
+  },
+  {
+    "image": "proxy-after-study.svg",
+    "commit": "f4a51dd",
+    "source_sha256": "48b5e0c70f0b473e8554bb5ea9f71f977714e243a0443a0fbf64c868d4433ae7",
+    "viewport_1500": [
+      635,
+      240,
+      280,
+      235
+    ],
+    "source_path": "backgrounds/13-proxy.webp"
+  },
+  {
+    "image": "quantum-before-study.svg",
+    "commit": "142e4ac",
+    "source_sha256": "09555bdf950820d2fcf468f37cf1aae64bbc26438f5d3fbe01493d84275a2c7d",
+    "viewport_1500": [
+      600,
+      315,
+      130,
+      150
+    ],
+    "source_path": "backgrounds/02-quantum-simulator.webp"
+  },
+  {
+    "image": "quantum-middle-study.svg",
+    "commit": "73f4f01",
+    "source_sha256": "28fb72a68e525c270ed524ed5bb66b893f97856f1cbd5b136d2a84e6085f581b",
+    "viewport_1500": [
+      600,
+      315,
+      130,
+      150
+    ],
+    "source_path": "backgrounds/01-quantum-simulator.webp"
+  },
+  {
+    "image": "quantum-after-study.svg",
+    "commit": "f4a51dd",
+    "source_sha256": "8b1bb009f9571416f97b22db88c34f1a06f80d9d019d238b12e0699499f82630",
+    "viewport_1500": [
+      625,
+      175,
+      195,
+      225
+    ],
+    "source_path": "backgrounds/01-quantum-simulator.webp"
+  },
+  {
+    "image": "greener-before-study.svg",
+    "commit": "142e4ac",
+    "source_sha256": "7bfe33edc4e969168bf40e7475f237b0110802a6da92d5ff042ecbc02787ac67",
+    "viewport_1500": [
+      620,
+      175,
+      120,
+      140
+    ],
+    "source_path": "backgrounds/13-greener.webp"
+  },
+  {
+    "image": "greener-middle-study.svg",
+    "commit": "73f4f01",
+    "source_sha256": "37c1cee72fe09caf38c7e2ef154e2941553bb71cd6353da73078313aac314484",
+    "viewport_1500": [
+      620,
+      175,
+      120,
+      140
+    ],
+    "source_path": "backgrounds/04-greener.webp"
+  },
+  {
+    "image": "greener-after-study.svg",
+    "commit": "f4a51dd",
+    "source_sha256": "dad1b8735f38000d69ac1e9f86d69bf37eb12779f534376fc1417a6514b7dc28",
+    "viewport_1500": [
+      670,
+      155,
+      110,
+      130
+    ],
+    "source_path": "backgrounds/04-greener.webp"
+  }
+]
