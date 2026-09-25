@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getEntry, render } from 'astro:content'
+// Explicit opt-in for this one draft; other drafts keep their existing visibility.
+const post = await getEntry('blog', 'omarchy-destiny-theme')
+if (!post || !post.data.draft) throw new Error('Expected the Destiny draft')
+const { Content } = await render(post)
+---
+<Base title={post.data.title} description={post.data.description} lang="pl" robots="noindex, nofollow, noarchive">
+  <article class="post">
+    <header>
+      <p class="date">DRAFT · 25 września 2026 · podgląd dostępny przez link</p>
+      <h1>{post.data.title}</h1>
+    </header>
+    <div class="content"><Content /></div>
+  </article>
+</Base>
