@@ -33,3 +33,7 @@ Keep examples 1, 3 and 4 (Truth Lamp, Proxy, Quantum Simulator). In Proxy final 
 
 Gallery: 42 originals and release thumbnails extracted from project commit f4a51dd, checked against docs/collection/release.json.
 Btop screenshots: real Wayland captures, 1920×1080, losslessly converted to WebP, no metrics edited. Controlled 100-second test: 14 CPU workers, CUDA compute loop, TCP loopback transfer on lo. First frame CPU 87%, GPU 97%; second CPU 69%, GPU 97%. RAM reflects existing machine use, not a synthetic memory test. Theme read from active btop current.theme and project colors.toml. Notifications hidden for capture; original settings restored.
+
+## Guided gallery tour
+
+96-second tour of Quantum Simulator, Proxy and Truth Lamp using the same release originals as the gallery. Twelve authored camera regions and Polish captions in site/src/data/destiny-tour.json. Captions checked against visible labels and illustrations; the machines remain fictional concepts. No new images or altered historical illustrations. Camera interpolates over 2.8 seconds, then holds; reduced-motion uses static cuts and starts paused. Desktop/mobile tests cover playback, seeking, all scene boundaries, captions, return to free browsing, restart and close.
