@@ -15,3 +15,11 @@ const { Content } = await render(post)
     <div class="content"><Content /></div>
   </article>
 </Base>
+
+<style is:global>
+  .detail-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; width: min(1000px, calc(100vw - 40px)); position: relative; left: 50%; transform: translateX(-50%); margin: 2rem 0; }
+  .detail-pair .figure { margin: 0; min-width: 0; }
+  .detail-pair .figure > p { margin: 0 0 12px; }
+  .detail-pair img { width: 100%; }
+  @media (max-width: 650px) { .detail-pair { grid-template-columns: 1fr; width: 100%; gap: 28px; } }
+</style>

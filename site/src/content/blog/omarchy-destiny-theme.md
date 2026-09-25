@@ -9,29 +9,43 @@ AI pisze kod mojego motywu dla Omarchy. Ja patrzę na kolejną wersję i decyduj
 
 Z Destiny wziąłem granat, mocne kolory i cienką techniczną kreskę. Chciałem dokumentacji urządzeń z przyszłości, którą ktoś jeszcze później będzie oglądał jak historyczny artefakt. Kolekcja ma teraz 42 tapety. Najwięcej o moim wkładzie mówi różnica między pierwszym konceptem a gotową planszą.
 
-<figure class="figure">
-<a href="/draft-assets/destiny/fusion-before.webp"><img src="/draft-assets/destiny/fusion-before.webp" alt="Pierwszy zachowany koncept Fusion Transport: płaski boczny schemat z dużymi zbiornikami i radiatorem." width="5120" height="2160" /></a>
-<figcaption>Fusion Transport, przed: pierwszy zachowany wariant 21:9. Duży boczny schemat i mocno świecący emblemat.</figcaption>
+<div class="detail-pair">
+
+<figure class="figure detail-comparison">
+<p><strong>Przed · pierścień załogowy</strong></p>
+<a href="/draft-assets/destiny/fusion-before-detail.svg"><img src="/draft-assets/destiny/fusion-before-detail.svg" alt="Cały Fusion Transport w pierwszej wersji, z zaznaczonym pierścieniem załogowym i jego powiększeniem." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Pierścień załogowy w bocznym schemacie: prosty pas z podziałami. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
 </figure>
 
-<figure class="figure">
-<a href="/draft-assets/destiny/fusion-after.webp"><img src="/draft-assets/destiny/fusion-after.webp" alt="Finalny Fusion Transport: przestrzenne ujęcie statku, mniejszy emblemat i uporządkowane boczne kolumny." width="5120" height="2160" loading="lazy" /></a>
-<figcaption>Po: przestrzenna sylweta, więcej oddechu, spokojniejszy emblemat. Konstrukcja statku prowadzi wzrok. Kliknij planszę, żeby obejrzeć detale.</figcaption>
+<figure class="figure detail-comparison">
+<p><strong>Po · pierścień załogowy</strong></p>
+<a href="/draft-assets/destiny/fusion-after-detail.svg"><img src="/draft-assets/destiny/fusion-after-detail.svg" alt="Finalny Fusion Transport, z zaznaczoną przestrzenną konstrukcją pierścienia załogowego i jej powiększeniem." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Ten sam podzespół w ujęciu przestrzennym: obręcz, segmenty i połączenia z kadłubem. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
 </figure>
+
+</div>
+
+Porównujemy ten sam podzespół w różnych ujęciach. Pełna plansza pozwala go umiejscowić, a zbliżenie pokazuje zmianę formy. Kliknięcie otwiera ilustrację w pełnym rozmiarze.
 
 Smak przekłada się tu na konkretne decyzje. Sylweta musi działać przed detalem. Śruby i przewody należą do części maszyny. Linie pomocnicze mają zejść w tło. Samo dodawanie kresek nie wystarczy.
 
 Przy postaciach zależało mi na technicznych manekinach z czytelnymi przegubami i sensowną pozycją przy stole. AI implementowało kolejne poprawki. Ja wybierałem kierunek i oceniałem efekt.
 
-<figure class="figure">
-<a href="/draft-assets/destiny/truth-before.webp"><img src="/draft-assets/destiny/truth-before.webp" alt="Pierwszy Truth Lamp: frontalna scena kolacji z postaciami z prostych figur geometrycznych." width="5120" height="2160" loading="lazy" /></a>
-<figcaption>Truth Lamp, przed: postacie z okręgów i prostokątów, oglądane na wprost.</figcaption>
+<div class="detail-pair">
+
+<figure class="figure detail-comparison">
+<p><strong>Przed · postać przy stole</strong></p>
+<a href="/draft-assets/destiny/truth-before-detail.svg"><img src="/draft-assets/destiny/truth-before-detail.svg" alt="Pierwsza plansza Truth Lamp, z zaznaczoną siedzącą postacią i jej powiększeniem." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Sylwetka z prostych figur. Zbliżenie pokazuje sposób połączenia tułowia, nóg i siedziska. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
 </figure>
 
-<figure class="figure">
-<a href="/draft-assets/destiny/truth-after.webp"><img src="/draft-assets/destiny/truth-after.webp" alt="Finalny Truth Lamp: stół widziany ukośnie, z siedzącymi technicznymi manekinami i przestrzennym wyposażeniem." width="5120" height="2160" loading="lazy" /></a>
-<figcaption>Po: wspólna konwencja manekinów, przestrzenny stół i lampa. Rodzinna kolacja nadal jest tematem planszy.</figcaption>
+<figure class="figure detail-comparison">
+<p><strong>Po · postać przy stole</strong></p>
+<a href="/draft-assets/destiny/truth-after-detail.svg"><img src="/draft-assets/destiny/truth-after-detail.svg" alt="Finalna plansza Truth Lamp, z zaznaczonym siedzącym manekinem i jego powiększeniem." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Techniczny manekin ze stawami i uformowanymi kończynami, osadzony w przestrzennej scenie. Żółta ramka wskazuje fragment powiększony poniżej.</figcaption>
 </figure>
+
+</div>
 
 Piękno ma też działać w codziennym użyciu. Podpis powinien być blisko ilustracji, której dotyczy. Jeśli się nie mieści, trzeba poprawić układ. Zmniejszanie liter szybko kończy się napisem, którego nikt nie przeczyta.
 
