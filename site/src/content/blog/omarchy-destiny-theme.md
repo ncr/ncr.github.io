@@ -35,7 +35,7 @@ W btopie robi się z tego małe centrum dowodzenia. Wykres CPU wspina się od tu
 
 <figure class="figure destiny-monitor">
 <a href="/draft-assets/destiny/btop-busy.webp"><img src="/draft-assets/destiny/btop-busy.webp" alt="Motyw Destiny w btop: gęste turkusowo-fioletowe wykresy procesora i karty graficznej, zielona pamięć oraz czerwono-turkusowy ruch sieciowy." width="1920" height="1080" loading="lazy" /></a>
-<figcaption>Prawdziwy btop podczas kontrolowanego obciążenia CPU i GPU. Transfer biegnie przez lokalny interfejs lo — to pokaz kolorów pod obciążeniem, nie pomiar szybkości internetu. Kliknij, żeby obejrzeć pikseliki w pełnym rozmiarze.</figcaption>
+<figcaption>Prawdziwy btop na spawnerze podczas kontrolowanego obciążenia CPU i GPU. Transfer biegnie przez lokalny interfejs lo — to pokaz kolorów pod obciążeniem, nie pomiar szybkości internetu. Kliknij, żeby obejrzeć pikseliki w pełnym rozmiarze.</figcaption>
 </figure>
 
 <figure class="figure destiny-monitor">
