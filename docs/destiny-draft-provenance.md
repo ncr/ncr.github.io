@@ -37,3 +37,11 @@ Btop screenshots: host spawner (confirmed with hostname and /etc/hostname), real
 ## Guided gallery tour
 
 96-second tour of Quantum Simulator, Proxy and Truth Lamp using the same release originals as the gallery. Twelve authored camera regions and Polish captions in site/src/data/destiny-tour.json. Captions checked against visible labels and illustrations; the machines remain fictional concepts. No new images or altered historical illustrations. Camera interpolates over 2.8 seconds, then holds; reduced-motion uses static cuts and starts paused. Desktop/mobile tests cover playback, seeking, all scene boundaries, captions, return to free browsing, restart and close.
+
+## Rhythmic tour revision
+
+19 shots / 74.46 seconds / six different narrative arcs: Quantum (part to assembly), Proxy (sleeper to substitute), Fusion (lateral tour), Truth Lamp (scene to observer to dog), Greener (competitive escalation), Light Sail (quiet release). All added sheets visually inspected from release originals. Short phrase captions use deterministic timeline-based reveal, so scrubbing and reduced-motion stay readable.
+
+Music: Kevin Koontz, We Can Fix Everything (The Ultimate Machine), identified at https://omarchy.org/ and official source https://github.com/omacom/omarchy-site/blob/master/src/lib/music.ts . Track streamed on explicit opt-in from the official GitHub-hosted MP3; no audio copied into blog repo, no claim of a redistribution license. Browser buffers it for accurate seeks; music clock drives the timeline. Offset 20.45s; editorial cuts snapped to onsets in official src/data/track.json. Original source hosted on omarchy.org did not seek reliably in browser testing. Source attribution visible in player.
+
+QA: Chromium desktop 1440×1000, mobile 390×844, reduced motion 900×800: all 19 captions/camera scenes, no audio request before opt-in, actual MP3 playback, pause, seek and audio-clock sync, gallery exit and close silence verified.
