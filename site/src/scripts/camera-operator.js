@@ -16,7 +16,7 @@ export function createOperator(nib,plan,fit){
   const p=nib(t),a=nib(t+.045),z=nib(t-.045),len=Math.hypot(a.x-z.x,a.y-z.y)||1,tx=(a.x-z.x)/len,ty=(a.y-z.y)/len;
   const flight=enter*(1-pull),breath=noise(t*.7,seed),sway=noise(t*.91,seed+71);
   const offset=8+seed%7,range=.24+(seed%5)*.014;
-  const goal=[flight*(p.x-tx*14-ty*offset+breath*3.5),flight*(p.y-ty*14+tx*offset+sway*3),fit*(1-flight*(1-range))+breath*1.5*flight];
+  const goal=[flight*(p.x-tx*14-ty*offset+breath*3.5),flight*(p.y-ty*14+tx*offset+sway*3),fit*(1-flight*(1-range))+breath*.002*fit*flight];
   const ahead=nib(t+.095),gaze=[ahead.x*flight+breath*flight,ahead.y*flight+sway*flight,4*flight];
   spring(pos,pv,goal,8.5,.9);spring(aim,av,gaze,22,.96);
   const desiredRoll=(noise(t*.55,seed+139)*.034+tx*.012)*flight;

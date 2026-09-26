@@ -19,6 +19,7 @@ try:
  with sync_playwright() as p:
   browser=p.chromium.launch(args=['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
   page=browser.new_page(viewport={'width':1440,'height':1000});errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+  page.on('console',lambda e:errors.append(e.text) if e.type=='error' and any(x in e.text for x in ['WebGL','Shader','GL_INVALID']) else None)
   page.goto(url,wait_until='domcontentloaded');assert 'noindex' in page.locator('meta[name=robots]').get_attribute('content')
   page.locator('.gallery-launch').click()
   def seek(t):
@@ -53,7 +54,7 @@ try:
   page.emulate_media(reduced_motion='reduce');page.wait_for_function('getComputedStyle(document.querySelector(".fusion-flight")).display==="none"')
   assert not errors,errors
   # A missing vector asset leaves the real wallpaper visible, without freezing controls.
-  fallback=browser.new_page();fallback.route('**/drawing/o01.json*',lambda route:route.abort())
+  fallback=browser.new_page();fallback.route('**/film-data/o01.*',lambda route:route.abort())
   fallback.goto(url,wait_until='domcontentloaded');fallback.locator('.gallery-launch').click()
   fallback.locator('.tour-seek').fill('12');fallback.locator('.tour-seek').dispatch_event('input');fallback.wait_for_timeout(500)
   assert not fallback.locator('.fusion-flight').is_visible()

@@ -7,8 +7,13 @@ export function createAmbient(host) {
   const ctx=canvas.getContext('2d'),mask=document.createElement('canvas'),ink=mask.getContext('2d');
   let generation=0,ready=false,spec=null,raf=0,previous=0,enabled=true;
   let audioLevels={active:false,bass:0,mids:0,highs:0};
-  async function load(source,profile){
+  async function load(source,profile,preparedMask){
     const own=++generation;ready=false;ctx.clearRect(0,0,canvas.width,canvas.height);spec=profile;
+    if(preparedMask){
+      const image=new Image();image.src=preparedMask;try{await image.decode();}catch{return;}
+      if(own!==generation)return;canvas.width=mask.width=image.naturalWidth;canvas.height=mask.height=image.naturalHeight;
+      ink.drawImage(image,0,0);ready=true;return;
+    }
     const image=new Image();image.src=source;
     try{await image.decode();}catch{return;}
     if(own!==generation)return;
@@ -42,6 +47,6 @@ export function createAmbient(host) {
   function tick(now){if(now-previous>=1000/24){render(now/1000);previous=now;}raf=requestAnimationFrame(tick);}
   function start(){if(!raf)raf=requestAnimationFrame(tick);}
   function stop(){cancelAnimationFrame(raf);raf=0;}
-  function setEnabled(value){enabled=value;canvas.hidden=!value;if(!value)stop();else start();}
+  function setEnabled(value){if(value===enabled&&Boolean(raf)===value)return;enabled=value;canvas.hidden=!value;if(!value)stop();else start();}
   return {load,render,start,stop,setEnabled,setAudioLevels(value){audioLevels=value;},canvas,destroy(){stop();generation++;canvas.remove();}};
 }

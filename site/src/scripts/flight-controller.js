@@ -9,7 +9,8 @@ function update(detail){
   if(flight){
     const passage=score.find(s=>detail.time>=s.start&&detail.time<s.end);
     const next=score.find(s=>s.start>detail.time);
-    if(next&&next.start-detail.time<6)flight.prepare(next.id);
+    if(next&&next.start-detail.time<9)flight.prepare(next.id);
+    if(detail.time>timing.orbit-12&&detail.time<timing.end)flight.prepareNozzle();
     if(passage||detail.time>=timing.orbit&&detail.time<timing.end)flight.render(detail.time,passage,detail.paper);
     else flight.hide();
   }

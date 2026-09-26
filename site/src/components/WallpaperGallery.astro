@@ -1,5 +1,6 @@
 ---
-import wallpapers from '../data/destiny-gallery.json'
+import gallery from '../data/destiny-gallery.json'
+const wallpapers=gallery.map(w=>({...w,film:w.src.replace('/destiny/','/destiny/film/')}))
 import tour from '../data/destiny-tour.json'
 import drawingScore from '../data/drawing-score.json'
 const tourDuration = 299.21
@@ -21,6 +22,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       <button type="button" class="viewer-close icon-button" aria-label="Zamknij galerię" title="Zamknij (Esc)">✕</button>
     </header>
     <div class="viewer-canvas" tabindex="0" aria-label="Tapeta. Strzałki zmieniają obraz, Z przełącza powiększenie.">
+      <div class="scene-bridge" aria-hidden="true" hidden><div class="scene-bridge-frame"><img alt="" /></div></div>
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
     <p class="viewer-error" role="status" hidden>Nie udało się wczytać pełnego obrazu. <button type="button" class="viewer-retry">Spróbuj ponownie</button></p>
@@ -71,6 +73,14 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     const launch = document.querySelector('.gallery-launch');
     const canvas = q('.viewer-canvas'), frame = q('.viewer-frame');
     const photo = q('.viewer-image'), preview = q('.viewer-preview');
+    const bridge=q('.scene-bridge'),bridgeFrame=q('.scene-bridge-frame'),bridgeImage=bridge.querySelector('img'),surface={width:0,height:0};let bridgeKey='',frameSize='';
+    const decoded=new Map();
+    function warmImage(w){
+      if(decoded.has(w.id))return decoded.get(w.id).ready;
+      const image=new Image();image.src=w.film;const entry={image,ready:image.decode().then(()=>image)};entry.ready.catch(()=>{});decoded.set(w.id,entry);
+      while(decoded.size>5)decoded.delete(decoded.keys().next().value);
+      return entry.ready;
+    }
     const grid = q('#viewer-grid'), gridToggle = q('.viewer-grid-toggle');
     const zoomButton = q('.viewer-zoom'), fullscreenButton = q('.viewer-fullscreen');
     let index = Number(dialog.dataset.cover), zoom = false, previousOverflow = '', touchStart = null, drag = null, request = 0, ownsFullscreen = false;
@@ -97,10 +107,9 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       q('.viewer-title').textContent=w.name;
       q('.viewer-download').href=w.src;
       preview.style.visibility='visible'; preview.src=w.thumb; photo.style.visibility='hidden'; photo.alt=w.name;
-      const load=new Image();
-      load.onload=async()=> { if(ticket!==request) return; photo.src=w.src; try { await photo.decode(); } catch {} if(ticket!==request) return; photo.style.visibility='visible'; preview.style.visibility='hidden'; };
-      load.onerror=()=> {if(ticket===request) q('.viewer-error').hidden=false;};
-      load.src=w.src;
+      const source=fromTour?w.film:w.src;
+      const ready=fromTour?warmImage(w):(()=>{const image=new Image();image.src=source;return image.decode().then(()=>image);})();
+      ready.then(async()=>{if(ticket!==request)return;photo.src=source;try{await photo.decode();}catch{}if(ticket!==request)return;photo.style.visibility='visible';preview.style.visibility='hidden';}).catch(()=>{if(ticket===request)q('.viewer-error').hidden=false;});
       grid.querySelectorAll('[data-index]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.index)===index)));
     }
     launch.addEventListener('click',()=> { previousOverflow=document.body.style.overflow; document.body.style.overflow='hidden'; dialog.showModal(); grid.hidden=true; dialog.classList.remove('grid-open'); gridToggle.setAttribute('aria-expanded','false'); returnMusic(); startTour(hasOpened); hasOpened=true; if(soundPreference()==='on'&&!music)soundButton.click(); q('.viewer-close').focus(); });
@@ -207,10 +216,10 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     q('.viewer-fx').onclick=()=>{effects=!effects;q('.viewer-fx').setAttribute('aria-pressed',String(effects));camera();};
     function flightEvent(active,paper){window.dispatchEvent(new CustomEvent('destiny-camera',{detail:{time,active,enabled:effects,paper}}));}
     dialog.addEventListener('close',()=>flightEvent(false));
-    function camera(){
-      if(!touring)return;
-      let n=tour.findLastIndex(s=>s.at<=time);n=Math.max(0,n);
-      const shot=tour[n], elapsed=time-shot.at;
+    const captionElement=q('.tour-caption'),timeLabel=q('.tour-time');let captionSpans=[],lastClock='';
+    function composition(at){
+      let n=tour.findLastIndex(s=>s.at<=at);n=Math.max(0,n);
+      const shot=tour[n], elapsed=at-shot.at;
       const previous=n>0&&tour[n-1].id===shot.id&&shot.motion!=='cut'?tour[n-1]:shot;
       const travel=shot.motion==='float'?2.8:shot.motion==='pan'?1.8:1.15;
       let u=reduced.matches?1:Math.min(1,elapsed/travel);u=u*u*(3-2*u);
@@ -221,39 +230,62 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       let w=Math.exp(Math.log(previous.w*startDrift)*(1-u)+Math.log(shot.w)*u)*drift;
       let h=Math.exp(Math.log(previous.h*startDrift)*(1-u)+Math.log(shot.h)*u)*drift;
       let paperPull=null;
-      const passage=drawingScore.find(s=>s.id===shot.id&&time>=s.start&&time<s.end);
+      const passage=drawingScore.find(s=>s.id===shot.id&&at>=s.start&&at<s.end);
       if(passage&&effects&&!reduced.matches){
-        const elapsed=time-passage.start,u=Math.max(0,Math.min(1,(elapsed-passage.followEnd)/(passage.holdStart-passage.followEnd)));
+        const elapsed=at-passage.start,u=Math.max(0,Math.min(1,(elapsed-passage.followEnd)/(passage.holdStart-passage.followEnd)));
         const pull=(1-Math.cos(Math.PI*u))/2,f=passage.framing;
         x=f.x+(.5-f.x)*pull;y=f.y+(.5-f.y)*pull;
         w=Math.exp(Math.log(f.w)*(1-pull));h=Math.exp(Math.log(f.h)*(1-pull));
         paperPull=u;
       }
-      const cw=canvas.clientWidth,ch=canvas.clientHeight;
+      const cw=surface.width||canvas.clientWidth,ch=surface.height||canvas.clientHeight;
       const bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120;
       const scale=Math.min(cw/(bw*w),ch/(bh*h));
-      frame.style.width=`${bw}px`;frame.style.height=`${bh}px`;
-      const roll=reduced.matches?0:Math.sin(time*.23)*.65+Math.sin(time*.51)*.22;
-      frame.style.transform=`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
-      flightEvent(dialog.open,{width:bw,height:bh,scale,x,y,roll});
-      canvas.dataset.paperScale=scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
+      const roll=reduced.matches?0:Math.sin(at*.23)*.65+Math.sin(at*.51)*.22;
+      return {n,shot,elapsed,passage,paperPull,width:bw,height:bh,scale,x,y,roll,viewportWidth:cw,viewportHeight:ch,transform:`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`};
+    }
+    function sceneBlend(view){
+      const {n,elapsed,passage}=view,previous=n?tour[n-1]:null;
+      if(!previous||reduced.matches){bridge.hidden=true;return;}
+      const priorPassage=drawingScore.find(s=>tour[n].at-.001>=s.start&&tour[n].at-.001<s.end);
+      const cut=previous.id!==view.shot.id||(view.shot.motion==='cut'&&!(passage&&passage===priorPassage));
+      const span=Math.min(.85,((tour[n+1]?.at||duration)-tour[n].at)*.24);
+      if(!cut||elapsed>=span){bridge.hidden=true;canvas.dataset.sceneBlend='1';return;}
+      const key=`${n}:${view.viewportWidth}:${view.viewportHeight}:${effects}`;
+      if(bridgeKey!==key){
+        bridgeKey=key;const out=composition(tour[n].at-.001),w=wallpapers.find(w=>w.id===previous.id);
+        bridgeImage.src=w.film;bridgeFrame.style.width=out.width+'px';bridgeFrame.style.height=out.height+'px';bridgeFrame.style.transform=out.transform;
+      }
+      const x=Math.max(0,elapsed/span),blend=x*x*(3-2*x);bridge.hidden=false;bridge.style.opacity=String(1-blend);canvas.dataset.sceneBlend=blend.toFixed(4);
+    }
+    function camera(){
+      if(!touring)return;
+      const view=composition(time),{n,shot,elapsed,passage,paperPull}=view;
+      const size=`${view.width}:${view.height}`;if(frameSize!==size){frameSize=size;frame.style.width=view.width+'px';frame.style.height=view.height+'px';}
+      frame.style.transform=view.transform;
+      const pull=passage?(time-passage.start-passage.followEnd)/(passage.holdStart-passage.followEnd):1;
+      flightEvent(dialog.open,{...view,drawingCovered:effects&&Boolean(passage)&&pull<.46});
+      sceneBlend(view);
+      canvas.dataset.paperScale=view.scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
       if(currentShot!==n){
         currentShot=n;
-        const caption=q('.tour-caption');caption.replaceChildren();
+        const caption=captionElement;caption.replaceChildren();
         const words=shot.caption.split(' ');
         for(let i=0;i<words.length;i+=3){const span=document.createElement('span');span.textContent=words.slice(i,i+3).join(' ')+' ';span.className='caption-phrase';span.dataset.delay=String(i/3*.10);caption.append(span);}
+        captionSpans=Array.from(caption.children);
         const next=wallpapers.findIndex(w=>w.id===shot.id);
         if(index!==next||!photo.getAttribute('src'))show(next,true);
         const upcoming=tour.slice(n+1).find(s=>s.id!==shot.id);
-        if(upcoming){const preload=new Image();preload.src=wallpapers.find(w=>w.id===upcoming.id).src;}
+        if(upcoming)warmImage(wallpapers.find(w=>w.id===upcoming.id));
         q('.tour-chapters').querySelectorAll('button').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.time)<=time && !tour.some(s=>s.chapter&&s.at>Number(b.dataset.time)&&s.at<=time))));
       }
-      q('.tour-caption').querySelectorAll('span').forEach(span=>{
+      const captionFade=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);};
+      captionElement.style.opacity=String(reduced.matches?1:captionFade(elapsed/.18)*captionFade(((tour[n+1]?.at||duration)-time)/.22));
+      if(elapsed<1.2||captionSpans.some(s=>s.style.opacity!=='1'))captionSpans.forEach(span=>{
         const reveal=reduced.matches?1:Math.max(0,Math.min(1,(elapsed-Number(span.dataset.delay))/.22));
         span.style.opacity=String(.45+.55*reveal);span.style.transform=`translateY(${(1-reveal)*5}px)`;
       });
-      seek.value=String(time);seek.setAttribute('aria-valuetext',`${clock(time)} z ${clock(duration)}. ${shot.caption}`);
-      q('.tour-time').textContent=`${clock(time)} / ${clock(duration)}`;
+      seek.value=String(time);const stamp=clock(time)+shot.caption;if(stamp!==lastClock){lastClock=stamp;seek.setAttribute('aria-valuetext',`${clock(time)} z ${clock(duration)}. ${shot.caption}`);timeLabel.textContent=`${clock(time)} / ${clock(duration)}`;}
     }
     function seekTour(t){time=Math.max(0,Math.min(duration,t));camera();if(time===duration)pauseTour();}
     function tick(now){
@@ -285,17 +317,16 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     launch.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')startTeaser();});
     launch.addEventListener('pointerleave',stopTeaser);launch.addEventListener('focus',startTeaser);launch.addEventListener('blur',stopTeaser);launch.addEventListener('click',stopTeaser);
     let tourWarmed=false;
-    function warmTour(){if(tourWarmed)return;tourWarmed=true;for(const id of [...new Set(tour.map(s=>s.id))].slice(0,2)){const w=wallpapers.find(w=>w.id===id);const small=new Image();small.src=w.thumb;const full=new Image();full.src=w.src;}}
+    function warmTour(){if(tourWarmed)return;tourWarmed=true;for(const id of [...new Set(tour.map(s=>s.id))].slice(0,2)){const w=wallpapers.find(w=>w.id===id);warmImage(w);}}
     function startTour(resume=false){warmTour();const continuous=music&&!audio.paused&&(resume||!touring);const position=continuous?audio.currentTime:resume?(music&&audio.src?audio.currentTime:time):0;if(!continuous)pauseTour();else cancelAnimationFrame(tickId);setZoom(false);touring=true;dialog.classList.add('is-touring');player.hidden=false;q('.tour-return').hidden=true;currentShot=-1;seekTour(position);if(continuous){playing=true;play.textContent='Ⅱ';play.setAttribute('aria-label','Wstrzymaj oprowadzanie');lastTick=performance.now();tickId=requestAnimationFrame(tick);}else{audioSeek();if(!reduced.matches)togglePlay();}}
-    function leaveTour(){flightEvent(false);pauseTour();touring=false;dialog.classList.remove('is-touring');player.hidden=true;q('.tour-return').hidden=false;frame.style.width='';frame.style.height='';frame.style.transform='';}
+    function leaveTour(){bridge.hidden=true;frameSize='';bridgeKey='';flightEvent(false);pauseTour();touring=false;dialog.classList.remove('is-touring');player.hidden=true;q('.tour-return').hidden=false;frame.style.width='';frame.style.height='';frame.style.transform='';}
     play.onclick=togglePlay;
     function scrub(t){pauseTour();seekTour(t);audioSeek();}
     seek.addEventListener('input',()=>scrub(Number(seek.value)));
-    new ResizeObserver(()=>{if(dialog.open&&touring)camera();}).observe(canvas);
+    new ResizeObserver(entries=>{surface.width=entries[0].contentRect.width;surface.height=entries[0].contentRect.height;if(dialog.open&&touring)camera();}).observe(canvas);
     seek.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();scrub(e.key==='Home'?0:e.key==='End'?duration:time+(e.key==='ArrowRight'?5:-5));}});
     q('.tour-return').onclick=()=>startTour();
     q('.tour-track').querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>scrub(Number(b.dataset.time)));
-    new ResizeObserver(()=>camera()).observe(canvas);
     document.addEventListener('visibilitychange',()=>{cancelAnimationFrame(tickId);if(!document.hidden&&playing&&dialog.open){lastTick=performance.now();tickId=requestAnimationFrame(tick);}});
     frame.addEventListener('dragstart',e=>e.preventDefault());
   })();
@@ -369,4 +400,8 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 .gallery-launch.is-previewing .gallery-invite{padding-top:25px;background:linear-gradient(transparent,#070a11bd)}
 
 .is-sounding .music-meter i{animation:none}
+</style>
+
+<style>
+.scene-bridge{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none;will-change:opacity;background:#07090e}.scene-bridge-frame{position:absolute;left:50%;top:50%;transform-origin:0 0;will-change:transform}.scene-bridge-frame img{width:100%;height:100%;object-fit:contain;display:block}
 </style>
