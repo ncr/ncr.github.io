@@ -1,0 +1,132 @@
+[
+ {
+  "at": 0,
+  "id": "c087",
+  "caption": "Okno Hyprlanda rysuje się samo.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Intro"
+ },
+ {
+  "at": 4.263,
+  "id": "c087",
+  "caption": "Destiny — motyw dla Omarchy.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut"
+ },
+ {
+  "at": 6.386,
+  "id": "c087",
+  "caption": "Paleta: Arc, Void, Solar i reszta.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Paleta"
+ },
+ {
+  "at": 12.81,
+  "id": "c087",
+  "caption": "Z linii składają się maszyny.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Linie"
+ },
+ {
+  "at": 21.4,
+  "id": "c087",
+  "caption": "Motyw w pracy: fastfetch, btop, Neovim.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Pulpit"
+ },
+ {
+  "at": 38.56,
+  "id": "o03",
+  "caption": "42 tapety, jedna na każde uderzenie.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Kolekcja"
+ },
+ {
+  "at": 55.61,
+  "id": "o11",
+  "caption": "Kafelki jak w Hyprlandzie.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Kafelki"
+ },
+ {
+  "at": 64.14,
+  "id": "c002",
+  "caption": "Przez emblemat do następnej tapety.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Portale"
+ },
+ {
+  "at": 72.66,
+  "id": "c100",
+  "caption": "Przestrzenie robocze, jedna na takt.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Pulpity"
+ },
+ {
+  "at": 85.46,
+  "id": "o03",
+  "caption": "Wszystkie 42 naraz.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut"
+ },
+ {
+  "at": 89.73,
+  "id": "o03",
+  "caption": "Ostatnia prosta.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Kulminacja"
+ },
+ {
+  "at": 102.54,
+  "id": "c087",
+  "caption": "Destiny. 42 tapety dla Omarchy.",
+  "x": 0.5,
+  "y": 0.5,
+  "w": 1,
+  "h": 1,
+  "motion": "cut",
+  "chapter": "Finał"
+ }
+]

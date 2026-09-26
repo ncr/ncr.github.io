@@ -409,3 +409,28 @@ Review: full-length 4 fps frame renders inspected section by section at 16:9,
 the in-page strip and 390 px phone layout; real-time playback in Chromium at
 1920×1080 held 16.7 ms frames across the heaviest sections (RTX 5080; not a
 guarantee for integrated GPUs).
+
+## 2026-09-26 — "Split Signal" music video replaces the WebGL film
+
+The author chose, out of three independently made music videos, the one called
+"Split Signal". It covers the last 1:51 of the song (188.30–299.21 s): breakdown,
+build, drums, drop, stop and the song's own ending. The Hyprland window is the
+camera; the theme's palette, its apps (fastfetch, btop, Neovim with colors.toml,
+a wallpaper browser) and all 42 wallpapers each get their moment.
+
+It is rendered offline by a deterministic Canvas2D renderer (headless Chromium,
+60 fps) kept with the theme's local concepts. Rendering it live in the page
+measured up to 36 ms per 1080p frame even on an RTX 5080, so the page plays a
+pre-rendered silent H.264 video instead (`public/gallery/destiny/video/`,
+1080p60 ~66 MB for wide screens, 720p60 ~26 MB otherwise, keyframe every second).
+The music still streams from the official omarchy-site MP3 through the existing
+player; `soundtrackOffset` = 188.3 s and the video follows the audio clock with
+small playback-rate corrections (measured drift ~15 ms in Chromium) and hard
+seeks beyond 0.25 s. The song fades out over the last 1.2 s like the render.
+The author states they have permission to use the track.
+
+Flash safety: frame-luminance analysis of the final render (quadrants and centre,
+relative-luminance steps ≥ 0.1) found at most two flashes per second.
+
+The earlier WebGL film modules added in the previous revision were removed.
+The cover's hover preview now plays the silent clip from the drop.

@@ -1,14 +1,13 @@
 ---
 import gallery from '../data/destiny-gallery.json'
 const wallpapers=gallery.map(w=>({...w,film:w.src.replace('/destiny/','/destiny/film/')}))
-import {captions} from '../scripts/film/edit.js'
-const tour=captions()
+import tour from '../data/split-signal.json'
 const drawingScore=[]
 import musicGrid from '../data/music-grid.json'
 import introFrames from '../data/intro-framing.json'
 import sceneAtlas from '../data/scene-atlas.json'
 const atlasBridges=[]
-const tourDuration = 299.21
+const tourDuration = 110.9
 const chapters = tour.filter(s => s.chapter && !["Prolog", "Finał"].includes(s.chapter))
 const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 ---
@@ -28,6 +27,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     </header>
     <div class="viewer-canvas" tabindex="0" aria-label="Tapeta. Strzałki zmieniają obraz, Z przełącza powiększenie.">
       <div class="scene-bridge" aria-hidden="true" hidden><div class="scene-bridge-frame"><img alt="" /></div></div>
+      <video class="destiny-mv" muted playsinline preload="none" poster="/gallery/destiny/video/split-signal-poster.webp" aria-label="Teledysk Split Signal: motyw Destiny i 42 tapety"></video>
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
     <p class="viewer-error" role="status" hidden>Nie udało się wczytać pełnego obrazu. <button type="button" class="viewer-retry">Spróbuj ponownie</button></p>
@@ -67,7 +67,6 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
   </div>
 </dialog>
 <script>
-  import "../scripts/film-controller.js";
   import "../scripts/ambient-controller.js";
   import "../scripts/audio-reactivity.js";
 </script>
@@ -109,7 +108,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       window.dispatchEvent(new CustomEvent('destiny-wallpaper',{detail:w}));
       setZoom(false); q('.viewer-error').hidden = true;
       q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
-      q('.viewer-title').textContent=fromTour&&time<musicGrid.entrance?'Światło i linie':w.name;
+      q('.viewer-title').textContent=fromTour?'Split Signal':w.name;
       q('.viewer-download').href=w.src;
       preview.style.visibility='visible'; preview.src=w.thumb; photo.style.visibility='hidden'; photo.alt=w.name;
       const source=fromTour?w.film:w.src;
@@ -151,7 +150,20 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 
     const player=q('.tour-player'), seek=q('.tour-seek'), play=q('.tour-play');
     const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-    const duration=tourDuration, soundtrackOffset=0;
+    const duration=tourDuration, soundtrackOffset=188.3;
+    // The picture is a pre-rendered, silent video; the music streams from its official source.
+    const mv=q('.destiny-mv');
+    function mvSource(){if(!mv.getAttribute('src')){const big=innerWidth*devicePixelRatio>1400&&!navigator.connection?.saveData;mv.src=`/gallery/destiny/video/split-signal-${big?'1080':'720'}p60.mp4`;mv.preload='auto';}}
+    function syncVideo(){
+      if(!touring)return;mvSource();
+      const drift=time-mv.currentTime;
+      if(!playing){if(!mv.paused)mv.pause();if(Math.abs(drift)>.02&&mv.readyState>=1)mv.currentTime=time;return;}
+      if(mv.paused&&time<duration)mv.play().catch(()=>{});
+      if(Math.abs(drift)>.25&&mv.readyState>=1){mv.currentTime=time;mv.playbackRate=1;}
+      else mv.playbackRate=Math.abs(drift)>.02?1+Math.max(-.08,Math.min(.08,drift*1.5)):1;
+      // The song fades out over the clip's last 1.2 s.
+      if(music)audio.volume=Number(q('.music-volume').value)*Math.max(0,Math.min(1,(duration-time)/1.2));
+    }
     const audio=q('.tour-music'), soundButton=q('.music-toggle');
     // The media element stays in one DOM location throughout every visual transition.
     dialog.after(audio);
@@ -180,7 +192,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     let touring=false, playing=false, time=0, tickId=0, lastTick=0, currentShot=-1, lastReported=-1, reportedAt=0;
     let music=false, audioPending=false, audioGeneration=0, musicLoading=false;
     function soundState(){soundButton.setAttribute('aria-pressed',String(music));q('.music-button-label').textContent=music?'Wycisz':'Włącz dźwięk';soundButton.setAttribute('aria-label',music?'Wycisz muzykę':'Włącz dźwięk');}
-    function pauseTour(){playing=false;audioGeneration++;audio.pause();cancelAnimationFrame(tickId);play.textContent='▶';play.setAttribute('aria-label','Odtwórz oprowadzanie');}
+    function pauseTour(){playing=false;audioGeneration++;audio.pause();mv.pause();cancelAnimationFrame(tickId);play.textContent='▶';play.setAttribute('aria-label','Odtwórz oprowadzanie');}
     function clock(t){return `${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;}
     function audioStart(){
       if(!music||!playing||audioPending||audio.readyState<1)return;
@@ -293,6 +305,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     }
     function camera(){
       if(!touring)return;
+      syncVideo();
       const view=composition(time),{n,shot,elapsed,passage,paperPull}=view;
       const size=`${view.width}:${view.height}`;if(frameSize!==size){frameSize=size;frame.style.width=view.width+'px';frame.style.height=view.height+'px';}
       frame.style.transform=view.transform;frame.style.filter=`brightness(${view.motion.light})`;canvas.dataset.beatPulse=view.motion.pulse.toFixed(4);canvas.dataset.paperRoll=view.roll.toFixed(4);
@@ -301,7 +314,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const atlasDeparture=atlasBridge?composition(atlasBridge.beats[0]):null;
       flightEvent(dialog.open,{...view,atlasDeparture,drawingCovered:effects&&Boolean(passage)&&pull<.5});
       sceneBlend(view);
-      const title=q('.viewer-title'),label=time<musicGrid.entrance?'Światło i linie':wallpapers[index].name;if(title.textContent!==label)title.textContent=label;
+      const title=q('.viewer-title'),label='Split Signal';if(title.textContent!==label)title.textContent=label;
       canvas.dataset.paperScale=view.scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
       if(currentShot!==n){
         currentShot=n;
@@ -334,31 +347,27 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       lastTick=now;if(playing)tickId=requestAnimationFrame(tick);
     }
     function togglePlay(){if(playing){pauseTour();return;}if(time>=duration)seekTour(0);playing=true;play.textContent='Ⅱ';play.setAttribute('aria-label','Wstrzymaj oprowadzanie');audioSeek();audioStart();lastTick=performance.now();tickId=requestAnimationFrame(tick);}
-    const teaser=launch.querySelector('.gallery-teaser'),teaserFrame=launch.querySelector('.teaser-frame'),teaserImage=teaserFrame.querySelector('img');
-    let teaserTick=0,teaserStarted=0,teaserId=null;
-    function stopTeaser(){cancelAnimationFrame(teaserTick);teaserTick=0;teaser.hidden=true;launch.classList.remove('is-previewing');}
-    function previewFrame(now){
+    const teaser=launch.querySelector('.gallery-teaser'),teaserFrame=launch.querySelector('.teaser-frame');
+    // Hover preview: the silent clip from the drop, where one wallpaper lands on every beat.
+    let teaserVideo=null,teaserTick=0;
+    function stopTeaser(){cancelAnimationFrame(teaserTick);teaserTick=0;teaserVideo?.pause();teaser.hidden=true;launch.classList.remove('is-previewing');}
+    function previewFrame(){
       if(dialog.open||document.hidden){stopTeaser();return;}
-      const t=8.18+(now-teaserStarted)/1000%(duration-8.18),n=Math.max(0,tour.findLastIndex(s=>s.at<=t)),shot=tour[n],elapsed=t-shot.at;
-      const prev=n>0&&tour[n-1].id===shot.id&&shot.motion!=='cut'?tour[n-1]:shot;
-      let u=Math.min(1,elapsed/(shot.motion==='float'?2.8:shot.motion==='pan'?1.8:1.15));u=u*u*(3-2*u);
-      const x=prev.x+(shot.x-prev.x)*u,y=prev.y+(shot.y-prev.y)*u;
-      const drift=1-Math.min(elapsed,4)*.007,prior=prev===shot?1:1-Math.min(shot.at-tour[n-1].at,4)*.007;
-      const sw=Math.exp(Math.log(prev.w*prior)*(1-u)+Math.log(shot.w)*u)*drift,sh=Math.exp(Math.log(prev.h*prior)*(1-u)+Math.log(shot.h)*u)*drift;
-      const cw=launch.clientWidth,ch=launch.clientHeight,bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120,scale=Math.min(cw/(bw*sw),ch/(bh*sh));
-      teaserFrame.style.width=`${bw}px`;teaserFrame.style.height=`${bh}px`;teaserFrame.style.transform=`rotate(${Math.sin(t*.23)*.65+Math.sin(t*.51)*.22}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
-      if(teaserId!==shot.id){teaserId=shot.id;teaserImage.src=wallpapers.find(w=>w.id===shot.id).thumb;}
-      launch.querySelector('.teaser-caption').textContent=shot.caption;
-      launch.querySelector('.teaser-progress').style.transform=`scaleX(${t/duration})`;
+      launch.querySelector('.teaser-progress').style.transform=`scaleX(${teaserVideo.currentTime/duration})`;
       teaserTick=requestAnimationFrame(previewFrame);
     }
-    function startTeaser(){if(reduced.matches||dialog.open||teaserTick)return;teaserStarted=performance.now();teaser.hidden=false;launch.classList.add('is-previewing');teaserTick=requestAnimationFrame(previewFrame);}
+    function startTeaser(){
+      if(reduced.matches||dialog.open||teaserTick)return;
+      if(!teaserVideo){teaserVideo=document.createElement('video');teaserVideo.muted=true;teaserVideo.playsInline=true;teaserVideo.loop=true;teaserVideo.src='/gallery/destiny/video/split-signal-720p60.mp4#t=38.5';teaserFrame.replaceChildren(teaserVideo);}
+      teaser.hidden=false;launch.classList.add('is-previewing');launch.querySelector('.teaser-caption').textContent='Podgląd bez dźwięku · kliknij, żeby obejrzeć z muzyką';
+      teaserVideo.play().catch(()=>{});teaserTick=requestAnimationFrame(previewFrame);
+    }
     launch.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')startTeaser();});
     launch.addEventListener('pointerleave',stopTeaser);launch.addEventListener('focus',startTeaser);launch.addEventListener('blur',stopTeaser);launch.addEventListener('click',stopTeaser);
     let tourWarmed=false;
     function warmTour(){if(tourWarmed)return;tourWarmed=true;for(const id of [...new Set(tour.map(s=>s.id))].slice(0,2)){const w=wallpapers.find(w=>w.id===id);warmImage(w);}}
-    function startTour(resume=false){warmTour();const continuous=music&&!audio.paused&&(resume||!touring);const position=continuous?audio.currentTime:resume?(music&&audio.src?audio.currentTime:time):0;if(!continuous)pauseTour();else cancelAnimationFrame(tickId);setZoom(false);touring=true;dialog.classList.add('is-touring');player.hidden=false;q('.tour-return').hidden=true;currentShot=-1;seekTour(position);if(continuous){playing=true;play.textContent='Ⅱ';play.setAttribute('aria-label','Wstrzymaj oprowadzanie');lastTick=performance.now();tickId=requestAnimationFrame(tick);}else{audioSeek();if(!reduced.matches)togglePlay();}}
-    function leaveTour(){bridge.hidden=true;frameSize='';bridgeKey='';flightEvent(false);pauseTour();touring=false;dialog.classList.remove('is-touring');player.hidden=true;q('.tour-return').hidden=false;frame.style.width='';frame.style.height='';frame.style.transform='';frame.style.filter='';}
+    function startTour(resume=false){warmTour();const continuous=music&&!audio.paused&&(resume||!touring);const position=continuous?audio.currentTime-soundtrackOffset:resume?(music&&audio.src?audio.currentTime-soundtrackOffset:time):0;if(!continuous)pauseTour();else cancelAnimationFrame(tickId);setZoom(false);touring=true;dialog.classList.add('is-touring');player.hidden=false;q('.tour-return').hidden=true;currentShot=-1;seekTour(position);if(continuous){playing=true;play.textContent='Ⅱ';play.setAttribute('aria-label','Wstrzymaj oprowadzanie');lastTick=performance.now();tickId=requestAnimationFrame(tick);}else{audioSeek();if(!reduced.matches)togglePlay();}}
+    function leaveTour(){bridge.hidden=true;mv.pause();frameSize='';bridgeKey='';flightEvent(false);pauseTour();touring=false;dialog.classList.remove('is-touring');player.hidden=true;q('.tour-return').hidden=false;frame.style.width='';frame.style.height='';frame.style.transform='';frame.style.filter='';}
     play.onclick=togglePlay;
     function scrub(t){pauseTour();seekTour(t);audioSeek();}
     seek.addEventListener('input',()=>scrub(Number(seek.value)));
@@ -401,6 +410,9 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 
 .viewer-error{top:82px;bottom:auto;max-width:440px;background:#151a25ed;box-shadow:0 6px 20px #0004}
 
+.destiny-mv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#04060b;z-index:6;display:none;pointer-events:none}
+#wallpaper-viewer.is-touring .destiny-mv{display:block}
+#wallpaper-viewer.is-touring .viewer-fx{display:none}
 :global(.destiny-film){position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6;display:none}
 :global(.fusion-flight){position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;display:none}
 :global(.scene-atlas){position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;display:none;will-change:opacity}
@@ -433,7 +445,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 
 .gallery-teaser{position:absolute;inset:0;overflow:hidden;background:#090d16}
 .gallery-teaser[hidden]{display:none}
-.teaser-frame{position:absolute;left:50%;top:50%;transform-origin:0 0;will-change:transform}
+.teaser-frame{position:absolute;inset:0}.teaser-frame video{width:100%;height:100%;object-fit:cover;display:block}
 .teaser-frame img{display:block;width:100%;height:100%;object-fit:contain;max-width:none}
 .teaser-caption{position:absolute;left:18px;right:18px;top:16px;color:#edf4ff;font:500 13px/1.4 system-ui;text-align:center;text-shadow:0 1px 7px #000,0 0 15px #000;background:#070a115c;padding:6px 10px;border-radius:6px;width:fit-content;max-width:calc(100% - 36px);margin:auto}
 .teaser-progress{position:absolute;bottom:0;left:0;height:2px;width:100%;background:#bddfff;transform-origin:left;z-index:2}
@@ -445,4 +457,14 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 
 <style>
 .scene-bridge{position:absolute;inset:0;z-index:3;overflow:hidden;pointer-events:none;will-change:opacity;background:#07090e}.scene-bridge-frame{position:absolute;left:50%;top:50%;transform-origin:0 0;will-change:transform}.scene-bridge-frame img{width:100%;height:100%;object-fit:contain;display:block}
+
+/* While the music video plays, the picture gets the room: one-row music card, no caption line. */
+#wallpaper-viewer.is-touring .tour-caption,#wallpaper-viewer.is-touring .viewer-count{display:none}
+#wallpaper-viewer.is-touring .tour-player{padding-top:12px}
+:global(#wallpaper-viewer.is-touring.music-surface) .tour-audio{grid-template-columns:44px minmax(0,1fr) auto;gap:10px 14px;margin:6px auto 10px;padding:10px 14px;border-radius:12px;box-shadow:none}
+:global(#wallpaper-viewer.is-touring.music-surface) .music-art{width:44px;height:44px;border-radius:6px}
+:global(#wallpaper-viewer.is-touring.music-surface) .music-title{font-size:18px}
+:global(#wallpaper-viewer.is-touring.music-surface) :is(.music-eyebrow,.music-footnote){display:none}
+:global(#wallpaper-viewer.is-touring.music-surface) .music-actions{flex-direction:row;gap:14px;grid-column:auto}
+@media(max-width:700px){:global(#wallpaper-viewer.is-touring.music-surface) .tour-audio{grid-template-columns:36px minmax(0,1fr)}:global(#wallpaper-viewer.is-touring.music-surface) .music-art{width:36px;height:36px}:global(#wallpaper-viewer.is-touring.music-surface) .music-actions{grid-column:1/-1}}
 </style>
