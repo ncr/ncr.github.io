@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {createDinner} from './truth-dinner-flight.js';
 import {loadContours,buildContours} from './contour-resonance.js';
+import {createSceneAtlas} from './scene-atlas.js';
 import timing from '../data/flight-timing.json';
 import drawingScore from '../data/drawing-score.json';
 import musicGrid from '../data/music-grid.json';
@@ -25,7 +26,7 @@ const voiceSpectrum=`
  vec3 voiceColor(float v){return mix(vec3(1.,.62,.25),vec3(.28,.78,1.),v/5.);}
 `;
 const pointVertex=`${landingUniforms}
- attribute float lane;attribute float spark;uniform sampler2D penTable;uniform vec2 tableSize;uniform float elapsed;uniform float penFPS;uniform float audible;uniform float bands[16];uniform float pixelRatio;uniform float mutedHero;uniform vec2 beatTimes;uniform vec2 beatStrengths;
+ attribute float lane;uniform sampler2D penTable;uniform vec2 tableSize;uniform float elapsed;uniform float penFPS;uniform float audible;uniform float bands[16];uniform float mutedHero;uniform vec2 beatTimes;uniform vec2 beatStrengths;
  varying float alpha;varying vec3 tint;${voiceSpectrum}
  vec4 pen(float row,float time){
   float f=clamp(time*penFPS,0.,tableSize.x-1.001),i=floor(f),u=fract(f);
@@ -34,38 +35,20 @@ const pointVertex=`${landingUniforms}
   if(abs(a.w-b.w)<.1)return vec4(mix(a.xyz,b.xyz,u),step(.5,a.w));
   return vec4(u<.5?a.xyz:b.xyz,(u<.5?step(.5,a.w):step(.5,b.w))*pow(abs(2.*u-1.),2.));
  }
+ float hit(float at,float strength){float age=elapsed-at;return age<0.?0.:strength*exp(-age*15.);}
  void main(){
   if(lane>=tableSize.y||abs(lane-mutedHero)<.1){alpha=0.;tint=vec3(0.);gl_PointSize=1.;gl_Position=vec4(2.,2.,2.,1.);return;}
-  float voice=lane-20.,choral=step(20.,lane);
-  float bin=mod(max(0.,spark),16.),power=mix(.10,pow(clamp(bands[int(bin)]*1.65,0.,1.),.8),audible);
-  if(choral>.5)power=mix(.10,pow(clamp(voiceEnergy(voice)*1.65,0.,1.),.8),audible);
-  float age=0.,strength=0.,emitted=elapsed,seed=0.,life=.4;
-  if(spark>=0.){
-   float slot=step(24.,spark),number=mod(spark,24.);
-   float hit=mix(beatTimes.x,beatTimes.y,slot);strength=mix(beatStrengths.x,beatStrengths.y,slot);
-   seed=fract(sin(number*127.1+lane*311.7+hit*19.19)*43758.5453);
-   float delay=.045*fract(seed*7.13);emitted=hit+delay;age=elapsed-emitted;
-   life=.19+strength*.14+seed*.10;
-   if(strength<=0.||age<0.||age>life||number>6.+strength*17.){alpha=0.;tint=vec3(0.);gl_PointSize=1.;gl_Position=vec4(2.,2.,2.,1.);return;}
-  }
-  vec4 tip=pen(lane,emitted);vec3 at=tip.xyz;alpha=tip.w;
-  tint=vec3(.65,.86,1.);float diameter=lane>=14.?26.:4.;
-  if(choral>.5){tint=voiceColor(voice);diameter=mix(34.,23.,voice/5.)+power*24.;alpha*=.5+power;}
-  if(spark>=0.){
-   vec4 before=pen(lane,max(0.,emitted-.025));vec2 delta=tip.xy-before.xy;vec2 tangent=length(delta)>.01?normalize(delta):vec2(1.,0.);
-   vec2 normal=vec2(-tangent.y,tangent.x);
-   float angle=6.2831853*seed,speed=(22.+strength*95.)*(.4+fract(seed*13.37)*.8);
-   // One short, irregular spray per bass attack, followed by empty space.
-   at.xy+=age*speed*(normal*sin(angle)-tangent*(.2+.6*abs(cos(angle))));
-   at.y-=age*age*(25.+seed*45.);at.z+=sin(angle*1.7)*age*speed*.25;
-   alpha=tip.w*smoothstep(0.,.012,age)*pow(1.-age/life,1.25)*(.5+strength*1.5);
-   diameter=2.+strength*3.+(seed>.87?3.:0.);
-   tint=choral>.5?voiceColor(voice):mix(vec3(1.,.7,.34),vec3(.35,.8,1.),seed);
-  }
-  gl_PointSize=diameter*pixelRatio;gl_Position=projectionMatrix*modelViewMatrix*vec4(at,1.);
+  vec4 tip=pen(lane,elapsed);vec3 at=tip.xyz;
+  float pulse=clamp(max(hit(beatTimes.x,beatStrengths.x),hit(beatTimes.y,beatStrengths.y)),0.,1.);
+  float power=lane>=20.?voiceEnergy(lane-20.):(bands[0]+bands[1]+bands[2])/3.;
+  tint=lane>=20.?voiceColor(lane-20.):vec3(.76,.86,.91);
+  alpha=tip.w*(.72+.28*pulse+.15*power*audible);
+  // Lines are one framebuffer pixel wide. The nib stays that size: no halo or spray.
+  gl_PointSize=1.12+.18*pulse;
+  gl_Position=projectionMatrix*modelViewMatrix*vec4(at,1.);
   vec2 paper=paperOrigin+at.x*paperX+at.y*paperY;gl_Position.xy=mix(gl_Position.xy,paper*gl_Position.w,landing);
  }`;
-const pointFragment=`varying float alpha;varying vec3 tint;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;float core=exp(-r*r*28.);float halo=pow(1.-r,2.);gl_FragColor=vec4(mix(tint,vec3(1.,.96,.88),core),(core+halo*.55)*alpha);}`;
+const pointFragment=`varying float alpha;varying vec3 tint;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;gl_FragColor=vec4(tint,alpha*(1.-smoothstep(.7,1.,r)));}`;
 
 // Projected vectors from the released sheets; the nozzle and dinner use original full 3D geometry.
 // Other sheets float as linework, with slight depth separation; no invented reverse side.
@@ -73,6 +56,7 @@ export function createFlight(host,onReady=()=>{}){
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
  const element=renderer.domElement;element.className='fusion-flight';element.setAttribute('aria-hidden','true');host.append(element);
+ const atlas=createSceneAtlas(host,onReady);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.2,4000);
  const dinner=createDinner(scene,renderer);let dinnerQueued=false;
  const cache=new Map(),pending=new Map(),unavailable=new Set();
@@ -88,10 +72,8 @@ export function createFlight(host,onReady=()=>{}){
  function cutTargets(w,h){const size=w+':'+h;if(cutSize===size)return;cutSize=size;cutKey='';cutBefore?.dispose();cutAfter?.dispose();const ratio=renderer.getPixelRatio();cutBefore=new THREE.WebGLRenderTarget(Math.round(w*ratio),Math.round(h*ratio),{samples:2});cutAfter=new THREE.WebGLRenderTarget(Math.round(w*ratio),Math.round(h*ratio),{samples:2});}
  const detail=new THREE.Group();scene.add(detail);detail.visible=false;
  const spectrum=new Float32Array(16),beatFrame=new Float32Array(4),pose=new Float32Array(7);let previousFrame=0;
- const gp=new THREE.BufferGeometry(),lanes=[],sparks=[];
- for(let i=0;i<26;i++){lanes.push(i);sparks.push(-1);}
- for(let i=14;i<26;i++)for(let j=0;j<48;j++){lanes.push(i);sparks.push(j);}
- gp.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lanes.length*3),3));gp.setAttribute('lane',new THREE.Float32BufferAttribute(lanes,1));gp.setAttribute('spark',new THREE.Float32BufferAttribute(sparks,1));
+ const gp=new THREE.BufferGeometry(),lanes=Array.from({length:26},(_,i)=>i);
+ gp.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lanes.length*3),3));gp.setAttribute('lane',new THREE.Float32BufferAttribute(lanes,1));
  const idle=fn=>(window.requestIdleCallback?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,0));
  function build(data,buffer,contourBuffer){
    const group=new THREE.Group(),geometry=new THREE.BufferGeometry();
@@ -106,7 +88,7 @@ export function createFlight(host,onReady=()=>{}){
     const texture=new THREE.DataTexture(new Float32Array(buffer,p.pens.offset*4,p.pens.count),p.penWidth,p.penRows||20,THREE.RGBAFormat,THREE.FloatType);texture.needsUpdate=true;
     plans[start]={...p,texture,camera:new Float32Array(buffer,p.camera.offset*4,p.camera.count)};
    }
-   const pm=new THREE.ShaderMaterial({uniforms:{...placement,penTable:{value:null},tableSize:{value:new THREE.Vector2()},elapsed:{value:0},penFPS:{value:60},audible:{value:0},bands:{value:spectrum},pixelRatio:{value:Math.min(devicePixelRatio,1.5)},mutedHero:{value:-1},beatTimes:{value:new THREE.Vector2(-1000,-1000)},beatStrengths:{value:new THREE.Vector2()}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
+   const pm=new THREE.ShaderMaterial({uniforms:{...placement,penTable:{value:null},tableSize:{value:new THREE.Vector2()},elapsed:{value:0},penFPS:{value:60},audible:{value:0},bands:{value:spectrum},mutedHero:{value:-1},beatTimes:{value:new THREE.Vector2(-1000,-1000)},beatStrengths:{value:new THREE.Vector2()}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
    const points=new THREE.Points(gp,pm);points.frustumCulled=false;group.add(points);scene.add(group);group.visible=false;
    return {data,group,geometry,material,placement,pm,plans,contours,warmed:false,dispose(){scene.remove(group);geometry.dispose();material.dispose();pm.dispose();contours?.dispose();for(const p of Object.values(plans))p.texture.dispose();}};
  }
@@ -137,6 +119,10 @@ export function createFlight(host,onReady=()=>{}){
  }).catch(()=>{});}
  function render(time,passage,paperFrame,internal=false){
    if(failed)return false;
+   if(!internal){
+    if(passage)prepare(passage.id);
+    if(atlas.render(time,paperFrame)){element.style.display='none';host.dataset.liveBlend='0';return true;}
+   }
    const w=paperFrame?.viewportWidth||lastW||host.clientWidth,h=paperFrame?.viewportHeight||lastH||host.clientHeight;if(!w||!h)return false;
    if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
    let introBlend=false,blend=1;
@@ -226,8 +212,8 @@ export function createFlight(host,onReady=()=>{}){
    }
    return true;
  }
- function hide(){element.style.display='none';host.dataset.liveBlend='0';}
+ function hide(){element.style.display='none';host.dataset.liveBlend='0';atlas.hide();}
  element.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;hide();});
  prepare('o03');
- return {render,prepare,prepareNozzle,setAudioLevels(value){energy=value;},hide};
+ return {render,prepare,prepareNozzle,setAudioLevels(value){energy=value;atlas.setAudioLevels(value);},hide};
 }

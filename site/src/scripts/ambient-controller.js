@@ -6,7 +6,7 @@ async function prepare(){
  if(!ready)ready=Promise.all([import(/* @vite-ignore */ '/gallery/destiny/ambient/renderer.js'),fetch('/gallery/destiny/ambient/profiles.json').then(r=>r.json())]).then(([module,data])=>{profiles=data;renderer=module.createAmbient(document.querySelector('.viewer-frame'));});
  await ready;
 }
-function state(){renderer?.setEnabled(visible&&enabled&&!covered&&!reduced.matches&&!document.hidden);}
+function state(){renderer?.setEnabled(visible&&enabled&&!covered&&document.querySelector('.viewer-canvas')?.dataset.atlasActive!=='1'&&!reduced.matches&&!document.hidden);}
 window.addEventListener('destiny-wallpaper',async e=>{
  current=e.detail;visible=true;
  try{await prepare();const w=current;await renderer.load(w.thumb,profiles[w.id],`/gallery/destiny/ambient/masks/${w.id}.png`);state();}catch{renderer?.setEnabled(false);}

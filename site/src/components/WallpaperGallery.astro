@@ -5,6 +5,8 @@ import tour from '../data/destiny-tour.json'
 import drawingScore from '../data/drawing-score.json'
 import musicGrid from '../data/music-grid.json'
 import introFrames from '../data/intro-framing.json'
+import sceneAtlas from '../data/scene-atlas.json'
+const atlasBridges=sceneAtlas.bridges
 const tourDuration = 299.21
 const chapters = tour.filter(s => s.chapter && !["Prolog", "Finał"].includes(s.chapter))
 const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
@@ -68,7 +70,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
   import "../scripts/ambient-controller.js";
   import "../scripts/audio-reactivity.js";
 </script>
-<script define:vars={{musicGrid, introFrames, wallpapers, tour, tourDuration, drawingScore }}>
+<script define:vars={{musicGrid, introFrames, wallpapers, tour, tourDuration, drawingScore, atlasBridges }}>
   (() => {
     const dialog = document.querySelector('#wallpaper-viewer');
     const q = s => dialog.querySelector(s) || document.querySelector(s);
@@ -276,7 +278,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     }
     function sceneBlend(view){
       const {n,elapsed,passage}=view,previous=n?tour[n-1]:null;
-      if(!previous||reduced.matches||canvas.dataset.liveBlend==='1'){bridge.hidden=true;return;}
+      if(!previous||reduced.matches||canvas.dataset.liveBlend==='1'||canvas.dataset.atlasActive==='1'){bridge.hidden=true;return;}
       const priorPassage=drawingScore.find(s=>tour[n].at-.001>=s.start&&tour[n].at-.001<s.end);
       const cut=previous.id!==view.shot.id||(view.shot.motion==='cut'&&!(passage&&passage===priorPassage));
       const span=tour[n].at<musicGrid.entrance?musicGrid.introDissolve:(passage?.blendSpan||musicGrid.beats[2]-musicGrid.beats[0]);
@@ -294,7 +296,9 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const size=`${view.width}:${view.height}`;if(frameSize!==size){frameSize=size;frame.style.width=view.width+'px';frame.style.height=view.height+'px';}
       frame.style.transform=view.transform;frame.style.filter=`brightness(${view.motion.light})`;canvas.dataset.beatPulse=view.motion.pulse.toFixed(4);canvas.dataset.paperRoll=view.roll.toFixed(4);
       const pull=passage?scorePull(passage,time-passage.start):1;
-      flightEvent(dialog.open,{...view,drawingCovered:effects&&Boolean(passage)&&pull<.5});
+      const atlasBridge=effects&&!reduced.matches?atlasBridges.find(b=>time>=b.beats[0]&&time<b.beats[4]):null;
+      const atlasDeparture=atlasBridge?composition(atlasBridge.beats[0]):null;
+      flightEvent(dialog.open,{...view,atlasDeparture,drawingCovered:effects&&Boolean(passage)&&pull<.5});
       sceneBlend(view);
       const title=q('.viewer-title'),label=time<musicGrid.firstReveal?'Światło i linie':wallpapers[index].name;if(title.textContent!==label)title.textContent=label;
       canvas.dataset.paperScale=view.scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
@@ -394,6 +398,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 .viewer-error{top:82px;bottom:auto;max-width:440px;background:#151a25ed;box-shadow:0 6px 20px #0004}
 
 :global(.fusion-flight){position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;display:none}
+:global(.scene-atlas){position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;display:none;will-change:opacity}
 @media(max-width:700px){.viewer-fx span{display:none}}
 @media(prefers-reduced-motion:reduce){.viewer-fx{display:none!important}}
 

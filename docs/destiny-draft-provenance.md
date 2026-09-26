@@ -270,3 +270,49 @@ draft exclusion checks pass. CUA Chrome review covers all three cue families,
 desktop and 390 px mobile framing, the dinner dissolve at beat 13, actual MP3
 playback and absence of shader errors. Existing browser regression scripts were
 updated for beat 14, but were not rerun in this revision; browser checks used CUA.
+
+## 2026-09-26 — a shared animated atlas of 42 scenes
+
+The author's new direction replaces particle sprays with a line-width laser nib
+and the scored cuts with a camera flight through a shuffled 7 × 6 scene grid.
+The 26 immutable pen lanes now draw only 1.12–1.30 framebuffer-pixel tips; measured
+bass attacks gently affect brightness/diameter, never the speed of the pen.
+There is no particle emitter, spray geometry or large glow halo.
+
+`prepare-scene-atlas.py` packs all 42 existing wallpaper thumbnails and authentic
+source paths. `scene-atlas.json` records source SHA-256 values, the fixed shuffle
+seed, cell assignments and beat times. A shuffled Hamiltonian route places each
+of the 32 scored selections beside the next one (N/E/S/W); the other ten scenes
+fill the remaining cells and animate too. The layout stays stable when seeking.
+No new artwork, generated historical images or modified source wallpapers are used.
+
+Each bridge occupies beats 14–16 of the outgoing phrase and beats 0–2 of the next:
+one beat to pull out, two beats to travel, one beat to approach the new detail.
+Thus every wallpaper still occupies its original four-bar phrase. This supersedes
+the previous stationary two-beat overview: those two beats now start the flight.
+Every eighth bridge opens onto the entire collection; others show a neighborhood.
+Camera translation follows the visible world span so the final zoom approaches
+the subject rather than a gap. Quintic joins, a small lateral arc/bank and a moving
+arrival dissolve connect the atlas to the drawing. The dinner and nozzle get
+separate spatial arrival crops; dinner uses the full table-and-lamp scene, not the
+obsolete lamp-only camera. The existing close-up mystery intro is preserved.
+
+All 42 scenes carry travelling contour light and subtle audio-reactive brightness.
+The atlas costs two batched draw calls: one merged texture plane and one immutable
+buffer of 85,152 line vertices. Offline assets are ~291 KiB WebP + ~1.95 MiB vectors.
+Only the outgoing/incoming high-resolution textures are sampled close up; a bounded
+cache preloads them. The covered single-scene renderer and ambient layer stop
+rendering during the opaque passage. Geometry/path selection and sampling never
+run in the animation loop. This is a bounded rendering design, not a measured
+frame-rate guarantee for every phone. Music uses the existing persistent player.
+Missing atlas assets/WebGL fall back to the existing transition; reduced-motion
+and the effects switch bypass the flight.
+
+Validation: `check-scene-atlas.mjs` checks all 42 unique scenes/source hashes,
+31 cardinal four-beat bridges, continuity at four aspect ratios, close arrival
+framing, finite bounded buffers and removal of spray geometry. Existing musical
+and contour score checks, Astro build, asset existence and draft exclusions pass.
+CUA Chrome review includes desktop and 390 px mobile, the whole grid, detail
+arrivals and the dinner crop. Actual MP3 playback advanced through several bridges
+without changing its source or pausing; no shader errors were reported. The draft
+remains unlisted, with draft:true and noindex/nofollow.

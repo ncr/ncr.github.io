@@ -20,4 +20,4 @@ for(const s of score.filter(s=>s.beats)){
 }
 for(const s of tour.filter(s=>s.at>=grid.entrance))assert(grid.beats.some(t=>Math.abs(t-s.at)<1e-6),'Caption/edit off beat: '+s.at);
 assert.equal(grid.duration,299.21);assert(grid.duration-grid.tailStart<5);
-console.log('PASS: 32 contiguous four-bar phrases, constant pen speed, two-beat overview, baked camera arrival, captions on beat, 42 gallery entries, complete soundtrack.');
+console.log('PASS: 32 contiguous four-bar phrases, constant pen speed, two-beat outgoing window, baked camera arrival, captions on beat, 42 gallery entries, complete soundtrack.');
