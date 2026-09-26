@@ -42,7 +42,7 @@ try:
   fallback.goto(url,wait_until='domcontentloaded');fallback.locator('.gallery-launch').click()
   fallback.locator('.tour-seek').fill('12');fallback.locator('.tour-seek').dispatch_event('input');fallback.wait_for_timeout(500)
   assert not fallback.locator('.fusion-flight').is_visible()
-  assert fallback.locator('.viewer-image').is_visible()
+  fallback.wait_for_function('Array.from(document.querySelectorAll(".viewer-image, .viewer-preview")).some(e=>e.complete&&e.naturalWidth>0&&getComputedStyle(e).visibility==="visible")')
   browser.close()
  print('PASS: all 43 passages, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
 finally:
