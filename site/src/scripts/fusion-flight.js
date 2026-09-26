@@ -154,8 +154,8 @@ export function createFlight(host,onReady=()=>{}){
    if(orbiting){
      prepareNozzle();if(!nozzleReady){hide();return false;}detail.children[0].material.uniforms.levels.value.set(energy.active?energy.bass:.6,energy.active?energy.mids:.6,energy.active?energy.highs:.6);
      renderer.setClearColor(0x100c10,1);element.style.filter='none';
-     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,b=beatAt(orbitPlan,elapsed),u=clamp((b-4)/8),angle=-.8+(u*.65+smoother(u)*.35)*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smoother(b/4))+.3*smoother((b-12)/4));
-     camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(u*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
+     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,b=beatAt(orbitPlan,elapsed),u=clamp((b-4)/8),angle=-.8+smoother(u)*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smoother(b/4))+.3*smoother((b-12)/4));
+     camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(smoother(u)*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
      element.style.opacity=String(smoother(b/2)*(1-smoother((b-12)/4)));element.dataset.drawing='nozzle-orbit';
    }else{
      if(!passage){hide();return false;}
