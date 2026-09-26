@@ -1,11 +1,11 @@
 [
   {
-    "id": "o01",
+    "id": "o03",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "Deszcz kresek. Małe światy. Wchodzimy.",
+    "caption": "Najpierw powstaje statek.",
     "chapter": "Prolog",
     "motion": "float",
     "at": 0
@@ -221,7 +221,7 @@
     "y": 0.47,
     "w": 0.24,
     "h": 0.52,
-    "caption": "Zaczyna się od jednej linii.",
+    "caption": "Do statku wracamy już z bliska.",
     "motion": "cut",
     "chapter": "Podróż"
   },
@@ -232,7 +232,7 @@
     "y": 0.39,
     "w": 0.24,
     "h": 0.52,
-    "caption": "Jedziemy jej śladem. Reszta rośnie wokół.",
+    "caption": "Przewody, radiatory, pierścienie.",
     "motion": "pan"
   },
   {
@@ -242,7 +242,7 @@
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "Z tych linii powstaje cały statek.",
+    "caption": "Z daleka znów zostaje spokojna plama koloru.",
     "motion": "pull"
   },
   {

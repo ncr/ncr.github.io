@@ -45,7 +45,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>Otwórz galerię</span><span class="gallery-total">42</span></button>
       <div class="viewer-tools">
         <button type="button" class="viewer-zoom" aria-pressed="false" title="Powiększenie (Z)">＋ <span>Detal</span></button>
-        <button type="button" class="viewer-fx" aria-pressed="true" title="Włącz lub wyłącz efekty przestrzenne">◇ <span>Efekty 3D</span></button>
+        <button type="button" class="viewer-fx" aria-pressed="true" aria-label="Animacje tapet i efekty 3D" title="Włącz lub wyłącz animacje tapet i efekty 3D">◇ <span>Animacje</span></button>
         <button type="button" class="viewer-fullscreen" aria-label="Pełny ekran" aria-pressed="false" title="Pełny ekran (F)">⛶ <span>Pełny ekran</span></button>
         <a class="viewer-download" aria-label="Pobierz tapetę" download title="Pobierz oryginał 5120 × 2160">↓ <span>Pobierz</span></a>
       </div>
@@ -60,6 +60,8 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 </dialog>
 <script>
   import "../scripts/flight-controller.js";
+  import "../scripts/ambient-controller.js";
+  import "../scripts/audio-reactivity.js";
 </script>
 <script define:vars={{ wallpapers, tour, tourDuration }}>
   (() => {
@@ -88,6 +90,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       if(!fromTour && touring) leaveTour();
       index = (next + wallpapers.length) % wallpapers.length;
       const w = wallpapers[index]; const ticket = ++request;
+      window.dispatchEvent(new CustomEvent('destiny-wallpaper',{detail:w}));
       setZoom(false); q('.viewer-error').hidden = true;
       q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
       q('.viewer-title').textContent=w.name;
@@ -190,7 +193,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     function playbackState(){
       const audible=music&&!audio.paused&&!audio.seeking&&audio.readyState>=3&&audio.volume>0;
       musicCard.classList.toggle('is-sounding',audible);reveal.classList.toggle('is-sounding',audible);
-      q('.music-playback-label').textContent=audible?'Teraz gra · w rytmie obrazu':music?(playing?'Czekam na muzykę…':'Pauza · wznów pokaz'):'Posłuchaj razem z obrazem';
+      q('.music-playback-label').textContent=audible?'Teraz gra · muzyka prowadzi światło':music?(playing?'Czekam na muzykę…':'Pauza · wznów pokaz'):'Posłuchaj razem z obrazem';
     }
     for(const event of ['playing','pause','waiting','seeking','seeked','volumechange'])audio.addEventListener(event,playbackState);
     q('.music-volume').addEventListener('input',e=>{audio.volume=Number(e.target.value);playbackState();});
@@ -221,7 +224,8 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120;
       const scale=Math.min(cw/(bw*w),ch/(bh*h));
       frame.style.width=`${bw}px`;frame.style.height=`${bh}px`;
-      frame.style.transform=`translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
+      const roll=reduced.matches?0:Math.sin(time*.23)*.65+Math.sin(time*.51)*.22;
+      frame.style.transform=`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
       if(currentShot!==n){
         currentShot=n;
         const caption=q('.tour-caption');caption.replaceChildren();
@@ -260,7 +264,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const drift=1-Math.min(elapsed,4)*.007,prior=prev===shot?1:1-Math.min(shot.at-tour[n-1].at,4)*.007;
       const sw=Math.exp(Math.log(prev.w*prior)*(1-u)+Math.log(shot.w)*u)*drift,sh=Math.exp(Math.log(prev.h*prior)*(1-u)+Math.log(shot.h)*u)*drift;
       const cw=launch.clientWidth,ch=launch.clientHeight,bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120,scale=Math.min(cw/(bw*sw),ch/(bh*sh));
-      teaserFrame.style.width=`${bw}px`;teaserFrame.style.height=`${bh}px`;teaserFrame.style.transform=`translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
+      teaserFrame.style.width=`${bw}px`;teaserFrame.style.height=`${bh}px`;teaserFrame.style.transform=`rotate(${Math.sin(t*.23)*.65+Math.sin(t*.51)*.22}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
       if(teaserId!==shot.id){teaserId=shot.id;teaserImage.src=wallpapers.find(w=>w.id===shot.id).thumb;}
       launch.querySelector('.teaser-caption').textContent=shot.caption;
       launch.querySelector('.teaser-progress').style.transform=`scaleX(${t/duration})`;
@@ -301,16 +305,16 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 @media(prefers-reduced-motion:reduce){.gallery-launch>img,.viewer-image{transition:none}}
 
 #wallpaper-viewer .viewer-grid-toggle:hover{background:#eef7ff;color:#101722}
-:global(.music-surface) .music-toggle{font-size:12px;min-height:40px;padding:8px 14px;border:1px solid #ffffff30;color:#d5e4f5;background:#ffffff08}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle{font-size:12px;min-height:40px;padding:8px 14px;border:1px solid #ffffff30;color:#d5e4f5;background:#ffffff08}
 .tour-chapters{height:40px}.tour-chapters button{min-height:40px}
-@media(max-width:700px){:global(.music-surface) .music-toggle{font-size:11px;padding:8px 10px}.tour-audio a{font-size:10px}.tour-chapters button span{font-size:10px}}
+@media(max-width:700px){:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle{font-size:11px;padding:8px 10px}.tour-audio a{font-size:10px}.tour-chapters button span{font-size:10px}}
 
 /* Music is a featured part of the story, with its own identity and controls. */
-:global(.music-surface) .tour-audio{display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:12px 20px;max-width:1000px;margin:12px auto 18px;padding:18px 20px 12px;border:1px solid #a8c5ee26;border-radius:18px;background:radial-gradient(ellipse at 0 0,#477ba52a,transparent 65%),linear-gradient(110deg,#111c29,#171525);text-align:left;font-size:14px;box-shadow:0 12px 40px #0002}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .tour-audio{display:grid;grid-template-columns:76px minmax(0,1fr) auto;align-items:center;gap:12px 20px;max-width:1000px;margin:12px auto 18px;padding:18px 20px 12px;border:1px solid #a8c5ee26;border-radius:18px;background:radial-gradient(ellipse at 0 0,#477ba52a,transparent 65%),linear-gradient(110deg,#111c29,#171525);text-align:left;font-size:14px;box-shadow:0 12px 40px #0002}
 .music-art{display:block;width:76px;height:76px;object-fit:cover;border-radius:10px;box-shadow:0 4px 20px #0005}.music-identity{display:flex;flex-direction:column;gap:5px;min-width:0}.music-eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#93adc7;font-size:10px;font-weight:600}
-:global(.music-surface) .music-title{font-size:clamp(18px,2vw,26px);line-height:1.12;font-weight:600;letter-spacing:-.035em;color:#edf5ff!important;max-width:none;background:none;text-decoration:none}.music-title span{font-size:15px;color:#829bb7;display:inline-block;margin-left:4px}.music-artist{font-size:14px;color:#c3ccdc}.music-version{color:#8190a5;font-size:12px}.music-actions{display:flex;flex-direction:column;gap:10px;align-items:center}
-:global(.music-surface) .music-toggle{display:flex;align-items:center;gap:10px;border:1px solid #c8dcf45c;border-radius:30px;background:#dcecff;color:#101a2c;padding:8px 18px 8px 9px;min-height:46px;font-size:13px;font-weight:600;white-space:nowrap}:global(.music-surface) .music-toggle:hover{background:#fff}:global(.music-surface) .music-toggle[aria-pressed=true]{background:#ffffff09!important;color:#dcecff!important;border-color:#a8c8e73b}.music-button-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#14365b12;font-size:19px}.music-volume-label{display:flex;align-items:center;gap:9px;font-size:10px;color:#9fadc2}.music-volume{width:85px;accent-color:#bad8f5;height:18px;margin:0;cursor:pointer}.music-footnote{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #d6e6ff12;padding-top:9px;font-size:11px;color:#9faec2;min-height:24px}.music-playing{display:flex;align-items:center;gap:8px}.music-meter{display:flex;align-items:center;gap:3px;height:16px;width:22px}.music-meter i{height:3px;width:2px;background:#a5cfff;border-radius:2px}.is-sounding .music-meter i{animation:music-pulse .75s ease-in-out infinite alternate}.is-sounding .music-meter i:nth-child(2){animation-delay:-.4s}.is-sounding .music-meter i:nth-child(3){animation-delay:-.65s}.is-sounding .music-meter i:nth-child(4){animation-delay:-.2s}@keyframes music-pulse{to{height:14px}}
-@media(max-width:700px){:global(.music-surface) .tour-audio{grid-template-columns:48px minmax(0,1fr);gap:8px 11px;padding:12px;margin:8px auto 10px;border-radius:14px}.music-art{width:48px;height:48px;border-radius:7px}.music-eyebrow{font-size:8px;letter-spacing:.12em}:global(.music-surface) .music-title{font-size:18px}.music-artist{font-size:12px}.music-version{display:none}.music-identity{gap:3px}.music-actions{grid-column:1/-1;flex-direction:row;justify-content:space-between;gap:12px}:global(.music-surface) .music-toggle{font-size:12px;min-height:40px;padding:5px 13px 5px 7px}.music-volume-label{font-size:10px}.music-volume{width:72px}.music-footnote{font-size:10px;padding-top:6px;min-height:18px}.music-status{font-size:10px}}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-title{font-size:clamp(18px,2vw,26px);line-height:1.12;font-weight:600;letter-spacing:-.035em;color:#edf5ff!important;max-width:none;background:none;text-decoration:none}.music-title span{font-size:15px;color:#829bb7;display:inline-block;margin-left:4px}.music-artist{font-size:14px;color:#c3ccdc}.music-version{color:#8190a5;font-size:12px}.music-actions{display:flex;flex-direction:column;gap:10px;align-items:center}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle{display:flex;align-items:center;gap:10px;border:1px solid #c8dcf45c;border-radius:30px;background:#dcecff;color:#101a2c;padding:8px 18px 8px 9px;min-height:46px;font-size:13px;font-weight:600;white-space:nowrap}:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle:hover{background:#fff}:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle[aria-pressed=true]{background:#ffffff09!important;color:#dcecff!important;border-color:#a8c8e73b}.music-button-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#14365b12;font-size:19px}.music-volume-label{display:flex;align-items:center;gap:9px;font-size:10px;color:#9fadc2}.music-volume{width:85px;accent-color:#bad8f5;height:18px;margin:0;cursor:pointer}.music-footnote{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #d6e6ff12;padding-top:9px;font-size:11px;color:#9faec2;min-height:24px}.music-playing{display:flex;align-items:center;gap:8px}.music-meter{display:flex;align-items:center;gap:3px;height:16px;width:22px}.music-meter i{height:3px;width:2px;background:#a5cfff;border-radius:2px}.is-sounding .music-meter i{animation:music-pulse .75s ease-in-out infinite alternate}.is-sounding .music-meter i:nth-child(2){animation-delay:-.4s}.is-sounding .music-meter i:nth-child(3){animation-delay:-.65s}.is-sounding .music-meter i:nth-child(4){animation-delay:-.2s}@keyframes music-pulse{to{height:14px}}
+@media(max-width:700px){:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .tour-audio{grid-template-columns:48px minmax(0,1fr);gap:8px 11px;padding:12px;margin:8px auto 10px;border-radius:14px}.music-art{width:48px;height:48px;border-radius:7px}.music-eyebrow{font-size:8px;letter-spacing:.12em}:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-title{font-size:18px}.music-artist{font-size:12px}.music-version{display:none}.music-identity{gap:3px}.music-actions{grid-column:1/-1;flex-direction:row;justify-content:space-between;gap:12px}:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle{font-size:12px;min-height:40px;padding:5px 13px 5px 7px}.music-volume-label{font-size:10px}.music-volume{width:72px}.music-footnote{font-size:10px;padding-top:6px;min-height:18px}.music-status{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.is-sounding .music-meter i{animation:none;height:8px}}
 
 .viewer-error{top:82px;bottom:auto;max-width:440px;background:#151a25ed;box-shadow:0 6px 20px #0004}
@@ -321,27 +325,27 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 
 @media(max-width:700px){.tour-chapters button span{display:none}.tour-chapters button[aria-current=true] span{display:inline}.tour-chapters button{min-width:20px}}
 
-:global(.music-surface) .music-toggle:not([data-engaged]){position:relative;animation:invite-sound 3.2s ease-in-out infinite;transform-origin:center}
-:global(.music-surface) .music-toggle:not([data-engaged])::after{content:"";position:absolute;inset:-3px;border:1px solid #a7d6ff;border-radius:inherit;pointer-events:none;animation:sound-ripple 3.2s ease-out infinite}
-:global(.music-surface) .music-toggle:not([data-engaged]) .music-button-icon{animation:note-nod 3.2s ease-in-out infinite}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle:not([data-engaged]){position:relative;animation:invite-sound 3.2s ease-in-out infinite;transform-origin:center}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle:not([data-engaged])::after{content:"";position:absolute;inset:-3px;border:1px solid #a7d6ff;border-radius:inherit;pointer-events:none;animation:sound-ripple 3.2s ease-out infinite}
+:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle:not([data-engaged]) .music-button-icon{animation:note-nod 3.2s ease-in-out infinite}
 @keyframes invite-sound{0%,12%,30%,100%{transform:translateY(0) scale(1)}18%{transform:translateY(-3px) scale(1.035)}24%{transform:translateY(0) scale(1.01)}}
 @keyframes sound-ripple{0%,12%{opacity:0;transform:scale(1)}18%{opacity:.55;transform:scale(1)}42%,100%{opacity:0;transform:scale(1.18,1.4)}}
 @keyframes note-nod{0%,12%,32%,100%{transform:rotate(0)}18%{transform:rotate(-12deg)}25%{transform:rotate(9deg)}}
-@media(prefers-reduced-motion:reduce){:global(.music-surface) .music-toggle,:global(.music-surface) .music-toggle::after,:global(.music-surface) .music-button-icon{animation:none!important}}
+@media(prefers-reduced-motion:reduce){:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle,:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-toggle::after,:global(:is(#wallpaper-viewer, #soundtrack-dock).music-surface) .music-button-icon{animation:none!important}}
 
 .music-hide{display:none}
-:global(#soundtrack-dock) .tour-audio{grid-template-columns:44px minmax(0,1fr) auto;gap:10px;margin:14px 0 0;padding:12px;border-radius:12px;box-shadow:none;line-height:1.3}
-:global(#soundtrack-dock) .music-art{width:44px;height:44px;border-radius:6px}
-:global(#soundtrack-dock) .music-title{font-size:17px;line-height:1.2}
-:global(#soundtrack-dock) .music-artist{font-size:11px}
-:global(#soundtrack-dock) .music-eyebrow,:global(#soundtrack-dock) .music-version,:global(#soundtrack-dock) .music-footnote,:global(#soundtrack-dock) .music-volume-label{display:none}
-:global(#soundtrack-dock) .music-actions{display:flex;flex-direction:row;gap:6px;grid-column:auto}
-:global(#soundtrack-dock) .music-toggle{font-family:inherit;cursor:pointer;min-height:36px;font-size:11px;padding:5px 10px;gap:5px}
-:global(#soundtrack-dock) .music-button-icon{width:22px;height:22px;font-size:17px}
-:global(#soundtrack-dock) .music-hide{display:block;width:32px;height:36px;background:transparent;border:0;border-radius:8px;color:#aabbcf;font:24px system-ui;cursor:pointer}
-:global(#soundtrack-dock) button:focus-visible{outline:2px solid #a5ceff;outline-offset:2px}
-:global(#soundtrack-dock) .music-hide:hover{background:#ffffff12;color:white}
-@media(max-width:600px){:global(#soundtrack-dock) .tour-audio{grid-template-columns:32px minmax(0,1fr) auto;gap:8px;padding:10px}:global(#soundtrack-dock) .music-art{width:32px;height:32px}:global(#soundtrack-dock) .music-title{font-size:13px}:global(#soundtrack-dock) .music-title span{display:none}:global(#soundtrack-dock) .music-toggle{padding:5px 7px;font-size:10px}:global(#soundtrack-dock) .music-toggle .music-button-icon{display:none}:global(#soundtrack-dock) .music-hide{width:24px}:global(#soundtrack-dock) .music-actions{gap:2px}}
+:global(#soundtrack-dock.music-surface) .tour-audio{grid-template-columns:44px minmax(0,1fr) auto;gap:10px;margin:14px 0 0;padding:12px;border-radius:12px;box-shadow:none;line-height:1.3}
+:global(#soundtrack-dock.music-surface) .music-art{width:44px;height:44px;border-radius:6px}
+:global(#soundtrack-dock.music-surface) .music-title{font-size:17px;line-height:1.2}
+:global(#soundtrack-dock.music-surface) .music-artist{font-size:11px}
+:global(#soundtrack-dock.music-surface) .music-eyebrow,:global(#soundtrack-dock.music-surface) .music-version,:global(#soundtrack-dock.music-surface) .music-footnote,:global(#soundtrack-dock.music-surface) .music-volume-label{display:none}
+:global(#soundtrack-dock.music-surface) .music-actions{display:flex;flex-direction:row;gap:6px;grid-column:auto}
+:global(#soundtrack-dock.music-surface) .music-toggle{font-family:inherit;cursor:pointer;min-height:36px;font-size:11px;padding:5px 10px;gap:5px}
+:global(#soundtrack-dock.music-surface) .music-button-icon{width:22px;height:22px;font-size:17px}
+:global(#soundtrack-dock.music-surface) .music-hide{display:block;width:32px;height:36px;background:transparent;border:0;border-radius:8px;color:#aabbcf;font:24px system-ui;cursor:pointer}
+:global(#soundtrack-dock.music-surface) button:focus-visible{outline:2px solid #a5ceff;outline-offset:2px}
+:global(#soundtrack-dock.music-surface) .music-hide:hover{background:#ffffff12;color:white}
+@media(max-width:600px){:global(#soundtrack-dock.music-surface) .tour-audio{grid-template-columns:32px minmax(0,1fr) auto;gap:8px;padding:10px}:global(#soundtrack-dock.music-surface) .music-art{width:32px;height:32px}:global(#soundtrack-dock.music-surface) .music-title{font-size:13px}:global(#soundtrack-dock.music-surface) .music-title span{display:none}:global(#soundtrack-dock.music-surface) .music-toggle{padding:5px 7px;font-size:10px}:global(#soundtrack-dock.music-surface) .music-toggle .music-button-icon{display:none}:global(#soundtrack-dock.music-surface) .music-hide{width:24px}:global(#soundtrack-dock.music-surface) .music-actions{gap:2px}}
 
 .gallery-teaser{position:absolute;inset:0;overflow:hidden;background:#090d16}
 .gallery-teaser[hidden]{display:none}
@@ -351,4 +355,6 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 .teaser-progress{position:absolute;bottom:0;left:0;height:2px;width:100%;background:#bddfff;transform-origin:left;z-index:2}
 .gallery-launch.is-previewing .gallery-invite strong{font-size:15px}
 .gallery-launch.is-previewing .gallery-invite{padding-top:25px;background:linear-gradient(transparent,#070a11bd)}
+
+.is-sounding .music-meter i{animation:none}
 </style>
