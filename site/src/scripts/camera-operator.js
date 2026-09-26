@@ -1,4 +1,4 @@
-import {pullAt,inkTime,smoother,phraseMotion} from './musical-motion.js';
+import {pullAt,inkTime,smoother,phraseMotion,beatAt} from './musical-motion.js';
 // A damped camera operator follows the actual pen, not a pre-authored spatial spline.
 // Fixed-rate integration is cached: seek/replay never depends on previous rendered frames.
 const clamp=t=>Math.max(0,Math.min(1,t));
@@ -8,7 +8,7 @@ function noise(t,seed){
  const value=k=>{let h=Math.imul(k+seed,374761393);h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967295*2-1;};
  return value(n)*(1-u)+value(n+1)*u;
 }
-export function createOperator(nib,plan,fit,beats=[]){
+export function createOperator(nib,plan,fit,beats=[],contourCue=null){
  const dt=1/90,frames=[],duration=plan.end-plan.start+(plan.tail||0),seed=plan.seed;
  const pos=[0,0,fit],pv=[0,0,0],aim=[0,0,0],av=[0,0,0];let roll=0,rv=0;
  const initial=nib(0),initialAim=nib(.095),close=plan.closeRange??(.24+(seed%5)*.014);
@@ -31,7 +31,11 @@ export function createOperator(nib,plan,fit,beats=[]){
   const desiredRoll=(noise(t*.55,seed+139)*.034+tx*.012)*flight;
   rv+=(30*(desiredRoll-roll)-9*rv)*dt;roll+=rv*dt;
   // Apply the scored approach/retreat after spring integration: it arrives on the downbeat, without spring lag.
-  frames.push([pos[0]*enter*(1-pull),pos[1]*enter*(1-pull),((pos[2]*(1-beat*.035)*enter+fit*(1-enter))*(1-pull)+fit*pull)/motion.zoom,...aim.map(v=>v*enter*(1-pull)),(roll+beat*.012*(seed%2?1:-1))*enter*(1-pull)-motion.roll*Math.PI/180]);
+  // Only the authored contour interludes open to a medium shot: the detail gets a stage,
+  // while the complete wallpaper is still withheld until the last two beats.
+  const stage=contourCue&&!plan.intro?smoother((beatAt(plan,t)-2)/4):0;
+  const focus=1-.85*stage,distance=pos[2]*(1-stage)+fit*.60*stage;
+  frames.push([pos[0]*focus*enter*(1-pull),pos[1]*focus*enter*(1-pull),((distance*(1-beat*.035)*enter+fit*(1-enter))*(1-pull)+fit*pull)/motion.zoom,...aim.map(v=>v*focus*enter*(1-pull)),(roll+beat*.012*(seed%2?1:-1))*enter*(1-pull)-motion.roll*Math.PI/180]);
  }
  return time=>{
   const t=clamp(time/duration)*duration/dt,i=Math.min(frames.length-2,Math.floor(t)),u=t-i;

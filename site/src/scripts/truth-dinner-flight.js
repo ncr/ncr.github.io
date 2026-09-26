@@ -22,7 +22,7 @@ export function createDinner(scene,renderer){
  }).catch(()=>{ready=false;});return pending;}
  function render(camera,plan,elapsed,paper){
   if(!ready){prepare();return null;}group.visible=true;
-  const b=beatAt(plan,elapsed),motion=phraseMotion(plan,elapsed),sweep=smoother((b-4)/4),pull=smoother((b-8)/4),approach=smoother(b/4);
+  const b=beatAt(plan,elapsed),motion=phraseMotion(plan,elapsed),sweep=smoother((b-4)/6),pull=smoother((b-plan.pullBeat)/(plan.revealBeat-plan.pullBeat)),approach=smoother(b/4);
   const az=(-55-10*approach+85*sweep-44*pull)*Math.PI/180,el=(25+10*sweep-10*pull)*Math.PI/180;
   const fit=Math.max(540/2,650/(2*camera.aspect))/Math.tan(24*Math.PI/180)*1.22;
   const radius=fit*(.52+.5*approach+.15*pull)/motion.zoom,targetY=(110-125*approach)*(1-pull);
@@ -31,8 +31,8 @@ export function createDinner(scene,renderer){
   const {width,height,scale,x,y,roll,viewportWidth:w,viewportHeight:h}=paper,r=roll*Math.PI/180,c=Math.cos(r),sn=Math.sin(r),dx=-x*width*scale,dy=-y*height*scale;
   uniforms.paperOrigin.value.set(2*(c*dx-sn*dy)/w,-2*(sn*dx+c*dy)/h);
   uniforms.paperX.value.set(2*c*width*scale/w,-2*sn*width*scale/h);uniforms.paperY.value.set(-2*sn*height*scale/w,-2*c*height*scale/h);
-  uniforms.landing.value=smoother((b-8)/2);uniforms.glow.value=1+.17*motion.pulse;
-  const fade=smoother((b-10)/2);return {opacity:smoother(b)*(1-fade),fade,landing:uniforms.landing.value,beat:b,az,bank};
+  uniforms.landing.value=smoother((b-plan.pullBeat)/2);uniforms.glow.value=1+.17*motion.pulse;
+  const fade=smoother((b-(plan.revealBeat-2))/2);return {opacity:smoother(b)*(1-fade),fade,landing:uniforms.landing.value,beat:b,az,bank};
  }
  return {group,prepare,render};
 }

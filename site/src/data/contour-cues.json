@@ -1,0 +1,9 @@
+{
+  "c087": {"mode": "echo", "layers": 5, "depth": 31, "spread": 0.075, "tint": [1, 0.67, 0.32], "startBeat": 2, "crestBeat": 6, "closeBeat": 10},
+  "c025": {"mode": "weave", "layers": 3, "depth": 22, "spread": 0.065, "tint": [0.38, 0.86, 0.92], "startBeat": 3, "crestBeat": 7, "closeBeat": 10},
+  "o05": {"mode": "weave", "layers": 3, "depth": 14, "spread": 0.035, "tint": [0.66, 0.70, 1], "startBeat": 4, "crestBeat": 8, "closeBeat": 10},
+  "c031": {"mode": "fan", "layers": 5, "depth": 19, "spread": 0.09, "tint": [1, 0.76, 0.48], "startBeat": 2, "crestBeat": 6, "closeBeat": 10},
+  "c002": {"mode": "weave", "layers": 4, "depth": 27, "spread": 0.06, "tint": [0.37, 0.76, 1], "startBeat": 2, "crestBeat": 8, "closeBeat": 10},
+  "c001": {"mode": "fan", "layers": 4, "depth": 29, "spread": 0.07, "tint": [0.79, 0.82, 1], "startBeat": 3, "crestBeat": 7, "closeBeat": 10},
+  "c110": {"mode": "echo", "layers": 5, "depth": 24, "spread": 0.05, "tint": [1, 0.70, 0.39], "startBeat": 2, "crestBeat": 8, "closeBeat": 10}
+}

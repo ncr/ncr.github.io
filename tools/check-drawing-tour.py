@@ -32,7 +32,8 @@ try:
    seek(round(shot['start']+follow,2))
    page.wait_for_function('(id)=>{const c=document.querySelector(".fusion-flight");return c?.dataset.drawing===id&&getComputedStyle(c).display!=="none"}',arg=shot['id'])
    close=page.locator('.fusion-flight').evaluate('(e)=>({range:Number(e.dataset.range),lead:Number(e.dataset.leadProgress),error:Number(e.dataset.followError)})')
-   assert close['range']<.56 and 0<close['lead']<1 and close['error']<.65,(shot,close)
+   cue=shot['id'] in json.loads((root/'site/src/data/contour-cues.json').read_text()) and not shot.get('intro')
+   assert close['range']<(.65 if cue else .56) and 0<close['lead']<1 and (cue or close['error']<.65),(shot,close)
    if shot.get('mystery'):
     for at in [shot['start']+.03,shot['end']-.03]:
      seek(round(at,2));assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.dataset.range)<.23&&Number(e.dataset.dissolve)===0&&Number(e.style.opacity)===1')
@@ -47,7 +48,7 @@ try:
    assert page.locator('.fusion-flight').get_attribute('data-phase')=='hold'
    assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.style.opacity)')==0
    assert float(page.locator('.viewer-canvas').get_attribute('data-paper-pull'))==1
-   assert shot['end']-shot['start']-shot['holdStart']>=1.59
+   assert .9<shot['end']-shot['start']-shot['holdStart']<1.2
    endScale=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'))
    seek(round(shot['start']+shot['holdStart']+.1,2))
    startScale=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'))

@@ -27,12 +27,12 @@ try:
   for at in [5.85,11.31,16.963]:
    seek(round(at+grid['introDissolve']/2,3));page.wait_for_function('document.querySelector(".viewer-canvas").dataset.liveBlend==="1"');assert not page.locator('.scene-bridge').is_visible()
    assert .48<float(page.locator('.viewer-canvas').get_attribute('data-intro-blend'))<.52
-  seek(grid['beats'][3]);assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.dataset.dissolve)>.5&&Number(e.style.opacity)>0')
+  seek(grid['beats'][12]);assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.dataset.dissolve)>.5&&Number(e.style.opacity)>0')
   seek(grid['firstReveal']+.02);assert page.locator('.fusion-flight').evaluate('(e)=>e.dataset.phase==="hold"&&Number(e.style.opacity)===0');assert page.locator('.viewer-title').inner_text()=='Sky Racer'
   page.screenshot(path='/tmp/destiny-blog-review/mystery-first-reveal.png')
   seek(19.9);page.evaluate('window.pauses=0;document.querySelector(".tour-music").addEventListener("pause",()=>window.pauses++)');page.locator('.music-toggle').click()
   page.wait_for_function('!document.querySelector(".tour-music").paused&&document.querySelector(".tour-music").currentTime>25',timeout=60000);assert page.evaluate('window.pauses')==0
   page.set_viewport_size({'width':390,'height':844});seek(14);assert page.evaluate('document.documentElement.scrollWidth<=innerWidth');page.screenshot(path='/tmp/destiny-blog-review/mystery-live-mobile.png')
-  assert not errors,errors;browser.close();print('PASS: four mystery objects, three GPU close-up dissolves, no overview before entrance, full reveal on first-bar boundary, uninterrupted actual MP3 through entrance, mobile, 42 sheets, noindex.')
+  assert not errors,errors;browser.close();print('PASS: four mystery objects, three GPU close-up dissolves, no overview before entrance, full reveal on beat 14, uninterrupted actual MP3 through entrance, mobile, 42 sheets, noindex.')
 finally:
  if server:server.shutdown()

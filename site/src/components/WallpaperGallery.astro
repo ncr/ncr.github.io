@@ -220,7 +220,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     dialog.addEventListener('close',()=>flightEvent(false));
     const captionElement=q('.tour-caption'),timeLabel=q('.tour-time');let captionSpans=[],lastClock='';
     const orbitPhrase=musicGrid.phrases.find(p=>p.kind==='orbit');
-    const orbitMotionPlan={beats:orbitPhrase.beats.map(t=>t-orbitPhrase.start),seed:102,pullBeat:8,revealBeat:12};
+    const orbitMotionPlan={beats:orbitPhrase.beats.map(t=>t-orbitPhrase.start),seed:102,pullBeat:10,revealBeat:14};
     // Same beat interpolation as the offline operator; native paper and WebGL share the score.
     const easeScore=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
     function scoreBeat(p,t){
@@ -231,7 +231,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       if(!p?.beats)return {roll:0,zoom:1,pan:0,light:1,pulse:0};
       const b=scoreBeat(p,t),u=b-Math.floor(b),clock=Math.floor(b)+u+.65*Math.sin(2*Math.PI*u)/(2*Math.PI);
       const settle=1-easeScore((clock-p.pullBeat)/(p.revealBeat-p.pullBeat)),ready=easeScore((b-(p.pullBeat-4))/4),sign=p.seed%2?1:-1;
-      const pulse=Math.pow((1+Math.cos(2*Math.PI*b))/2,5)*easeScore(b-(p.pullBeat-1))*(1-easeScore(b-15));
+      const pulse=Math.pow((1+Math.cos(2*Math.PI*b))/2,5)*easeScore(b-7)*(1-easeScore(b-15));
       return {roll:sign*(16*ready*settle+.9*pulse*settle),zoom:1+.032*pulse,pan:.003*Math.sin(Math.PI*b/2)*pulse,light:1+.055*pulse,pulse};
     }
     function scorePull(p,t){

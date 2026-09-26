@@ -223,3 +223,46 @@ Warmed dinner playback on software GL: callback p95 0.40 ms, max 3.90 ms, no obs
 main-thread long tasks. These callback timings are not a device GPU/FPS guarantee.
 Existing drawing, intro, scene-transition, soundtrack-continuity and musical-score
 checks also passed; original wallpapers and the four-bar edit duration are retained.
+
+## 2026-09-26 — contour interludes and steady pens
+
+The user supplied https://x.com/PositivFuturist/status/2103727023038640362/video/1
+as a motion reference. Viewed its opening ~44 seconds in Chrome: luminous contour
+layers, travelling light, depth and changes of scale. No media, text or artwork
+from that film is incorporated. Seven authored cues use only the released drawing
+paths already in this project: Neutrino Bell and Spin Table get receding contour
+echoes; Fibre Braid, Cortical Mesh and Tidal Loom get opposing depth ribbons;
+Petal Eye and Light Sail get a small fan of contour impressions. These are graphic
+echoes, not new engineering claims or reconstructions of unseen surfaces.
+
+`contour-cues.json` is the editorial score. `prepare-contour-cues.mjs` selects at
+most 48 original paths per sheet, resamples and replicates them offline. The
+manifest records source SHA-256 and exact stroke names. The seven immutable
+buffers total about 2.10 MiB; each active cue adds one line draw call, with no new
+render target, frame readback, runtime path search or dynamic vertex uploads.
+The existing prefetch and shader warm-up include these cues. A missing optional
+cue falls back to the existing drawing, without interrupting music.
+
+Camera tables open these seven scenes to a medium view so the spatial pattern is
+legible. Contours close onto the original drawing by beat 10 and disappear by
+beat 12, before the original wallpaper is fully revealed. Only wireframes are
+displayed. Palettes and timing differ between cues; the four-object mystery and
+the original full 3D dinner/nozzle remain distinct sequences.
+
+The user's later correction supersedes the earlier beat-modulated ink clock:
+**pens now run at constant distance per second along each path**. Beat accents
+remain in light, particles and camera. All 32 musical phrases still last exactly
+four bars (16 beats); regular retreats move to beats 10–14, with the complete
+wallpaper only on beats 14–16 (~1.06 s). The first reveal travels from the musical
+entrance to beat 14 rather than parking for most of its phrase. The dinner orbit
+and nozzle dissolve were retimed to the same short overview. The audio element,
+299.21 s soundtrack and all 42 gallery entries are preserved.
+
+Validation: `check-musical-score.mjs` checks the constant pen clock throughout
+every phrase, four-bar durations, two-beat overviews and baked camera arrivals.
+`check-contour-score.mjs` checks continuous cue envelopes, finite bounded buffers,
+source hashes and absence of echoes in the intro/final overview. Astro build and
+draft exclusion checks pass. CUA Chrome review covers all three cue families,
+desktop and 390 px mobile framing, the dinner dissolve at beat 13, actual MP3
+playback and absence of shader errors. Existing browser regression scripts were
+updated for beat 14, but were not rerun in this revision; browser checks used CUA.

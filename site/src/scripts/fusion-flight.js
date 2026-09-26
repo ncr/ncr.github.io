@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {createDinner} from './truth-dinner-flight.js';
+import {loadContours,buildContours} from './contour-resonance.js';
 import timing from '../data/flight-timing.json';
 import drawingScore from '../data/drawing-score.json';
 import musicGrid from '../data/music-grid.json';
@@ -7,7 +8,7 @@ import {inkTime,pullAt,smoother,beatAt,phraseMotion} from './musical-motion.js';
 import filmAssets from '../data/film-assets.json';
 import {bassAttacksAt} from './bass-particles.js';
 
-const orbitPlan={beats:timing.beats.map(t=>t-timing.orbit),seed:102,pullBeat:8,revealBeat:12};
+const orbitPlan={beats:timing.beats.map(t=>t-timing.orbit),seed:102,pullBeat:10,revealBeat:14};
 const clamp=t=>THREE.MathUtils.clamp(t,0,1);
 const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const landingUniforms=`uniform float landing;uniform vec2 paperOrigin;uniform vec2 paperX;uniform vec2 paperY;`;
@@ -92,13 +93,14 @@ export function createFlight(host,onReady=()=>{}){
  for(let i=14;i<26;i++)for(let j=0;j<48;j++){lanes.push(i);sparks.push(j);}
  gp.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lanes.length*3),3));gp.setAttribute('lane',new THREE.Float32BufferAttribute(lanes,1));gp.setAttribute('spark',new THREE.Float32BufferAttribute(sparks,1));
  const idle=fn=>(window.requestIdleCallback?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,0));
- function build(data,buffer){
+ function build(data,buffer,contourBuffer){
    const group=new THREE.Group(),geometry=new THREE.BufferGeometry();
    for(const [key,a]of Object.entries(data.attributes))geometry.setAttribute(key,new THREE.BufferAttribute(new Float32Array(buffer,a.offset*4,a.count),a.itemSize));
    const placement={landing:{value:0},paperOrigin:{value:new THREE.Vector2()},paperX:{value:new THREE.Vector2()},paperY:{value:new THREE.Vector2()}};
    const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{...placement,leadIndex:{value:0},leadProgress:{value:0},progress:{value:0},pulse:{value:0},bands:{value:spectrum},audible:{value:0},choirProgress:{value:new Float32Array(6)}},vertexShader:`${landingUniforms}attribute vec3 inkColor;attribute float birth;attribute float penId;attribute float along;uniform float leadIndex;varying float selected;varying float voice;varying vec3 color;varying float born;void main(){selected=1.-step(.1,abs(penId-leadIndex));voice=penId-20.;color=inkColor;born=mix(birth,along,max(selected,step(20.,penId)));gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`,fragmentShader:`uniform float progress;uniform float pulse;uniform float leadProgress;uniform float choirProgress[6];uniform float audible;uniform float bands[16];varying float selected;varying float voice;varying vec3 color;varying float born;${voiceSpectrum}void main(){float front=mix(progress,leadProgress,selected);if(voice>=0.)front=choirProgress[int(voice)];float laid=step(born,front);float tip=laid*(1.-smoothstep(0.,.024,front-born));vec3 ink=sqrt(color)*(.7+tip*.65+pulse*.18);if(voice>=0.){float power=audible*voiceEnergy(voice);ink=mix(sqrt(color)*.7,voiceColor(voice)*(1.+power*1.8),tip); }gl_FragColor=vec4(ink,.045+laid*.85);}`});
 
    group.add(new THREE.LineSegments(geometry,material));
+   const contours=buildContours(data.id,contourBuffer,placement,spectrum);if(contours)group.add(contours.lines);
    const plans={};
    for(const [start,p]of Object.entries(data.plans)){
     const texture=new THREE.DataTexture(new Float32Array(buffer,p.pens.offset*4,p.pens.count),p.penWidth,p.penRows||20,THREE.RGBAFormat,THREE.FloatType);texture.needsUpdate=true;
@@ -106,21 +108,23 @@ export function createFlight(host,onReady=()=>{}){
    }
    const pm=new THREE.ShaderMaterial({uniforms:{...placement,penTable:{value:null},tableSize:{value:new THREE.Vector2()},elapsed:{value:0},penFPS:{value:60},audible:{value:0},bands:{value:spectrum},pixelRatio:{value:Math.min(devicePixelRatio,1.5)},mutedHero:{value:-1},beatTimes:{value:new THREE.Vector2(-1000,-1000)},beatStrengths:{value:new THREE.Vector2()}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
    const points=new THREE.Points(gp,pm);points.frustumCulled=false;group.add(points);scene.add(group);group.visible=false;
-   return {data,group,geometry,material,placement,pm,plans,warmed:false,dispose(){scene.remove(group);geometry.dispose();material.dispose();pm.dispose();for(const p of Object.values(plans))p.texture.dispose();}};
+   return {data,group,geometry,material,placement,pm,plans,contours,warmed:false,dispose(){scene.remove(group);geometry.dispose();material.dispose();pm.dispose();contours?.dispose();for(const p of Object.values(plans))p.texture.dispose();}};
  }
  function warm(sheet){
    if(sheet.warmed||failed)return;sheet.warmed=true;
    // Upload and compile ahead of the cut into a tiny offscreen target.
    const was=sheet.group.visible;sheet.group.visible=true;const first=Object.values(sheet.plans)[0];sheet.pm.uniforms.penTable.value=first.texture;sheet.pm.uniforms.tableSize.value.set(first.penWidth,first.penRows||20);
    for(const p of Object.values(sheet.plans))renderer.initTexture(p.texture);
+   if(sheet.contours)sheet.contours.lines.visible=true;
    const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();sheet.group.visible=was;
+   if(sheet.contours)sheet.contours.lines.visible=false;
  }
  function prepare(id){
    if(id==='o10'&&!dinnerQueued){dinnerQueued=true;dinner.prepare().then(onReady);}
    if(cache.has(id)||pending.has(id)||unavailable.has(id))return;
    const base=filmAssets[id];
-   const promise=Promise.all([fetch(base+'.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();})]).then(([data,buffer])=>new Promise(resolve=>idle(()=>{
-     if(failed){resolve();return;}const sheet=build(data,buffer);cache.set(id,sheet);warm(sheet);
+   const promise=Promise.all([fetch(base+'.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();}),loadContours(id).catch(()=>null)]).then(([data,buffer,contourBuffer])=>new Promise(resolve=>idle(()=>{
+     if(failed){resolve();return;}const sheet=build(data,buffer,contourBuffer);cache.set(id,sheet);warm(sheet);
      for(const [key,value]of cache){if(cache.size<=6)break;if(key!==current){value.dispose();cache.delete(key);}}
      onReady();resolve();
    }))).catch(()=>unavailable.add(id)).finally(()=>pending.delete(id));pending.set(id,promise);
@@ -151,20 +155,20 @@ export function createFlight(host,onReady=()=>{}){
    for(let i=0;i<16;i++){const target=energy.active?(energy.spectrum?.[i]??[energy.bass,energy.mids,energy.highs][Math.min(2,Math.floor(i/6))]):0;spectrum[i]+=(target-spectrum[i])*(1-Math.exp(-dt/(target>spectrum[i]?(i<6?.055:.025):(i<6?.18:.075))));}
    const orbiting=time>=timing.orbit&&time<timing.end;
    for(const sheet of cache.values())sheet.group.visible=false;
-   detail.visible=orbiting;board.visible=!orbiting;dinner.group.visible=false;
+   detail.visible=orbiting;board.visible=!orbiting;dinner.group.visible=false;element.dataset.contourCue='none';element.dataset.contourOpen='0';
    const roll=Math.sin(time*.42)*.04+Math.sin(time*.17)*.019;
    camera.up.set(Math.sin(roll),Math.cos(roll),0);
    const dinnerState=passage?.id==='o10'&&paperFrame?dinner.render(camera,passage,time-passage.start,paperFrame):null;
    if(dinnerState){
      board.visible=false;current='o10';const state=dinnerState;
      const p=cache.get('o10')?.data.paper||[41,31,21];paperMaterial.uniforms.paper.value.set(p[0]/255,p[1]/255,p[2]/255);renderer.setClearColor(new THREE.Color().setRGB(p[0]/255,p[1]/255,p[2]/255,THREE.SRGBColorSpace),1);
-     element.style.opacity=String(state.opacity);element.style.filter='none';element.dataset.drawing='o10';element.dataset.spatial='truth-dinner';element.dataset.orbitAzimuth=state.az.toFixed(5);element.dataset.beat=String(state.beat);element.dataset.phase=state.beat>=12?'hold':state.beat>=8?'pull':'orbit';element.dataset.dissolve=state.fade.toFixed(5);element.dataset.landing=state.landing.toFixed(5);
+     element.style.opacity=String(state.opacity);element.style.filter='none';element.dataset.drawing='o10';element.dataset.spatial='truth-dinner';element.dataset.orbitAzimuth=state.az.toFixed(5);element.dataset.beat=String(state.beat);element.dataset.phase=state.beat>=passage.revealBeat?'hold':state.beat>=passage.pullBeat?'pull':'orbit';element.dataset.dissolve=state.fade.toFixed(5);element.dataset.landing=state.landing.toFixed(5);
    }else if(orbiting){
      element.dataset.spatial='nozzle';prepareNozzle();if(!nozzleReady){hide();return false;}detail.children[0].material.uniforms.levels.value.set(energy.active?energy.bass:.6,energy.active?energy.mids:.6,energy.active?energy.highs:.6);
      renderer.setClearColor(0x100c10,1);element.style.filter='none';
      const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,b=beatAt(orbitPlan,elapsed),motion=phraseMotion(orbitPlan,elapsed),u=clamp((b-4)/8),angle=-.8+smoother(u)*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smoother(b/4))+.3*smoother((b-12)/4))/motion.zoom;
      const bank=-motion.roll*Math.PI/180;camera.up.set(Math.sin(bank),Math.cos(bank),0);camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(smoother(u)*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
-     element.style.opacity=String(smoother(b/2)*(1-smoother((b-12)/4)));element.dataset.drawing='nozzle-orbit';
+     element.style.opacity=String(smoother(b/2)*(1-smoother((b-12)/2)));element.dataset.drawing='nozzle-orbit';
    }else{
      if(!passage){hide();return false;}
      element.dataset.spatial='drawing';current=passage.id;prepare(current);const sheet=cache.get(current);if(!sheet){hide();return false;}
@@ -201,6 +205,8 @@ export function createFlight(host,onReady=()=>{}){
        fade=smoother((pull-.5)/.5);
      }else fade=smoother((pull-.5)/.5);
      sheet.placement.landing.value=landed;
+     const cue=sheet.contours?.update(passage,elapsed,energy.active);
+     if(cue){element.dataset.contourCue=cue.cue.mode;element.dataset.contourOpen=cue.open.toFixed(4);element.dataset.contourOpacity=cue.opacity.toFixed(4);}
      element.style.opacity=String((passage.intro?1:smoother(elapsed/(passage.beats?.[1]||.32)))*(1-fade));
      // A subpixel focus dissolve softens tiny differences in ink/antialiasing only.
      element.style.filter=fade>0?`blur(${(.65*Math.sin(fade*Math.PI)).toFixed(3)}px)`:'none';

@@ -7,9 +7,8 @@ export function beatAt(plan,t){
  return lo+clamp((t-b[lo])/((b[lo+1]??b[lo]+.535)-b[lo]));
 }
 export function inkTime(plan,t){
- if(!plan.beats||t<plan.beats[0])return t;const beat=beatAt(plan,t),i=Math.min(plan.beats.length-2,Math.floor(beat)),u=clamp(beat-i);
- // Acceleration lands on each pulse; no stepped positions or stop-start pen.
- return plan.beats[i]+(plan.beats[i+1]-plan.beats[i])*(u+.55*Math.sin(2*Math.PI*u)/(2*Math.PI));
+ // Pen distance follows wall-clock time. Music accents light/camera, never pen speed.
+ return t;
 }
 export function pullAt(plan,t){
  if(!plan.beats)return clamp((t-plan.followEnd)/(plan.holdStart-plan.followEnd));
@@ -22,7 +21,7 @@ export function phraseMotion(plan,t){
  const u=b-Math.floor(b),clock=Math.floor(b)+u+.65*Math.sin(2*Math.PI*u)/(2*Math.PI);
  const settle=1-smoother((clock-start)/(end-start));
  const ready=smoother((b-(start-4))/4),sign=plan.seed%2?1:-1;
- const envelope=smoother((b-(start-1)))* (1-smoother((b-15)/1));
+ const envelope=smoother(b-7)*(1-smoother(b-15));
  const pulse=Math.pow((1+Math.cos(2*Math.PI*b))/2,5)*envelope;
  return {roll:sign*(16*ready*settle+.9*pulse*settle),zoom:1+.032*pulse,pan:.003*Math.sin(Math.PI*b/2)*pulse,light:1+.055*pulse,pulse};
 }

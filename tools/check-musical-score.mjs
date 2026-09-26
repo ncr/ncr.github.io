@@ -9,6 +9,8 @@ for(const [i,p]of grid.phrases.entries()){
 }
 for(const s of score.filter(s=>s.beats)){
  if(s.beats[0]>0){assert.equal(inkTime(s,1),1);assert.equal(inkTime(s,2),2);}
+ assert.equal(s.revealBeat,14,'Overview is restricted to the last two beats');
+ for(let i=0;i<160;i++){const t=i*(s.end-s.start)/160;assert(Math.abs((inkTime(s,t+.001)-inkTime(s,t))/.001-1)<1e-8,'Laser speed must be independent of beat phase');}
  for(const b of s.beats){assert(Math.abs(inkTime(s,b)-b)<1e-6);assert(Number.isFinite(inkTime(s,b-.001)));}
  assert(pullAt(s,s.followEnd)<1e-5);assert(pullAt(s,s.holdStart)>.99999);
  const base='site/public'+assets[s.id],meta=read(base+'.json'),buf=fs.readFileSync(path.join(root,base+'.bin')),plan=meta.plans[s.start],a=plan.camera;
@@ -17,4 +19,4 @@ for(const s of score.filter(s=>s.beats)){
 }
 for(const s of tour.filter(s=>s.at>=grid.entrance))assert(grid.beats.some(t=>Math.abs(t-s.at)<1e-6),'Caption/edit off beat: '+s.at);
 assert.equal(grid.duration,299.21);assert(grid.duration-grid.tailStart<5);
-console.log('PASS: 32 contiguous four-bar phrases, exact musical phase boundaries, baked camera arrival on the beat, captions on beat, 42 gallery entries, complete soundtrack.');
+console.log('PASS: 32 contiguous four-bar phrases, constant pen speed, two-beat overview, baked camera arrival, captions on beat, 42 gallery entries, complete soundtrack.');
