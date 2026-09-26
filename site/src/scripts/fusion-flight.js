@@ -5,21 +5,38 @@ const clamp=t=>THREE.MathUtils.clamp(t,0,1);
 const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const landingUniforms=`uniform float landing;uniform vec2 paperOrigin;uniform vec2 paperX;uniform vec2 paperY;`;
 const landVertex=`vec2 paper=paperOrigin+position.x*paperX+position.y*paperY;gl_Position.xy=mix(gl_Position.xy,paper*gl_Position.w,landing);`;
+const voiceSpectrum=`
+ float voiceEnergy(float v){
+  if(v<.5)return (bands[0]+bands[1]+bands[2])/3.;
+  if(v<1.5)return (bands[3]+bands[4]+bands[5])/3.;
+  if(v<2.5)return (bands[6]+bands[7]+bands[8])/3.;
+  if(v<3.5)return (bands[9]+bands[10]+bands[11])/3.;
+  if(v<4.5)return (bands[12]+bands[13])/2.;
+  return (bands[14]+bands[15])/2.;
+ }
+ vec3 voiceColor(float v){return mix(vec3(1.,.62,.25),vec3(.28,.78,1.),v/5.);}
+`;
 const pointVertex=`${landingUniforms}
- attribute float lane;attribute float spark;uniform sampler2D penTable;uniform vec2 tableSize;uniform float elapsed;uniform float penFPS;uniform float audible;uniform float bands[16];uniform float pixelRatio;
- varying float alpha;varying vec3 tint;
+ attribute float lane;attribute float spark;uniform sampler2D penTable;uniform vec2 tableSize;uniform float elapsed;uniform float penFPS;uniform float audible;uniform float bands[16];uniform float pixelRatio;uniform float mutedHero;
+ varying float alpha;varying vec3 tint;${voiceSpectrum}
  vec4 pen(float row,float time){
   float f=clamp(time*penFPS,0.,tableSize.x-1.001),i=floor(f),u=fract(f);
-  vec4 a=texture2D(penTable,vec2((i+.5)/tableSize.x,(row+.5)/20.));
-  vec4 b=texture2D(penTable,vec2((i+1.5)/tableSize.x,(row+.5)/20.));
+  vec4 a=texture2D(penTable,vec2((i+.5)/tableSize.x,(row+.5)/tableSize.y));
+  vec4 b=texture2D(penTable,vec2((i+1.5)/tableSize.x,(row+.5)/tableSize.y));
   if(abs(a.w-b.w)<.1)return vec4(mix(a.xyz,b.xyz,u),step(.5,a.w));
   return vec4(u<.5?a.xyz:b.xyz,(u<.5?step(.5,a.w):step(.5,b.w))*pow(abs(2.*u-1.),2.));
  }
  void main(){
+  if(lane>=tableSize.y||abs(lane-mutedHero)<.1){alpha=0.;tint=vec3(0.);gl_PointSize=1.;gl_Position=vec4(2.,2.,2.,1.);return;}
+  float voice=lane-20.,choral=step(20.,lane);
   float bin=mod(max(0.,spark),16.),power=mix(.10,pow(clamp(bands[int(bin)]*1.65,0.,1.),.8),audible);
-  float age=spark<0.?0.:fract(elapsed*1.37+spark*.618034+lane*.137)*.64;
+  if(choral>.5)power=mix(.10,pow(clamp(voiceEnergy(voice)*1.65,0.,1.),.8),audible);
+  float life=mix(.64,mix(.82,.32,voice/5.),choral);
+  float rate=mix(1.37,1./life,choral);
+  float age=spark<0.?0.:fract(elapsed*rate+spark*.618034+lane*.137)*life;
   vec4 tip=pen(lane,elapsed-age);vec3 at=tip.xyz;alpha=tip.w;
   tint=vec3(.65,.86,1.);float diameter=lane>=14.?26.:4.;
+  if(choral>.5){tint=voiceColor(voice);diameter=mix(34.,23.,voice/5.)+power*24.;alpha*=.5+power;}
   if(spark>=0.){
    vec4 before=pen(lane,max(0.,elapsed-age-.025));vec2 delta=tip.xy-before.xy;vec2 tangent=length(delta)>.01?normalize(delta):vec2(1.,0.);
    vec2 normal=vec2(-tangent.y,tangent.x);float side=mod(spark,2.)<1.?-1.:1.;
@@ -27,8 +44,8 @@ const pointVertex=`${landingUniforms}
    // The actual spectrum opens a fan of frequency lanes at the laser nib.
    at.xy+=normal*side*age*(4.+power*95.)+tangent*age*(cos(angle)*10.-10.);
    at.y-=age*age*12.;at.z+=sin(angle)*age*(3.+power*20.);
-   alpha*=pow(1.-age/.64,1.7)*mix(.28,power*1.5,audible);diameter=2.5+power*4.;
-   tint=mix(vec3(1.,.7,.34),vec3(.35,.8,1.),bin/15.);
+   alpha*=pow(1.-age/life,1.7)*mix(.28,power*1.5,audible);diameter=2.5+power*4.;
+   tint=choral>.5?voiceColor(voice):mix(vec3(1.,.7,.34),vec3(.35,.8,1.),bin/15.);
   }
   gl_PointSize=diameter*pixelRatio;gl_Position=projectionMatrix*modelViewMatrix*vec4(at,1.);
   vec2 paper=paperOrigin+at.x*paperX+at.y*paperY;gl_Position.xy=mix(gl_Position.xy,paper*gl_Position.w,landing);
@@ -49,37 +66,37 @@ export function createFlight(host,onReady=()=>{}){
  const detail=new THREE.Group();scene.add(detail);detail.visible=false;
  const spectrum=new Float32Array(16),pose=new Float32Array(7);let previousFrame=0;
  const gp=new THREE.BufferGeometry(),lanes=[],sparks=[];
- for(let i=0;i<20;i++){lanes.push(i);sparks.push(-1);}
- for(let i=14;i<20;i++)for(let j=0;j<48;j++){lanes.push(i);sparks.push(j);}
+ for(let i=0;i<26;i++){lanes.push(i);sparks.push(-1);}
+ for(let i=14;i<26;i++)for(let j=0;j<48;j++){lanes.push(i);sparks.push(j);}
  gp.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lanes.length*3),3));gp.setAttribute('lane',new THREE.Float32BufferAttribute(lanes,1));gp.setAttribute('spark',new THREE.Float32BufferAttribute(sparks,1));
  const idle=fn=>(window.requestIdleCallback?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,0));
  function build(data,buffer){
    const group=new THREE.Group(),geometry=new THREE.BufferGeometry();
    for(const [key,a]of Object.entries(data.attributes))geometry.setAttribute(key,new THREE.BufferAttribute(new Float32Array(buffer,a.offset*4,a.count),a.itemSize));
    const placement={landing:{value:0},paperOrigin:{value:new THREE.Vector2()},paperX:{value:new THREE.Vector2()},paperY:{value:new THREE.Vector2()}};
-   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{...placement,leadIndex:{value:0},leadProgress:{value:0},progress:{value:0},pulse:{value:0}},vertexShader:`${landingUniforms}attribute vec3 inkColor;attribute float birth;attribute float penId;attribute float along;uniform float leadIndex;varying float selected;varying vec3 color;varying float born;void main(){selected=1.-step(.1,abs(penId-leadIndex));color=inkColor;born=mix(birth,along,selected);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`,fragmentShader:`uniform float progress;uniform float pulse;uniform float leadProgress;varying float selected;varying vec3 color;varying float born;void main(){float front=mix(progress,leadProgress,selected);float laid=step(born,front);float tip=laid*(1.-smoothstep(0.,.012,front-born));gl_FragColor=vec4(sqrt(color)*(.7+tip*.65+pulse*.18),.045+laid*.85);}`});
+   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{...placement,leadIndex:{value:0},leadProgress:{value:0},progress:{value:0},pulse:{value:0},bands:{value:spectrum},audible:{value:0},choirProgress:{value:new Float32Array(6)}},vertexShader:`${landingUniforms}attribute vec3 inkColor;attribute float birth;attribute float penId;attribute float along;uniform float leadIndex;varying float selected;varying float voice;varying vec3 color;varying float born;void main(){selected=1.-step(.1,abs(penId-leadIndex));voice=penId-20.;color=inkColor;born=mix(birth,along,max(selected,step(20.,penId)));gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`,fragmentShader:`uniform float progress;uniform float pulse;uniform float leadProgress;uniform float choirProgress[6];uniform float audible;uniform float bands[16];varying float selected;varying float voice;varying vec3 color;varying float born;${voiceSpectrum}void main(){float front=mix(progress,leadProgress,selected);if(voice>=0.)front=choirProgress[int(voice)];float laid=step(born,front);float tip=laid*(1.-smoothstep(0.,.024,front-born));vec3 ink=sqrt(color)*(.7+tip*.65+pulse*.18);if(voice>=0.){float power=audible*voiceEnergy(voice);ink=mix(sqrt(color)*.7,voiceColor(voice)*(1.+power*1.8),tip); }gl_FragColor=vec4(ink,.045+laid*.85);}`});
 
    group.add(new THREE.LineSegments(geometry,material));
    const plans={};
    for(const [start,p]of Object.entries(data.plans)){
-    const texture=new THREE.DataTexture(new Float32Array(buffer,p.pens.offset*4,p.pens.count),p.penWidth,20,THREE.RGBAFormat,THREE.FloatType);texture.needsUpdate=true;
+    const texture=new THREE.DataTexture(new Float32Array(buffer,p.pens.offset*4,p.pens.count),p.penWidth,p.penRows||20,THREE.RGBAFormat,THREE.FloatType);texture.needsUpdate=true;
     plans[start]={...p,texture,camera:new Float32Array(buffer,p.camera.offset*4,p.camera.count)};
    }
-   const pm=new THREE.ShaderMaterial({uniforms:{...placement,penTable:{value:null},tableSize:{value:new THREE.Vector2()},elapsed:{value:0},penFPS:{value:60},audible:{value:0},bands:{value:spectrum},pixelRatio:{value:Math.min(devicePixelRatio,1.5)}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
+   const pm=new THREE.ShaderMaterial({uniforms:{...placement,penTable:{value:null},tableSize:{value:new THREE.Vector2()},elapsed:{value:0},penFPS:{value:60},audible:{value:0},bands:{value:spectrum},pixelRatio:{value:Math.min(devicePixelRatio,1.5)},mutedHero:{value:-1}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
    const points=new THREE.Points(gp,pm);points.frustumCulled=false;group.add(points);scene.add(group);group.visible=false;
    return {data,group,geometry,material,placement,pm,plans,warmed:false,dispose(){scene.remove(group);geometry.dispose();material.dispose();pm.dispose();for(const p of Object.values(plans))p.texture.dispose();}};
  }
  function warm(sheet){
    if(sheet.warmed||failed)return;sheet.warmed=true;
    // Upload and compile ahead of the cut into a tiny offscreen target.
-   const was=sheet.group.visible;sheet.group.visible=true;const first=Object.values(sheet.plans)[0];sheet.pm.uniforms.penTable.value=first.texture;sheet.pm.uniforms.tableSize.value.set(first.penWidth,20);
+   const was=sheet.group.visible;sheet.group.visible=true;const first=Object.values(sheet.plans)[0];sheet.pm.uniforms.penTable.value=first.texture;sheet.pm.uniforms.tableSize.value.set(first.penWidth,first.penRows||20);
    for(const p of Object.values(sheet.plans))renderer.initTexture(p.texture);
    const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();sheet.group.visible=was;
  }
  function prepare(id){
    if(cache.has(id)||pending.has(id)||unavailable.has(id))return;
    const base=`/gallery/destiny/film-data/${id}`;
-   const promise=Promise.all([fetch(base+'.json?v=1').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin?v=1').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();})]).then(([data,buffer])=>new Promise(resolve=>idle(()=>{
+   const promise=Promise.all([fetch(base+'.json?v=2').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin?v=2').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();})]).then(([data,buffer])=>new Promise(resolve=>idle(()=>{
      if(failed){resolve();return;}const sheet=build(data,buffer);cache.set(id,sheet);warm(sheet);
      for(const [key,value]of cache){if(cache.size<=6)break;if(key!==current){value.dispose();cache.delete(key);}}
      onReady();resolve();
@@ -96,7 +113,7 @@ export function createFlight(host,onReady=()=>{}){
    const w=paperFrame?.viewportWidth||lastW||host.clientWidth,h=paperFrame?.viewportHeight||lastH||host.clientHeight;if(!w||!h)return false;
    if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
    const now=performance.now(),dt=Math.min(.05,(now-previousFrame)/1000||.016);previousFrame=now;
-   for(let i=0;i<16;i++){const target=energy.active?(energy.spectrum?.[i]??[energy.bass,energy.mids,energy.highs][Math.min(2,Math.floor(i/6))]):0;spectrum[i]+=(target-spectrum[i])*(1-Math.exp(-dt/(target>spectrum[i]?.045:.12)));}
+   for(let i=0;i<16;i++){const target=energy.active?(energy.spectrum?.[i]??[energy.bass,energy.mids,energy.highs][Math.min(2,Math.floor(i/6))]):0;spectrum[i]+=(target-spectrum[i])*(1-Math.exp(-dt/(target>spectrum[i]?(i<6?.055:.025):(i<6?.18:.075))));}
    const orbiting=time>=timing.orbit&&time<timing.end;
    for(const sheet of cache.values())sheet.group.visible=false;
    detail.visible=orbiting;board.visible=!orbiting;
@@ -117,7 +134,10 @@ export function createFlight(host,onReady=()=>{}){
      const plan=sheet.plans[passage.start],leadIndex=plan.leadIndex;
      const leadProgress=clamp((elapsed-passage.leadStart)/(passage.leadEnd-passage.leadStart));
      sheet.material.uniforms.leadIndex.value=leadIndex;sheet.material.uniforms.leadProgress.value=leadProgress;sheet.material.uniforms.progress.value=progress;sheet.material.uniforms.pulse.value=energy.active?energy.bass:0;
-     sheet.pm.uniforms.penTable.value=plan.texture;sheet.pm.uniforms.tableSize.value.set(plan.penWidth,20);sheet.pm.uniforms.elapsed.value=elapsed;sheet.pm.uniforms.audible.value=energy.active?1:0;
+     sheet.material.uniforms.audible.value=energy.active?1:0;
+     if(plan.choirWindows)for(let v=0;v<6;v++){const [start,end]=plan.choirWindows[v];sheet.material.uniforms.choirProgress.value[v]=clamp((elapsed-start)/(end-start));}
+     sheet.pm.uniforms.mutedHero.value=plan.mutedHero??-1;
+     sheet.pm.uniforms.penTable.value=plan.texture;sheet.pm.uniforms.tableSize.value.set(plan.penWidth,plan.penRows||20);sheet.pm.uniforms.elapsed.value=elapsed;sheet.pm.uniforms.audible.value=energy.active?1:0;
      const paper=sheet.data.paper;paperMaterial.uniforms.paper.value.set(paper[0]/255,paper[1]/255,paper[2]/255);renderer.setClearColor(new THREE.Color(paper[0]/255,paper[1]/255,paper[2]/255),1);
      const [bw,bh]=sheet.data.size,fit=Math.max(bh/2,bw/(2*camera.aspect))/Math.tan(24*Math.PI/180)*1.22;
      const at=clamp(elapsed/duration)*duration*plan.cameraFPS,i=Math.min(plan.camera.length/7-2,Math.floor(at)),uPose=at-i;

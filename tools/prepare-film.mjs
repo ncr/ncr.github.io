@@ -9,13 +9,16 @@ let bytes=0;
 for(const id of new Set(score.map(s=>s.id))){
  const data=read(`site/public/gallery/destiny/drawing/${id}.json`),ranked=data.strokes.map(p=>({...p,total:length(p.p)})).filter(p=>p.total>.12).sort((a,b)=>b.total-a.total),leaders=new Set(),families=new Set();
  for(const p of ranked){const f=p.name.replace(/\d+/g,'');if(leaders.size<6&&!families.has(f)&&!/soil section|floor|ground|shadow/i.test(p.name)){leaders.add(p);families.add(f);}}
- const lanes=Array.from({length:14},()=>[]);for(const p of ranked)if(!leaders.has(p))lanes[hash(p.name)%14].push(p);for(const p of leaders)lanes.push([p]);
+ // Six preserved liquid-tin contours form a spectrum choir around the tracked radiator line.
+ const choir=id==='o03'?[24,27,30,33,36,39].map(n=>ranked.find(p=>p.name===`liquid tin stream.${String(n).padStart(3,'0')}`)):[];
+ if(choir.some(p=>!p))throw Error('Missing authentic radiator contour');
+ const lanes=Array.from({length:14},()=>[]);for(const p of ranked)if(!leaders.has(p)&&!choir.includes(p))lanes[hash(p.name)%14].push(p);for(const p of leaders)lanes.push([p]);for(const p of choir)lanes.push([p]);
  const attrs={position:[],inkColor:[],birth:[],penId:[],along:[]},pens=[],heroes=[];let uid=1;
- lanes.forEach((items,lane)=>{const total=items.reduce((s,p)=>s+Math.max(9,p.total)+5,0),lead=lane>=14,leadIndex=lane-14,start=lead?.015+leadIndex*.075:lane%4*.012,span=lead?.39:.96-start;let cursor=0;const strokes=[];
+ lanes.forEach((items,lane)=>{const total=items.reduce((s,p)=>s+Math.max(9,p.total)+5,0),lead=lane>=14&&lane<20,leadIndex=lane-14,start=lead?.015+leadIndex*.075:lane%4*.012,span=lead?.39:.96-start;let cursor=0;const strokes=[];
   for(const p of items){const work=Math.max(9,p.total),a=start+cursor/total*span,b=start+(cursor+work)/total*span;cursor+=work+5;
    const z=/radiator|cable|accent|outline/.test(p.role)?6:2,c=new THREE.Color(/cable|accent|coil/.test(p.role)?0xe8ba79:/radiator|screen|glass/.test(p.role)?0x8ad3e1:0xdbcbb3),ds=[0];
    for(let i=1;i<p.p.length;i++)ds.push(ds.at(-1)+Math.hypot(p.p[i][0]-p.p[i-1][0],p.p[i][1]-p.p[i-1][1]));
-   for(let i=1;i<p.p.length;i++)for(const j of [i-1,i]){attrs.position.push(...p.p[j],z);attrs.inkColor.push(c.r,c.g,c.b);attrs.birth.push(a+ds[j]/p.total*(b-a));attrs.penId.push(lead?leadIndex:-1);attrs.along.push(ds[j]/p.total);}
+   if(lane>=20||!choir.includes(p))for(let i=1;i<p.p.length;i++)for(const j of [i-1,i]){attrs.position.push(...p.p[j],z);attrs.inkColor.push(c.r,c.g,c.b);attrs.birth.push(a+ds[j]/p.total*(b-a));attrs.penId.push(lane>=20?lane:lead?leadIndex:-1);attrs.along.push(ds[j]/p.total);}
    const s={path:p,total:p.total,distances:ds,z,start:a,end:b,uid:uid++};strokes.push(s);if(lead)heroes.push(s);
   }pens.push(strokes);
  });
@@ -26,12 +29,13 @@ for(const id of new Set(score.map(s=>s.id))){
   const duration=plan.end-plan.start,leadIndex=plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1);
   const camera=[],cameraFPS=90,penFPS=60,rows=Math.ceil(duration*penFPS)+2;
   for(let i=0;i<=Math.ceil(duration*cameraFPS)+1;i++)camera.push(...operator(i/cameraFPS));
-  const texture=new Float32Array(rows*20*4);
-  for(let lane=0;lane<20;lane++)for(let i=0;i<rows;i++){
-   const t=i/penFPS,progress=clamp(t/plan.leadEnd),phase=s=>s===hero?(t-plan.leadStart)/(plan.leadEnd-plan.leadStart):(progress-s.start)/(s.end-s.start),s=pens[lane]?.find(s=>phase(s)>=0&&phase(s)<1);
+  const penRows=lanes.length,choirWindows=choir.map((_,i)=>[plan.leadStart+(i-2)*.065,plan.leadEnd]);
+  const texture=new Float32Array(rows*penRows*4);
+  for(let lane=0;lane<penRows;lane++)for(let i=0;i<rows;i++){
+   const t=i/penFPS,progress=clamp(t/plan.leadEnd),phase=s=>lane>=20?(t-choirWindows[lane-20][0])/(choirWindows[lane-20][1]-choirWindows[lane-20][0]):s===hero?(t-plan.leadStart)/(plan.leadEnd-plan.leadStart):(progress-s.start)/(s.end-s.start),s=pens[lane]?.find(s=>phase(s)>=0&&phase(s)<1);
    if(s){const q=sample(s,phase(s));texture.set([q.x,q.y,q.z,s.uid],(lane*rows+i)*4);}
   }
-  meta.plans[plan.start]={camera:append(camera,7),pens:append(texture,4),cameraFPS,penFPS,penWidth:rows,leadIndex};
+  meta.plans[plan.start]={camera:append(camera,7),pens:append(texture,4),cameraFPS,penFPS,penWidth:rows,leadIndex,...(choir.length?{penRows,choirWindows,choirNames:choir.map(p=>p.name),mutedHero:choir.includes(hero.path)?14+leadIndex:-1}: {})};
  }
  const buffer=Buffer.concat(chunks);bytes+=buffer.length;fs.writeFileSync(path.join(folder,id+'.bin'),buffer);fs.writeFileSync(path.join(folder,id+'.json'),JSON.stringify(meta));
 }
