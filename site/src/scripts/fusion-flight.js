@@ -1,105 +1,154 @@
 import * as THREE from 'three';
-import paths from '../data/fusion-strokes.json';
 import nozzle from '../data/fusion-nozzle.json';
 import timing from '../data/flight-timing.json';
 
-// Original contiguous strokes drawn by sixteen coordinated virtual pens in 3D.
-export function createFlight(host) {
-  const renderer = new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-  renderer.setClearColor(0x100c10,1);
-  const element=renderer.domElement;element.className='fusion-flight';element.setAttribute('aria-hidden','true');host.append(element);
-  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.2,4000);
-  const positions=[],colors=[],growth=[],heroes=[];
-  function length(p){return p.slice(1).reduce((s,v,i)=>s+Math.hypot(v[0]-p[i][0],v[1]-p[i][1]),0);}
-  function depth(p){return p.role==='radiator'||p.role==='cable'?12:p.role==='accent'?8:3;}
-  const routePath=paths.filter(p=>p.name.startsWith('liquid tin stream')).sort((a,b)=>length(b.p)-length(a.p))[0];
-  const route=new THREE.CatmullRomCurve3(routePath.p.map(p=>new THREE.Vector3(p[0],p[1],depth(routePath))),false,'centripetal');
-  const lanes=Array.from({length:16},()=>[]),pens=[];
-  const hash=name=>[...name].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,0);
-  for(const path of paths){if(path===routePath)continue;lanes[hash(path.name)%16].push(path);}
-  function addStroke(path,start,end,hero=false){
-    const total=length(path.p),distances=[0];
-    for(let i=1;i<path.p.length;i++)distances.push(distances.at(-1)+Math.hypot(path.p[i][0]-path.p[i-1][0],path.p[i][1]-path.p[i-1][1]));
-    const color=new THREE.Color(hero?0x9bdcff:path.role==='radiator'?0x66b8d3:path.role==='cable'?0xe8b465:0xd6bca4),z=depth(path);
-    for(let i=1;i<path.p.length;i++)for(const j of [i-1,i]){
-      positions.push(path.p[j][0],path.p[j][1],z);colors.push(color.r,color.g,color.b);
-      growth.push(start+distances[j]/total*(end-start));heroes.push(hero?1:0);
-    }
-    return {path,start,end,distances,total,z,color};
-  }
-  for(const [lane,items]of lanes.entries()){
-    // Long contours first, then smaller details; a pen lifts across disconnected paths.
-    items.sort((a,b)=>length(b.p)-length(a.p));
-    const total=items.reduce((sum,p)=>sum+Math.max(12,length(p.p))+8,0);let cursor=0;
-    const start=lane%4*.018,span=.94-start,strokes=[];
-    for(const path of items){const work=Math.max(12,length(path.p));strokes.push(addStroke(path,start+cursor/total*span,start+(cursor+work)/total*span));cursor+=work+8;}
-    pens.push(strokes);
-  }
-  addStroke(routePath,0,1,true);
-  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('inkColor',new THREE.Float32BufferAttribute(colors,3));geometry.setAttribute('birth',new THREE.Float32BufferAttribute(growth,1));geometry.setAttribute('hero',new THREE.Float32BufferAttribute(heroes,1));
-  const material=new THREE.ShaderMaterial({uniforms:{progress:{value:0},routeGrowth:{value:0},pulse:{value:0}},vertexShader:`attribute vec3 inkColor;attribute float birth;attribute float hero;varying float isHero;varying vec3 color;varying float born;void main(){isHero=hero;color=inkColor;born=birth;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform float progress;uniform float routeGrowth;uniform float pulse;varying float isHero;varying vec3 color;varying float born;void main(){float front=mix(progress,routeGrowth,isHero);float laid=step(born,front);float tip=laid*(1.-smoothstep(0.,.009,front-born));gl_FragColor=vec4(sqrt(color)*(.17+laid*.56+tip*.55+pulse*.13),1.);}`});
-  const drawing=new THREE.LineSegments(geometry,material);scene.add(drawing);
-  const tipPositions=new Float32Array(16*3),tipGeometry=new THREE.BufferGeometry();tipGeometry.setAttribute('position',new THREE.BufferAttribute(tipPositions,3));
-  const tips=new THREE.Points(tipGeometry,new THREE.ShaderMaterial({transparent:true,depthWrite:false,vertexShader:`void main(){gl_PointSize=3.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;gl_FragColor=vec4(.76,.9,1.,(1.-smoothstep(.15,.5,d))*.85);}`}));tips.frustumCulled=false;scene.add(tips);
-  function updatePens(progress){
-    pens.forEach((strokes,i)=>{
-      const stroke=strokes.find(s=>s.start<=progress&&s.end>=progress);
-      if(!stroke){tipPositions.set([0,0,-100],i*3);return;}
-      const distance=(progress-stroke.start)/(stroke.end-stroke.start)*stroke.total;
-      let n=stroke.distances.findIndex(d=>d>=distance);n=Math.max(1,n);
-      const a=stroke.path.p[n-1],b=stroke.path.p[n],mix=(distance-stroke.distances[n-1])/Math.max(.001,stroke.distances[n]-stroke.distances[n-1]);
-      tipPositions.set([a[0]+(b[0]-a[0])*mix,a[1]+(b[1]-a[1])*mix,stroke.z+.2],i*3);
-    });tipGeometry.attributes.position.needsUpdate=true;
-  }
-  const detail=new THREE.Group();scene.add(detail);detail.visible=false;
-  for(const part of nozzle){
-    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(part.v,3));g.setIndex(part.i);g.computeVertexNormals();
-    const coil=part.name.includes('coil');
-    // Only technical linework: no filled surfaces, metallic shading or solid render.
-    detail.add(new THREE.LineSegments(new THREE.EdgesGeometry(g,9),new THREE.LineBasicMaterial({color:coil?0xd7b783:0x77b6cc,transparent:true,opacity:.72})));
-  }
-  const board=new THREE.Mesh(new THREE.PlaneGeometry(1800,1100),new THREE.ShaderMaterial({vertexShader:`varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 v;void main(){float grain=fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);float light=exp(-length((v-.5)*2.)*2.);gl_FragColor=vec4(vec3(.055,.029,.03)+light*vec3(.055,.025,.02)+(grain-.5)*.012,1.);}`}));board.position.z=-5;scene.add(board);
-  const guide=new THREE.Mesh(new THREE.SphereGeometry(.65,12,8),new THREE.MeshBasicMaterial({color:0xc5eeff}));scene.add(guide);
-  let lastW=0,lastH=0,failed=false,energy={active:false,bass:0,mids:0,highs:0};
-  element.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;element.style.display='none';});
-  const smooth=t=>{t=THREE.MathUtils.clamp(t,0,1);return t*t*(3-2*t);};
-  const mix=(a,b,t)=>a.clone().lerp(b,smooth(t));
-  function render(absoluteTime){
-    const orbiting=absoluteTime>=timing.orbit;
-    const t=(absoluteTime-timing.start)/(timing.drawEnd-timing.start)*11.27;
-    if(failed)return false;
-    const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return false;
-    if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
-    if(orbiting){
-      drawing.visible=false;tips.visible=false;board.visible=false;guide.visible=false;detail.visible=true;
-      detail.children.forEach((line,i)=>{line.material.opacity=energy.active?.35+.55*([energy.bass,energy.mids,energy.highs][i%3]):.72;});
-      const elapsed=absoluteTime-timing.orbit,duration=timing.end-timing.orbit,u=THREE.MathUtils.clamp(elapsed/duration,0,1);
-      const angle=-.8+u*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smooth(elapsed/1.7)));
-      const roll=Math.sin(absoluteTime*.42)*.055+Math.sin(absoluteTime*.17)*.022;
-      camera.up.set(Math.sin(roll),Math.cos(roll),0);camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(u*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
-      element.style.display='block';element.style.opacity=String(smooth(elapsed/.5)*(1-smooth((elapsed-duration+.8)/.8)));
-      renderer.render(scene,camera);return true;
-    }
-    drawing.visible=true;tips.visible=true;board.visible=true;detail.visible=false;
-    const u=THREE.MathUtils.clamp(t/11.27,0,1);
-    element.style.display='block';element.style.opacity=String(smooth((t-.65)/.9)*(1-smooth((t-10.15)/1.12)));
-    const progress=smooth(t/9.4);material.uniforms.progress.value=progress;updatePens(progress);
-    // Live bass energy brightens ink; no full-screen flashes.
-    material.uniforms.pulse.value=energy.active?energy.bass:0;
-    const at=THREE.MathUtils.clamp((t-3.3)/3.5,0,1),point=route.getPointAt(at),ahead=route.getPointAt(Math.min(1,at+.07));
-    material.uniforms.routeGrowth.value=Math.min(1,at+.1);guide.position.copy(route.getPointAt(Math.min(1,at+.1)));guide.visible=t<6.0;
-    const tangent=route.getTangentAt(at),ride=point.clone().addScaledVector(tangent,-55).add(new THREE.Vector3(0,-35,150));
-    const overview=new THREE.Vector3(0,-25,Math.max(650,540/camera.aspect));
-    const final=new THREE.Vector3(0,0,Math.max(530,460/camera.aspect));
-    const roll=Math.sin(absoluteTime*.42)*.055+Math.sin(absoluteTime*.17)*.022;
-    camera.up.set(Math.sin(roll),Math.cos(roll),0);
-    if(t<3){camera.position.copy(overview);camera.lookAt(0,0,0);}
-    else if(t<4.8){camera.position.copy(mix(overview,ride,(t-3)/1.8));camera.lookAt(mix(new THREE.Vector3(),ahead,(t-3)/1.8));}
-    else if(t<6.8){camera.position.copy(ride);camera.lookAt(ahead.clone().add(new THREE.Vector3(0,0,2)));}
-    else {camera.position.copy(mix(ride,final,(t-6.8)/3.4));camera.lookAt(mix(ahead,new THREE.Vector3(),(t-6.8)/3.4));}
-    renderer.render(scene,camera);
-    return true;
-  }
-  return {render,setAudioLevels(value){energy=value;},hide(){element.style.display='none';}};
+const clamp=t=>THREE.MathUtils.clamp(t,0,1);
+const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
+const hash=name=>[...name].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,0);
+const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+const length=p=>p.slice(1).reduce((s,v,i)=>s+distance(v,p[i]),0);
+const pointVertex=`attribute float strength;attribute float diameter;varying float alpha;void main(){alpha=strength;gl_PointSize=diameter;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const pointFragment=`varying float alpha;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;float core=exp(-r*r*28.);float halo=pow(1.-r,2.);vec3 colour=mix(vec3(.35,.75,1.),vec3(1.,.94,.76),core);gl_FragColor=vec4(colour,(core+halo*.55)*alpha);}`;
+
+// Projected vectors from the actual released sheets. Only the nozzle is a full 3D model.
+// Other sheets float as linework, with slight depth separation; no invented reverse side.
+export function createFlight(host,onReady=()=>{}){
+ const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+ const element=renderer.domElement;element.className='fusion-flight';element.setAttribute('aria-hidden','true');host.append(element);
+ const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.2,4000);
+ const cache=new Map(),pending=new Map(),unavailable=new Set();
+ let current,lastW=0,lastH=0,failed=false,energy={active:false,bass:0,mids:0,highs:0};
+ const paperMaterial=new THREE.ShaderMaterial({uniforms:{paper:{value:new THREE.Vector3(.1,.05,.05)}},vertexShader:`varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform vec3 paper;varying vec2 v;void main(){float grain=fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);float light=exp(-length((v-.5)*2.)*2.);gl_FragColor=vec4(paper*(.66+light*.5)+(grain-.5)*.008,1.);}`});
+ const board=new THREE.Mesh(new THREE.PlaneGeometry(3500,2500),paperMaterial);board.position.z=-25;scene.add(board);
+ const detail=new THREE.Group();scene.add(detail);detail.visible=false;
+ for(const part of nozzle){
+   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(part.v,3));g.setIndex(part.i);
+   detail.add(new THREE.LineSegments(new THREE.EdgesGeometry(g,9),new THREE.LineBasicMaterial({color:part.name.includes('coil')?0xd7b783:0x77b6cc,transparent:true,opacity:.72})));g.dispose();
+ }
+ function build(data){
+   const group=new THREE.Group(),positions=[],colors=[],growth=[],lanes=Array.from({length:14},()=>[]),pens=[];
+   const ranked=data.strokes.map(p=>({...p,total:length(p.p)})).filter(p=>p.total>.12).sort((a,b)=>b.total-a.total);
+   // A few long structural paths carry laser accents. Small detail stays quiet.
+   const leaders=new Set(),families=new Set();
+   for(const p of ranked){const family=p.name.replace(/\d+/g,'');if(leaders.size<6&&!families.has(family)&&!/soil section|floor|ground|shadow/i.test(p.name)){leaders.add(p);families.add(family);}}
+   for(const p of ranked)if(!leaders.has(p))lanes[hash(p.name)%14].push(p);
+   for(const p of leaders)lanes.push([p]);
+   const all=[];
+   lanes.forEach((items,lane)=>{
+     const total=items.reduce((s,p)=>s+Math.max(9,p.total)+5,0);let cursor=0;
+     const lead=lane>=14,leadIndex=lane-14;
+     const start=lead?.015+leadIndex*.075:lane%4*.012,span=lead?.39:.96-start,strokes=[];
+     for(const path of items){
+       const work=Math.max(9,path.total),a=start+cursor/total*span,b=start+(cursor+work)/total*span;cursor+=work+5;
+       const z=/radiator|cable|accent|outline/.test(path.role)?6:2;
+       const color=new THREE.Color(/cable|accent|coil/.test(path.role)?0xe8ba79:/radiator|screen|glass/.test(path.role)?0x8ad3e1:0xdbcbb3);
+       const distances=[0];for(let i=1;i<path.p.length;i++)distances.push(distances.at(-1)+distance(path.p[i],path.p[i-1]));
+       for(let i=1;i<path.p.length;i++)for(const j of [i-1,i]){positions.push(...path.p[j],z);colors.push(color.r,color.g,color.b);growth.push(a+distances[j]/path.total*(b-a));}
+       const stroke={path,start:a,end:b,distances,total:path.total,z,laser:leaders.has(path),seed:hash(path.name)};strokes.push(stroke);all.push(stroke);
+     }
+     pens.push(strokes);
+   });
+   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('inkColor',new THREE.Float32BufferAttribute(colors,3));geometry.setAttribute('birth',new THREE.Float32BufferAttribute(growth,1));
+   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{progress:{value:0},pulse:{value:0}},vertexShader:`attribute vec3 inkColor;attribute float birth;varying vec3 color;varying float born;void main(){color=inkColor;born=birth;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform float progress;uniform float pulse;varying vec3 color;varying float born;void main(){float laid=step(born,progress);float tip=laid*(1.-smoothstep(0.,.012,progress-born));gl_FragColor=vec4(sqrt(color)*(.7+tip*.65+pulse*.18),.045+laid*.85);}`});
+   group.add(new THREE.LineSegments(geometry,material));
+   const count=20+6*28,pp=new Float32Array(count*3),aa=new Float32Array(count),ss=new Float32Array(count),pg=new THREE.BufferGeometry();
+   pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('strength',new THREE.BufferAttribute(aa,1));pg.setAttribute('diameter',new THREE.BufferAttribute(ss,1));
+   const pm=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
+   const points=new THREE.Points(pg,pm);points.frustumCulled=false;group.add(points);
+   const heroes=all.filter(s=>s.laser).sort((a,b)=>a.start-b.start);
+   scene.add(group);group.visible=false;
+   return {data,group,material,pens,heroes,pp,aa,ss,pg,dispose(){scene.remove(group);geometry.dispose();material.dispose();pg.dispose();pm.dispose();}};
+ }
+ function prepare(id){
+   if(cache.has(id)||pending.has(id)||unavailable.has(id))return;
+   const promise=fetch(`/gallery/destiny/drawing/${id}.json`).then(r=>{if(!r.ok)throw Error(r.status);return r.json();}).then(data=>{
+     if(failed)return;
+     cache.set(id,build(data));
+     // At most current, next, and four recent sheets live on the GPU.
+     for(const [key,value]of cache){if(cache.size<=6)break;if(key!==current){value.dispose();cache.delete(key);}}
+     onReady();
+   }).catch(()=>unavailable.add(id)).finally(()=>pending.delete(id));pending.set(id,promise);
+ }
+ function sample(stroke,amount){
+   const d=clamp(amount)*stroke.total,ds=stroke.distances;
+   let lo=1,hi=ds.length-1;while(lo<hi){const mid=(lo+hi)>>1;if(ds[mid]<d)lo=mid+1;else hi=mid;}
+   const a=stroke.path.p[lo-1],b=stroke.path.p[lo],u=(d-ds[lo-1])/Math.max(.001,ds[lo]-ds[lo-1]);
+   return new THREE.Vector3(a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u,stroke.z+.4);
+ }
+ function updateInk(sheet,progress,elapsed,duration){
+   sheet.material.uniforms.progress.value=progress;sheet.material.uniforms.pulse.value=energy.active?energy.bass:0;
+   sheet.aa.fill(0);let particle=20;
+   const write=(i,p,alpha,size)=>{sheet.pp.set(p.toArray(),i*3);sheet.aa[i]=alpha;sheet.ss[i]=size*Math.min(devicePixelRatio,1.5);};
+   sheet.pens.forEach((strokes,i)=>{
+     const s=strokes.find(s=>s.start<=progress&&s.end>=progress);if(!s)return;
+     const u=(progress-s.start)/(s.end-s.start),p=sample(s,u);
+     write(i,p,s.laser?1:.65,s.laser?26:4);
+   });
+   for(const s of sheet.heroes){
+     const u=(progress-s.start)/(s.end-s.start);if(u<0||u>1.15)continue;
+     const band=energy.active?.65+energy.highs*.7:.75;
+     // A short ignition at the start; small sparks then trail that same moving nib.
+     // Analytic ages/seeds make seeking deterministic, with no frame-rate-dependent emitter.
+     for(let j=0;j<28;j++){
+       if(particle>=sheet.aa.length)break;
+       const age=((elapsed*1.6+j*.618+s.seed%97*.01)%1)*.42;
+       const previous=progress-age/(duration*.82),v=(previous-s.start)/(s.end-s.start);if(v<0||v>1)continue;
+       const p=sample(s,v),a=(s.seed%360+j*137.508)*Math.PI/180;
+       const ignition=1-smooth(u/.2),spread=(9+ignition*25)*age;
+       p.x+=Math.cos(a)*spread;p.y+=Math.sin(a)*spread-age*age*12;p.z+=Math.sin(a*1.7)*spread+1;
+       write(particle++,p,(1-age/.42)**1.5*band,3.5+ignition*3);
+     }
+   }
+   sheet.pg.attributes.position.needsUpdate=true;sheet.pg.attributes.strength.needsUpdate=true;sheet.pg.attributes.diameter.needsUpdate=true;
+ }
+ function render(time,passage){
+   if(failed)return false;
+   const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return false;
+   if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
+   const orbiting=time>=timing.orbit&&time<timing.end;
+   for(const sheet of cache.values())sheet.group.visible=false;
+   detail.visible=orbiting;board.visible=!orbiting;
+   const roll=Math.sin(time*.42)*.04+Math.sin(time*.17)*.019;
+   camera.up.set(Math.sin(roll),Math.cos(roll),0);
+   if(orbiting){
+     detail.children.forEach((line,i)=>line.material.opacity=energy.active?.35+.55*[energy.bass,energy.mids,energy.highs][i%3]:.72);
+     renderer.setClearColor(0x100c10,1);
+     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,u=clamp(elapsed/duration),angle=-.8+u*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smooth(elapsed/1.7)));
+     camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(u*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
+     element.style.opacity=String(smooth(elapsed/.5)*(1-smooth((elapsed-duration+.8)/.8)));element.dataset.drawing='nozzle-orbit';
+   }else{
+     if(!passage){hide();return false;}
+     current=passage.id;prepare(current);const sheet=cache.get(current);if(!sheet){hide();return false;}
+     sheet.group.visible=true;
+     const duration=passage.end-passage.start,elapsed=time-passage.start,u=clamp(elapsed/duration);
+     const progress=clamp(u/.83);updateInk(sheet,progress,elapsed,duration);
+     const paper=sheet.data.paper.map(v=>v/255);paperMaterial.uniforms.paper.value.set(...paper);renderer.setClearColor(new THREE.Color(...paper),1);
+     const [bw,bh]=sheet.data.size;
+     const fit=Math.max(bh/2,bw/(2*camera.aspect))/Math.tan(24*Math.PI/180)*1.22;
+     const hero=sheet.heroes[passage.seed%sheet.heroes.length]||sheet.pens.flat()[0];
+     const tracking=sample(hero,clamp((progress-hero.start)/(hero.end-hero.start)));
+     // Establish silhouette, follow a genuine contour, then reconnect to the whole sheet.
+     // Six flight grammars + different paths/orientations avoid the same repeated zoom.
+     const enter=smooth((u-.14)/.25),leave=1-smooth((u-.67)/.28),dive=enter*leave;
+     const target=new THREE.Vector3(),pos=new THREE.Vector3(0,0,fit);
+     const phase=u*Math.PI*2+passage.seed*.01;
+     switch(passage.view){
+       case 0:target.copy(tracking).multiplyScalar(.62*dive);pos.set(target.x-35*dive,target.y-45*dive,fit*(1-.47*dive));break;
+       case 1:target.set(bw*(u-.5)*.32*dive,bh*.08*dive,0);pos.set(target.x+55*dive,target.y,fit*(1-.38*dive));break;
+       case 2:target.copy(tracking).multiplyScalar(.5*dive);pos.set(target.x+Math.sin(phase)*85*dive,target.y+Math.cos(phase)*55*dive,fit*(1-.42*dive));break;
+       case 3:target.set(bw*.12*dive,bh*(.5-u)*.4*dive,0);pos.set(target.x-70*dive,target.y+25*dive,fit*(1-.4*dive));break;
+       case 4:target.copy(tracking).multiplyScalar(.65*dive);pos.set(target.x+45*dive,target.y-55*dive,fit*(1-.48*dive));break;
+       default:target.set(bw*(.5-u)*.35*dive,-bh*.08*dive,0);pos.set(target.x,target.y+70*dive,fit*(1-.36*dive));
+     }
+     camera.position.copy(pos);camera.lookAt(target);
+     element.style.opacity=String(smooth(elapsed/.32)*(1-smooth((elapsed-duration+.42)/.42)));
+     element.dataset.drawing=current;element.dataset.progress=progress.toFixed(3);
+   }
+   element.style.display='block';renderer.render(scene,camera);return true;
+ }
+ function hide(){element.style.display='none';}
+ element.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;hide();});
+ prepare('o03');
+ return {render,prepare,setAudioLevels(value){energy=value;},hide};
 }
