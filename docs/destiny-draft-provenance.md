@@ -434,3 +434,17 @@ relative-luminance steps ≥ 0.1) found at most two flashes per second.
 
 The earlier WebGL film modules added in the previous revision were removed.
 The cover's hover preview now plays the silent clip from the drop.
+
+### Same day, later: one MP4 with sound, minimal player
+
+At the author's request the page now serves the clip as one MP4 with its own
+soundtrack (`split-signal-av-1080p60.mp4` ~68 MB for wide screens,
+`split-signal-av-720p60.mp4` ~28 MB otherwise; AAC, 1.2 s fade-out). The author
+states they have permission to use the track; the player credits Kevin Koontz,
+"We Can Fix Everything" (The Ultimate Machine), linking to omarchy.org. The
+separate MP3 stream, the header music button/dock, captions, chapters and the
+music card were removed; the player has only play/pause and a seek bar. The
+silent video files were deleted. The gallery component was rewritten around the
+video element; free browsing, grid, zoom, fullscreen, downloads and the ambient
+ink loops are kept. A fan-project note at the end of the post says Destiny
+belongs to Bungie, the theme is an unaffiliated homage and uses no game assets.

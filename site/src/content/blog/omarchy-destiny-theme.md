@@ -126,3 +126,7 @@ Moduły obliczeniowe. Tutaj porównujemy tę samą funkcję w dwóch różnych k
 </figure>
 
 </div>
+
+<hr />
+
+<p class="fan-note"><small><strong>Projekt fanowski.</strong> Destiny i jego świat należą do Bungie. Ten motyw to hołd fana: nazwa, kolory energii (Arc, Void, Solar) i klimat plansz są inspirowane grą, ale rysunki, maszyny i teksty są oryginalne, powstały dla tego projektu. Nie ma tu grafik, logotypów ani innych materiałów z gry. Projekt nie jest związany z Bungie ani przez nie zatwierdzony. Mam nadzieję, że Bungie nie będzie miało nic przeciwko.</small></p>
