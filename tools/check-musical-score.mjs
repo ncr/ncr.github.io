@@ -2,6 +2,7 @@ import fs from 'node:fs';import assert from 'node:assert/strict';import {fileURL
 import {inkTime,pullAt,phraseMotion} from '../site/src/scripts/musical-motion.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),read=p=>JSON.parse(fs.readFileSync(path.join(root,p))),grid=read('site/src/data/music-grid.json'),score=read('site/src/data/drawing-score.json'),assets=read('site/src/data/film-assets.json'),tour=read('site/src/data/destiny-tour.json');
 assert.equal(read('site/src/data/destiny-gallery.json').length,42);assert.equal(grid.phrases.length,32);
+assert.equal(new Set(grid.phrases.map(p=>p.id)).size,32,'Each featured wallpaper gets one four-bar phrase, including the ship');
 for(const [i,p]of grid.phrases.entries()){
  assert.equal(p.bars,4);assert.equal(p.beats.length,17);assert.equal(p.start,grid.beats[i*16]);assert.equal(p.end,grid.beats[(i+1)*16]);
  if(i)assert.equal(p.start,grid.phrases[i-1].end);

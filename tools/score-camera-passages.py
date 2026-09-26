@@ -2,14 +2,14 @@
 import json
 from pathlib import Path
 r=Path(__file__).resolve().parents[1];d=r/'site/src/data';editorial=json.load(open(r/'tools/film-editorial.json'));old=editorial['score'];tour=editorial['tour'];grid=json.load(open(d/'music-grid.json'));g=grid['beats'];gallery={w['id']:w for w in json.load(open(d/'destiny-gallery.json'))}
-ids=['o02','o01','c087','o09','c025','o13','o05','c017','c056','c031','o03','o03','c018','o07','o06','c030','o10','c002','o14','c099','c042','o04','c065','o12','o08','c038','c101','c001','c104','c105','c107','c110']
+ids=['o02','o01','c087','o09','c025','o13','o05','c017','c056','c031','o11','o03','c018','o07','o06','c030','o10','c002','o14','c099','c042','o04','c065','o12','o08','c038','c101','c001','c104','c105','c107','c110']
 score=[];shots=tour[:4];phrases=[]
 for s in old[:3]:
  s.update(mystery=True,tail=1.8,followEnd=s['end']-s['start']+3,holdStart=s['end']-s['start']+5,leadEnd=s['end']-s['start']+1.8);score.append(s)
 for i,id in enumerate(ids):
  start,end=g[i*16],g[(i+1)*16];phrase={'id':id,'start':start,'end':end,'bars':4,'firstBeat':i*16,'kind':'orbit' if i==11 else 'drawing'};phrases.append(phrase)
  if i==11:
-  shots.extend([dict(at=start,id=id,x=.57,y=.39,w=.23,h=.48,caption='Podejdźmy do dyszy.',motion='push',orbit='start'),dict(at=g[i*16+4],id=id,x=.57,y=.39,w=.23,h=.48,caption='Teraz widać głębokość pierścieni.',motion='float'),dict(at=g[i*16+12],id=id,x=.5,y=.5,w=1,h=1,caption='I znowu: cała maszyna.',motion='pull',orbit='end')]);continue
+  shots.extend([dict(at=start,id=id,x=.57,y=.39,w=.23,h=.48,caption='Podejdźmy do dyszy.',chapter='Podróż',motion='push',orbit='start'),dict(at=g[i*16+4],id=id,x=.57,y=.39,w=.23,h=.48,caption='Teraz widać głębokość pierścieni.',motion='float'),dict(at=g[i*16+12],id=id,x=.5,y=.5,w=1,h=1,caption='I znowu: cała maszyna.',motion='pull',orbit='end')]);continue
  template=next(s for s in reversed(old) if s['id']==id);s=dict(template)
  s.pop('intro',None);s.pop('mystery',None);s.pop('closeRange',None)
  s.update(start=start,end=end,establish=g[i*16+1]-start,leadStart=0,leadEnd=g[i*16+12]-start,followEnd=g[i*16+10]-start,holdStart=g[i*16+14]-start,pullBeat=10,revealBeat=14,beats=[round(t-start,6) for t in g[i*16:i*16+17]],phrase=i,blendSpan=g[i*16+2]-start)

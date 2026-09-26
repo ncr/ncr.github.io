@@ -256,7 +256,11 @@ four bars (16 beats); regular retreats move to beats 10–14, with the complete
 wallpaper only on beats 14–16 (~1.06 s). The first reveal travels from the musical
 entrance to beat 14 rather than parking for most of its phrase. The dinner orbit
 and nozzle dissolve were retimed to the same short overview. The audio element,
-299.21 s soundtrack and all 42 gallery entries are preserved.
+299.21 s soundtrack and all 42 gallery entries are preserved. The ship previously
+occupied two adjacent phrases (drawing plus nozzle). It now gets one four-bar
+nozzle sequence; Organ Foundry takes the other slot. This gives 32 distinct
+wallpapers in 32 phrases, with no eight-bar exception. The earlier mystery intro
+remains separate from these scored presentations.
 
 Validation: `check-musical-score.mjs` checks the constant pen clock throughout
 every phrase, four-bar durations, two-beat overviews and baked camera arrivals.
