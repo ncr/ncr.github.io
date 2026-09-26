@@ -448,3 +448,14 @@ silent video files were deleted. The gallery component was rewritten around the
 video element; free browsing, grid, zoom, fullscreen, downloads and the ambient
 ink loops are kept. A fan-project note at the end of the post says Destiny
 belongs to Bungie, the theme is an unaffiliated homage and uses no game assets.
+
+### Same day, later still: clean start, new title, artist links
+
+The clip now starts on the beat at 190.979 s, just after the previous vocal line
+("…the ultimate machine") ends, so it opens directly into "They said this day
+would never come" (checked with Whisper word timestamps on the final file).
+Duration 1:48.2; the cold open is time-compressed to reach the 192.56 s hit.
+The title no longer imitates a game wordmark: lowercase "destiny" in the
+terminal monospace with a cursor, and "omarchy theme" on the next line in the
+Arc→Void gradient (opening title and end card). The credit links Kevin Koontz's
+X profile (@koozeex1) and his post that published the song.

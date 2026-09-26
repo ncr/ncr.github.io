@@ -3,7 +3,7 @@ import gallery from '../data/destiny-gallery.json'
 const wallpapers = gallery
 const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 const video = '/gallery/destiny/video/'
-const clipDuration = 110.9
+const clipDuration = 108.23
 ---
 <section class="wallpaper-entry" aria-label="Teledysk i galeria tapet">
   <button class="gallery-launch" type="button" aria-haspopup="dialog" aria-controls="wallpaper-viewer">
@@ -31,7 +31,7 @@ const clipDuration = 110.9
         <button type="button" class="mv-play" aria-label="Odtwórz">▶</button>
         <input class="mv-seek" type="range" min="0" max={clipDuration} step="0.01" value="0" aria-label="Czas teledysku" />
       </div>
-      <p class="mv-credit">Muzyka: <a href="https://omarchy.org/" target="_blank" rel="noopener">Kevin Koontz — „We Can Fix Everything”</a> <span>(The Ultimate Machine)</span></p>
+      <p class="mv-credit">Muzyka: <a href="https://x.com/koozeex1" target="_blank" rel="noopener">Kevin Koontz (@koozeex1)</a> — <a href="https://x.com/koozeex1/status/2096140707329368181" target="_blank" rel="noopener">„We Can Fix Everything”</a> <span>(The Ultimate Machine)</span></p>
     </section>
     <footer class="viewer-bottom">
       <button type="button" class="tour-return">▷ <span>Odtwórz teledysk</span></button>
@@ -110,6 +110,7 @@ const clipDuration = 110.9
       cancelAnimationFrame(tick); tick = paused ? 0 : requestAnimationFrame(loop); progress();
     }
     for (const e of ['play','pause','ended','seeked','loadedmetadata']) mv.addEventListener(e, playState);
+    mv.addEventListener('loadedmetadata', () => { if(isFinite(mv.duration)) seek.max = String(mv.duration); });
     function togglePlay() { source(); if(mv.paused) mv.play().catch(() => {}); else mv.pause(); }
     function startVideo(autoplay = true) {
       grid.hidden = true; dialog.classList.remove('grid-open'); gridToggle.setAttribute('aria-expanded','false');
@@ -175,7 +176,7 @@ const clipDuration = 110.9
     function teaserFrameTick() { if(dialog.open || document.hidden) { stopTeaser(); return; } launch.querySelector('.teaser-progress').style.transform = `scaleX(${teaserVideo.currentTime/teaserVideo.duration||0})`; teaserTick = requestAnimationFrame(teaserFrameTick); }
     function startTeaser() {
       if(reduced.matches || dialog.open || teaserTick) return;
-      if(!teaserVideo) { teaserVideo = document.createElement('video'); teaserVideo.muted = true; teaserVideo.playsInline = true; teaserVideo.loop = true; teaserVideo.src = `${video}split-signal-av-720p60.mp4#t=38.5`; teaserFrame.replaceChildren(teaserVideo); }
+      if(!teaserVideo) { teaserVideo = document.createElement('video'); teaserVideo.muted = true; teaserVideo.playsInline = true; teaserVideo.loop = true; teaserVideo.src = `${video}split-signal-av-720p60.mp4#t=35.8`; teaserFrame.replaceChildren(teaserVideo); }
       teaser.hidden = false; launch.classList.add('is-previewing'); teaserVideo.play().catch(() => {}); teaserTick = requestAnimationFrame(teaserFrameTick);
     }
     launch.addEventListener('pointerenter', e => { if(e.pointerType === 'mouse') startTeaser(); });
