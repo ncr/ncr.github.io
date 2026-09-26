@@ -26,7 +26,7 @@ for(const id of new Set(score.map(s=>s.id))){
  const append=(v,itemSize)=>{const a=new Float32Array(v),d={offset,count:a.length,itemSize};chunks.push(Buffer.from(a.buffer));offset+=a.length;return d;};
  for(const [k,a]of Object.entries(attrs))meta.attributes[k]=append(a,k==='position'||k==='inkColor'?3:1);
  for(const plan of score.filter(s=>s.id===id)){
-  const duration=plan.end-plan.start,leadIndex=plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1,beats);
+  const duration=plan.end-plan.start,leadIndex=plan.leadName?heroes.findIndex(s=>s.path.name===plan.leadName):plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1,beats);
   if(plan.intro){const q=sample(hero,.18),reg=data.registration;introFrames[plan.start]={x:(reg.center[0]+q.x*reg.unit)/2560,y:(reg.center[1]-q.y*reg.unit)/1080,w:plan.framing.w*.23,h:plan.framing.h*.23};}
   const camera=[],cameraFPS=90,penFPS=60,rows=Math.ceil(duration*penFPS)+2;
   for(let i=0;i<=Math.ceil(duration*cameraFPS)+1;i++)camera.push(...operator(i/cameraFPS));

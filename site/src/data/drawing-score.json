@@ -39,7 +39,8 @@
     },
     "intro": true,
     "mystery": true,
-    "closeRange": 0.17
+    "closeRange": 0.17,
+    "leadName": "thigh cover perimeter"
   },
   {
     "id": "o01",
