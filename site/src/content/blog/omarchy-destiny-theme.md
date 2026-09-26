@@ -1,132 +1,100 @@
 ---
-title: "Akwarium na pulpicie"
-date: 2026-09-25
-description: "42 tapety do oglądania jak rybki w akwarium. Z bliska detale i małe historie, z daleka kolor i spokój."
+title: I Picked the Third One
+date: 2026-09-26
+description: Three AI agents made three music videos for my Omarchy theme in under an hour. My part was two words, and no model could have typed them for me.
 draft: true
 ---
 
-Chciałem tapety, którym można się przyglądać jak rybkom w akwarium. Zatrzymać wzrok na jakimś drobiazgu, po chwili zauważyć następny. A kiedy zajmuję się czymś innym, żeby po prostu były przyjemnymi kolorowymi plamami. Bez krzyczenia z pulpitu.
+On Saturday evening three AI agents made three music videos for my new
+Omarchy theme. Same brief, same song, no peeking at each other's work. The
+fastest finished in 9 minutes, the slowest in 49. I watched all three and
+typed two words: third best.
 
-Lubię pod tym względem plansze z Destiny. Cienkie linie, głęboki kolor, mnóstwo rzeczy do obejrzenia. Z tego wyszedł pomysł na motyw dla Omarchy: kolekcję technicznych rysunków urządzeń z przyszłości.
+Then I watched the winner again. It opened with two seconds left over from the
+previous verse before the line I wanted, "They said this day would never come."
+I asked for a clean cut. The title read DESTINY in letters that looked a lot
+like the game's logo and never said this was an Omarchy theme. I asked for
+"destiny" and, on the next line, "omarchy theme". Each fix took an agent a few
+minutes. Knowing what to fix took me one viewing.
 
-Najbardziej zależało mi na tym, jak się z nimi przebywa. Odsuwasz okno i coś przyciąga wzrok. Możesz podejść bliżej, obejrzeć mechanizm, przeczytać podpis. Możesz też wrócić do swojej roboty i zostawić sobie w tle trochę granatu.
+## Forty-two machines
 
-Dlatego kolejne wersje dostawały więcej detali, a jednocześnie uspokajały się wizualnie. Ozdobne pierścienie przygasły. Linie pomocnicze zeszły w tło. Wokół ilustracji zrobiło się więcej miejsca. Chciałem, żeby było co odkrywać, kiedy mam na to ochotę.
+Destiny is a theme for [Omarchy](https://omarchy.org). Deep-space navy instead
+of black, ice-white text, and accent colors named after the energies in
+Bungie's game. The focused window gets an Arc-to-Void border.
 
-Powstały 42 tapety. Jest transport na Marsa i urządzenie, które utrzymuje trawnik o 4% bardziej zielony niż u sąsiada. Jest też robot biegający z twoim zegarkiem, kiedy ty śpisz. Głowy nie potrzebuje. Zegarek o nią nie pyta.
-
-Te małe historie też są częścią akwarium. Z daleka kolor i spokój. Z bliska ktoś poświęcił całą aparaturę temu, żeby wygrać z trawnikiem za płotem.
-
-Dobrze się przy tym bawiłem. Lubię przyszłość, w której jest miejsce na takie rzeczy.
-
-`p(bloom) > p(gloom/doom)`
-
-## Kolory też mają swoją historię
-
-Tapeta to połowa akwarium. Drugą jest motyw kolorystyczny Destiny: prawie czarny granat zamiast czystej czerni, lodowy tekst i kolory, które mają gdzie wybrzmieć.
-
-<div class="destiny-palette" aria-label="Paleta motywu Destiny">
-<span style="--swatch:#4cc9ff">Arc · błękit</span><span style="--swatch:#b97aff">Void · fiolet</span><span style="--swatch:#ff8a3d">Solar · pomarańcz</span><span style="--swatch:#f5c945">Exotic · złoto</span>
+<div class="destiny-palette" aria-label="The Destiny palette">
+<span style="--swatch:#4cc9ff">Arc</span><span style="--swatch:#b97aff">Void</span><span style="--swatch:#ff8a3d">Solar</span><span style="--swatch:#f5c945">Exotic</span>
 </div>
 
-Błękit, fiolet i pomarańcz nawiązują do Arc, Void i Solar. Złoto do egzotycznego ekwipunku; zieleń i niebieski do niższych klas łupu. To paleta inspirowana grą, przełożona na pulpit: aktywne okno ma obramowanie od błękitu do fioletu, zaznaczenia są chłodne, tekst jasny. Nie wszystko musi świecić tak samo mocno.
+It also has 42 wallpapers: technical blueprints of machines from a hopeful
+future. A fusion transport that gets a crew to Mars in 75 days. A lawn system
+that keeps your grass 4% greener than your neighbor's, whose garden gnome, it
+turns out, also has a camera. A robot that goes running with your smartwatch
+while you sleep. It doesn't need a head. The watch doesn't ask.
 
-W btopie robi się z tego małe centrum dowodzenia. Wykres CPU wspina się od turkusu przez niebieski do fioletu. Temperatura idzie od zieleni przez złoto do czerwieni. Pobieranie jest ciepłe, wysyłanie chłodne — kierunek ruchu widać jeszcze przed przeczytaniem liczb. Złoto nie zawsze oznacza więc, że wypadł egzotyk. Czasem po prostu robi się ciepło.
+I wanted wallpapers you can watch like fish in an aquarium. From across the
+room, color and calm. Up close, a mechanism, a caption, and somebody's entire
+engineering budget spent on beating the lawn next door.
 
-<figure class="figure destiny-monitor">
-<a href="/draft-assets/destiny/btop-busy.webp"><img src="/draft-assets/destiny/btop-busy.webp" alt="Motyw Destiny w btop: gęste turkusowo-fioletowe wykresy procesora i karty graficznej, zielona pamięć oraz czerwono-turkusowy ruch sieciowy." width="1920" height="1080" loading="lazy" /></a>
-<figcaption>Prawdziwy btop na spawnerze podczas kontrolowanego obciążenia CPU i GPU. Transfer biegnie przez lokalny interfejs lo — to pokaz kolorów pod obciążeniem, nie pomiar szybkości internetu. Kliknij, żeby obejrzeć pikseliki w pełnym rozmiarze.</figcaption>
+## Who did what
+
+The machines did the drawing. Every wallpaper starts as a 3D model in Blender,
+gets flattened into vector lines with hidden edges removed, and is laid out in
+Cairo, with text from a real font and the Omarchy logo from its original SVG.
+Agents wrote all of that code, built the models, and ran the audits. Nine
+days, 34 commits.
+
+I did the deciding. The project has a production guide, 685 lines, and most of
+it is things I said no to. No wallpapers straight out of an image model: we
+tried, the lettering wobbled and the detail turned to mush. "An artifact from
+the past" meant a document from the future, not a western, and sepia needed
+its own paragraph. More lines is not more quality; empty space is part of the
+design. And the running robot's knee bent the wrong way.
+
+<div class="detail-pair detail-triptych">
+
+<figure class="figure detail-comparison">
+<p><strong>First concept · Sep 18</strong></p>
+<a href="/draft-assets/destiny/proxy-before-study.svg"><img src="/draft-assets/destiny/proxy-before-study.svg" alt="Proxy, first concept: limbs made of simple blocks, joints marked with circles." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Blocks for limbs, circles for joints.</figcaption>
 </figure>
 
-<figure class="figure destiny-monitor">
-<a href="/draft-assets/destiny/btop-busy-second.webp"><img src="/draft-assets/destiny/btop-busy-second.webp" alt="Drugi moment tego samego testu btop: zmieniające się obciążenie CPU, mocno zajęta karta graficzna i dwukierunkowy transfer lokalny." width="1920" height="1080" loading="lazy" /></a>
-<figcaption>Chwilę później: te same kolory, inny układ kropek. Akwarium pracuje.</figcaption>
+<figure class="figure detail-comparison">
+<p><strong>Midway · Sep 22</strong></p>
+<a href="/draft-assets/destiny/proxy-middle-study.svg"><img src="/draft-assets/destiny/proxy-middle-study.svg" alt="Proxy, midway: rounded covers and marked joints, the legs still in the old pose." width="900" height="1450" loading="lazy" /></a>
+<figcaption>Nicer covers. Same legs.</figcaption>
 </figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Released · Sep 25</strong></p>
+<a href="/draft-assets/destiny/proxy-after-study.svg"><img src="/draft-assets/destiny/proxy-after-study.svg" alt="Proxy, released: a new running phase with the rear leg clearly bent. Close-up mirrored to match the running direction." width="900" height="1450" loading="lazy" /></a>
+<figcaption>A new stride, knee the right way round. Mirrored to compare.</figcaption>
+</figure>
+
+</div>
+
+None of these is a hard problem for a model. Each one is a choice. A model will
+happily draw a hundred more gears. Somebody has to notice that the wallpaper
+just got worse.
+
+## Throwing things away
+
+Before the three videos there was a first one: a five-minute film rendered
+live in the browser, laser pens drawing every machine in time with the bass.
+Two agents spent 17 hours and about 20 commits on it. It worked. I asked for
+three new ones anyway, from scratch, with the old code off limits. The one at
+the top of this page is the third.
+
+Intelligence is getting cheap, maybe unlimited. What to make, what to add,
+what to cut, how it should look, where to go next: none of that got any
+cheaper. People who count p(doom) see that as the problem. I see a job, and
+it's the fun one.
+
+Three videos, two words. I picked the third one.
+
+`p(bloom) > p(doom)`
 
 <hr />
 
-## Wybrane porównania
-
-Trzy wybrane przykłady: 1, 3 i 4. Każdy zestaw pokazuje **pierwszą wersję → etap pośredni → wydanie końcowe**. To rzeczywiste pliki z historii projektu. Żółta ramka wskazuje powiększony fragment; kliknięcie otwiera ilustrację. Kadry i powiększenia dobieramy do danego ujęcia, więc nie jest to porównanie wymiarów.
-
-### 1. Kolacja z figur geometrycznych
-
-Postać przy stole. Najbardziej bezpośredni przykład zmiany stylu.
-
-<div class="detail-pair detail-triptych">
-
-<figure class="figure detail-comparison">
-<p><strong>Pierwszy koncept · 18 IX</strong></p>
-<a href="/draft-assets/destiny/truth-before-study.svg"><img src="/draft-assets/destiny/truth-before-study.svg" alt="1. Kolacja z figur geometrycznych: Okrąg i prostokąty. Sylwetka jest symbolem człowieka." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Okrąg i prostokąty. Sylwetka jest symbolem człowieka.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Etap pośredni · 22 IX</strong></p>
-<a href="/draft-assets/destiny/truth-middle-study.svg"><img src="/draft-assets/destiny/truth-middle-study.svg" alt="1. Kolacja z figur geometrycznych: Uformowany manekin, przeguby i znaczniki. Scena nadal oglądana na wprost." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Uformowany manekin, przeguby i znaczniki. Scena nadal oglądana na wprost.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Wydanie końcowe · 25 IX</strong></p>
-<a href="/draft-assets/destiny/truth-after-study.svg"><img src="/draft-assets/destiny/truth-after-study.svg" alt="1. Kolacja z figur geometrycznych: Manekin siedzi przy przestrzennym stole. Zmieniła się też kamera i kompozycja." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Manekin siedzi przy przestrzennym stole. Zmieniła się też kamera i kompozycja.</figcaption>
-</figure>
-
-</div>
-
-### 3. Robot musi wyglądać, jakby biegł
-
-Nogi i stawy. Dobry przykład, gdy chcemy pokazać, że ładniejszy kontur nie kończy pracy nad pozą.
-
-<div class="detail-pair detail-triptych">
-
-<figure class="figure detail-comparison">
-<p><strong>Pierwszy koncept · 18 IX</strong></p>
-<a href="/draft-assets/destiny/proxy-before-study.svg"><img src="/draft-assets/destiny/proxy-before-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Kończyny z prostych brył, stawy oznaczone kółkami." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Kończyny z prostych brył, stawy oznaczone kółkami.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Etap pośredni · 22 IX</strong></p>
-<a href="/draft-assets/destiny/proxy-middle-study.svg"><img src="/draft-assets/destiny/proxy-middle-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Zaokrąglone osłony i zaznaczone przeguby. Układ nóg nadal przypomina wcześniejszy." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Zaokrąglone osłony i zaznaczone przeguby. Układ nóg nadal przypomina wcześniejszy.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Wydanie końcowe · 25 IX</strong></p>
-<a href="/draft-assets/destiny/proxy-after-study.svg"><img src="/draft-assets/destiny/proxy-after-study.svg" alt="3. Robot musi wyglądać, jakby biegł: Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu. Zbliżenie odbite poziomo, aby porównać ten sam kierunek biegu." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Nowa faza biegu i wyraźnie zgięta noga z tyłu. To zmiana pozy, nie tylko obrysu. Zbliżenie odbite poziomo, aby porównać ten sam kierunek biegu.</figcaption>
-</figure>
-
-</div>
-
-### 4. Zmiana pomysłu na całą maszynę
-
-Moduły obliczeniowe. Tutaj porównujemy tę samą funkcję w dwóch różnych konstrukcjach, nie identyczną część.
-
-<div class="detail-pair detail-triptych">
-
-<figure class="figure detail-comparison">
-<p><strong>Pierwszy koncept · 18 IX</strong></p>
-<a href="/draft-assets/destiny/quantum-before-study.svg"><img src="/draft-assets/destiny/quantum-before-study.svg" alt="4. Zmiana pomysłu na całą maszynę: Moduły ułożone w pionowym stosie." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Moduły ułożone w pionowym stosie.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Etap pośredni · 22 IX</strong></p>
-<a href="/draft-assets/destiny/quantum-middle-study.svg"><img src="/draft-assets/destiny/quantum-middle-study.svg" alt="4. Zmiana pomysłu na całą maszynę: Stos pozostaje; przybywa drobnych połączeń i szczegółów." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Stos pozostaje; przybywa drobnych połączeń i szczegółów.</figcaption>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Wydanie końcowe · 25 IX</strong></p>
-<a href="/draft-assets/destiny/quantum-after-study.svg"><img src="/draft-assets/destiny/quantum-after-study.svg" alt="4. Zmiana pomysłu na całą maszynę: Moduły są rozmieszczone promieniowo wewnątrz otwartej obudowy. Zmieniła się architektura ilustracji." width="900" height="1450" loading="lazy" /></a>
-<figcaption>Moduły są rozmieszczone promieniowo wewnątrz otwartej obudowy. Zmieniła się architektura ilustracji.</figcaption>
-</figure>
-
-</div>
-
-<hr />
-
-<p class="fan-note"><small><strong>Projekt fanowski.</strong> Destiny i jego świat należą do Bungie. Ten motyw to hołd fana: nazwa, kolory energii (Arc, Void, Solar) i klimat plansz są inspirowane grą, ale rysunki, maszyny i teksty są oryginalne, powstały dla tego projektu. Nie ma tu grafik, logotypów ani innych materiałów z gry. Projekt nie jest związany z Bungie ani przez nie zatwierdzony. Mam nadzieję, że Bungie nie będzie miało nic przeciwko.</small></p>
+<p class="fan-note"><small><strong>Fan project.</strong> Destiny and its world belong to Bungie. The theme's name, the energy colors and the mood of the sheets are a fan's homage; the drawings, machines and texts are original, made for this project, with no art, logos or other material from the game. Not affiliated with or endorsed by Bungie. I hope they don't mind. Music: <a href="https://x.com/koozeex1">Kevin Koontz</a>, <a href="https://x.com/koozeex1/status/2096140707329368181">"We Can Fix Everything"</a>.</small></p>

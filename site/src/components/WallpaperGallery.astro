@@ -5,46 +5,46 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 const video = '/gallery/destiny/video/'
 const clipDuration = 108.23
 ---
-<section class="wallpaper-entry" aria-label="Teledysk i galeria tapet">
+<section class="wallpaper-entry" aria-label="Music video and wallpaper gallery">
   <button class="gallery-launch" type="button" aria-haspopup="dialog" aria-controls="wallpaper-viewer">
     <img src={cover.thumb} width="5120" height="2160" alt="" />
     <span class="gallery-teaser" aria-hidden="true" hidden><span class="teaser-frame"></span><span class="teaser-progress"></span></span>
-    <span class="gallery-invite"><span><strong>Wejdź do akwarium</strong><small>Teledysk z muzyką · galeria 42 tapet</small></span><span class="entry-arrow" aria-hidden="true">↗</span></span>
+    <span class="gallery-invite"><span><strong>Step into the aquarium</strong><small>Music video · 42 wallpapers</small></span><span class="entry-arrow" aria-hidden="true">↗</span></span>
   </button>
-  <noscript><p><a href={`${video}split-signal-av-1080p60.mp4`}>Teledysk (MP4)</a> · <a href={cover.src}>Tapeta w pełnej rozdzielczości</a> · <a href="https://github.com/ncr/omarchy-destiny-theme/tree/ultrawide/backgrounds">Cała kolekcja</a></p></noscript>
+  <noscript><p><a href={`${video}split-signal-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={cover.src}>Full-size wallpaper</a> · <a href="https://github.com/ncr/omarchy-destiny-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
 </section>
-<dialog id="wallpaper-viewer" aria-label="Teledysk i galeria 42 tapet" data-cover={wallpapers.indexOf(cover)}>
+<dialog id="wallpaper-viewer" aria-label="Music video and 42 wallpapers" data-cover={wallpapers.indexOf(cover)}>
   <div class="gallery-shell">
     <header class="viewer-top">
       <div class="viewer-label" aria-live="polite" aria-atomic="true"><span class="viewer-count"></span><h2 class="viewer-title"></h2></div>
-      <button type="button" class="viewer-close icon-button" aria-label="Zamknij" title="Zamknij (Esc)">✕</button>
+      <button type="button" class="viewer-close icon-button" aria-label="Close" title="Close (Esc)">✕</button>
     </header>
-    <div class="viewer-canvas" tabindex="0" aria-label="Tapeta. Strzałki zmieniają obraz, Z przełącza powiększenie.">
-      <video class="mv-video" playsinline preload="none" poster={`${video}split-signal-poster.webp`} aria-label="Teledysk Split Signal: motyw Destiny i 42 tapety"></video>
+    <div class="viewer-canvas" tabindex="0" aria-label="Wallpaper. Arrow keys change the image, Z toggles zoom.">
+      <video class="mv-video" playsinline preload="none" poster={`${video}split-signal-poster.webp`} aria-label="Split Signal music video: the Destiny theme and 42 wallpapers"></video>
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
-    <p class="viewer-error" role="status" hidden>Nie udało się wczytać pełnego obrazu. <button type="button" class="viewer-retry">Spróbuj ponownie</button></p>
-    <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Poprzednia tapeta" title="Poprzednia (←)">‹</button>
-    <button type="button" class="viewer-next edge-nav icon-button" aria-label="Następna tapeta" title="Następna (→)">›</button>
-    <section class="mv-player" aria-label="Teledysk" hidden>
+    <p class="viewer-error" role="status" hidden>Could not load the full image. <button type="button" class="viewer-retry">Try again</button></p>
+    <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Previous wallpaper" title="Previous (←)">‹</button>
+    <button type="button" class="viewer-next edge-nav icon-button" aria-label="Next wallpaper" title="Next (→)">›</button>
+    <section class="mv-player" aria-label="Music video" hidden>
       <div class="mv-controls">
-        <button type="button" class="mv-play" aria-label="Odtwórz">▶</button>
-        <input class="mv-seek" type="range" min="0" max={clipDuration} step="0.01" value="0" aria-label="Czas teledysku" />
+        <button type="button" class="mv-play" aria-label="Play">▶</button>
+        <input class="mv-seek" type="range" min="0" max={clipDuration} step="0.01" value="0" aria-label="Video position" />
       </div>
-      <p class="mv-credit">Muzyka: <a href="https://x.com/koozeex1" target="_blank" rel="noopener">Kevin Koontz (@koozeex1)</a> — <a href="https://x.com/koozeex1/status/2096140707329368181" target="_blank" rel="noopener">„We Can Fix Everything”</a> <span>(The Ultimate Machine)</span></p>
+      <p class="mv-credit">Music: <a href="https://x.com/koozeex1" target="_blank" rel="noopener">Kevin Koontz (@koozeex1)</a> — <a href="https://x.com/koozeex1/status/2096140707329368181" target="_blank" rel="noopener">„We Can Fix Everything”</a> <span>(The Ultimate Machine)</span></p>
     </section>
     <footer class="viewer-bottom">
-      <button type="button" class="tour-return">▷ <span>Odtwórz teledysk</span></button>
-      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>Otwórz galerię</span><span class="gallery-total">42</span></button>
+      <button type="button" class="tour-return">▷ <span>Play the music video</span></button>
+      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>Open gallery</span><span class="gallery-total">42</span></button>
       <div class="viewer-tools">
-        <button type="button" class="viewer-zoom" aria-pressed="false" title="Powiększenie (Z)">＋ <span>Detal</span></button>
-        <button type="button" class="viewer-fx" aria-pressed="true" aria-label="Animacje tapet" title="Włącz lub wyłącz animacje tapet">◇ <span>Animacje</span></button>
-        <button type="button" class="viewer-fullscreen" aria-label="Pełny ekran" aria-pressed="false" title="Pełny ekran (F)">⛶ <span>Pełny ekran</span></button>
-        <a class="viewer-download" aria-label="Pobierz tapetę" download title="Pobierz oryginał 5120 × 2160">↓ <span>Pobierz</span></a>
+        <button type="button" class="viewer-zoom" aria-pressed="false" title="Zoom (Z)">＋ <span>Detail</span></button>
+        <button type="button" class="viewer-fx" aria-pressed="true" aria-label="Wallpaper animation" title="Turn wallpaper animation on or off">◇ <span>Animation</span></button>
+        <button type="button" class="viewer-fullscreen" aria-label="Fullscreen" aria-pressed="false" title="Fullscreen (F)">⛶ <span>Fullscreen</span></button>
+        <a class="viewer-download" aria-label="Download wallpaper" download title="Download the 5120 × 2160 original">↓ <span>Download</span></a>
       </div>
     </footer>
-    <section id="viewer-grid" aria-label="Wybierz tapetę" hidden>
-      <div class="grid-heading"><p>Wybierz tapetę · 42 obrazy</p><button type="button" class="grid-close icon-button" aria-label="Wróć do oglądania" title="Wróć do oglądania">✕</button></div>
+    <section id="viewer-grid" aria-label="Choose a wallpaper" hidden>
+      <div class="grid-heading"><p>Choose a wallpaper · 42 images</p><button type="button" class="grid-close icon-button" aria-label="Back to viewing" title="Back to viewing">✕</button></div>
       <div class="wallpaper-grid">
         {wallpapers.map((w, i) => <button type="button" data-index={i} aria-label={`${i + 1}. ${w.name}`}><img src={w.thumb} alt="" width="5120" height="2160" loading="lazy" /><span>{w.name}</span></button>)}
       </div>
@@ -73,7 +73,7 @@ const clipDuration = 108.23
     function setZoom(value) {
       zoom = value; canvas.classList.toggle('is-zoomed', zoom);
       zoomButton.setAttribute('aria-pressed', String(zoom));
-      zoomButton.innerHTML = zoom ? '− <span>Całość</span>' : '＋ <span>Detal</span>';
+      zoomButton.innerHTML = zoom ? '− <span>Whole</span>' : '＋ <span>Detail</span>';
       requestAnimationFrame(() => { canvas.scrollLeft = zoom ? (canvas.scrollWidth - canvas.clientWidth) / 2 : 0; canvas.scrollTop = zoom ? (canvas.scrollHeight - canvas.clientHeight) / 2 : 0; });
     }
     function setGrid(value) {
@@ -106,7 +106,7 @@ const clipDuration = 108.23
     function playState() {
       const paused = mv.paused;
       play.textContent = paused ? (mv.ended ? '↻' : '▶') : 'Ⅱ';
-      play.setAttribute('aria-label', paused ? 'Odtwórz' : 'Wstrzymaj');
+      play.setAttribute('aria-label', paused ? 'Play' : 'Pause');
       cancelAnimationFrame(tick); tick = paused ? 0 : requestAnimationFrame(loop); progress();
     }
     for (const e of ['play','pause','ended','seeked','loadedmetadata']) mv.addEventListener(e, playState);
@@ -115,7 +115,7 @@ const clipDuration = 108.23
     function startVideo(autoplay = true) {
       grid.hidden = true; dialog.classList.remove('grid-open'); gridToggle.setAttribute('aria-expanded','false');
       setZoom(false); watching = true; dialog.classList.add('is-touring'); player.hidden = false; q('.tour-return').hidden = true;
-      q('.viewer-title').textContent = 'Split Signal · teledysk'; q('.viewer-count').textContent = '';
+      q('.viewer-title').textContent = 'Split Signal · music video'; q('.viewer-count').textContent = '';
       source(); ambient();
       if(autoplay && !reduced.matches) mv.play().catch(() => {});
       playState();

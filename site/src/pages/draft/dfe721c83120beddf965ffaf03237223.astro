@@ -7,10 +7,10 @@ const post = await getEntry('blog', 'omarchy-destiny-theme')
 if (!post || !post.data.draft) throw new Error('Expected the Destiny draft')
 const { Content } = await render(post)
 ---
-<Base title={post.data.title} description={post.data.description} lang="pl" robots="noindex, nofollow, noarchive">
+<Base title={post.data.title} description={post.data.description} lang="en" robots="noindex, nofollow, noarchive">
   <article class="post">
     <header>
-      <p class="date">DRAFT · 25 września 2026 · podgląd dostępny przez link</p>
+      <p class="date">DRAFT · September 26, 2026 · unlisted preview</p>
       <h1>{post.data.title}</h1>
     </header>
     <WallpaperGallery />
