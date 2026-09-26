@@ -43,8 +43,25 @@ def simplify(pts):
 for w in json.loads((ROOT/'site/src/data/destiny-gallery.json').read_text()):
  slug=Path(w['src']).stem.split('-',1)[1]
  src='tools/assets/century/'+slug+'-A.json' if w['id'][0]=='c' else 'tools/assets/hardware-family/'+slug+'.json'
- src={'o01':'tools/assets/radial-quantum/main.json','o10':'tools/assets/hardware-family/truth-lamp-head.json','o13':'tools/assets/mannequin3d/proxy.json','o14':'tools/assets/mannequin3d/presence.json'}.get(w['id'],src)
+ src={'o01':'tools/assets/radial-quantum/main.json','o10':'tools/assets/hardware-family/truth-main-scene.json','o13':'tools/assets/hardware-family/proxy-main-scene.json','o14':'tools/assets/century/presence-rig-A.json','o12':'tools/assets/century/volumetric-stage-A.json'}.get(w['id'],src)
  raw=subprocess.check_output(['git','-C',str(REPO),'show',COMMIT+':'+src]);data=json.loads(raw);paths=[]
+ # Match the exact f4a51dd Cairo composition, in its 2560 x 1080 design units.
+ full=[q for path in data['paths'] for q in path['points']];fx,fy=zip(*full)
+ source_cx=(min(fx)+max(fx))/2;source_cy=(min(fy)+max(fy))/2
+ boxw,boxh=max(fx)-min(fx),max(fy)-min(fy)
+ center=[1280,490];layout_scale=min(620/boxw,695/boxh)
+ if w['id'][0]=='c':layout_scale=min(660/boxw,665/boxh)
+ if w['id']=='o03':center=[1200,480]
+ if w['id']=='o08':center=[1280,460]
+ if w['id'] in ('o12','o14'):center=[1280,495];layout_scale=min(652/boxw,675/boxh)
+ if w['id']=='o13':center=[1280,501];layout_scale=min(558/boxw,644/boxh)
+ if w['id']=='o10':center=[1280,522];layout_scale=min(720/boxw,683/boxh)
+ if w['id']=='o01':
+  layout_scale=1.03;center=[1258+source_cx*layout_scale,788+source_cy*layout_scale]
+ # Lamp is a detail of the released dinner scene, never a different projection.
+ if w['id']=='o10':
+  names=('formed lamp shade','sensor rim','pendant stem','ceiling canopy','inline off switch','rim microphone','rolled lower rim','shade cooling slot')
+  data['paths']=[path for path in data['paths'] if path['name'].startswith(names)]
  for p in data['paths']:
   pts=[]
   for q in p['points']:
@@ -57,7 +74,8 @@ for w in json.loads((ROOT/'site/src/data/destiny-gallery.json').read_text()):
  joined=[p for p in joined if total([p])>.12]
  im=Image.open(ROOT/'site/public'/w['thumb'].lstrip('/')).convert('RGB');pixels=[im.getpixel((int(im.width*x),int(im.height*y))) for x in [.06,.09,.12,.15] for y in [.1,.15,.2,.25,.75,.8,.85]]
  paper=[round(statistics.median(c)) for c in zip(*pixels)]
- payload=dict(id=w['id'],name=w['name'],size=[round((max(xs)-min(xs))*scale,2),round((max(ys)-min(ys))*scale,2)],paper=paper,strokes=joined)
+ registration=dict(center=[round(center[0]+(cx-source_cx)*layout_scale,5),round(center[1]+(cy-source_cy)*layout_scale,5)],unit=round(layout_scale/scale,8))
+ payload=dict(registration=registration,id=w['id'],name=w['name'],size=[round((max(xs)-min(xs))*scale,2),round((max(ys)-min(ys))*scale,2)],paper=paper,strokes=joined)
  target=out/(w['id']+'.json');target.write_text(json.dumps(payload,separators=(',',':'))+'\n')
  manifest.append(dict(id=w['id'],source=src,commit=COMMIT,sourceSHA256=hashlib.sha256(raw).hexdigest(),scope='pendant reflector detail' if w['id']=='o10' else 'main projected source geometry',strokes=len(joined),bytes=target.stat().st_size))
 (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')

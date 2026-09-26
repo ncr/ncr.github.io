@@ -7,7 +7,9 @@ const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const hash=name=>[...name].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,0);
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
 const length=p=>p.slice(1).reduce((s,v,i)=>s+distance(v,p[i]),0);
-const pointVertex=`attribute float strength;attribute float diameter;varying float alpha;void main(){alpha=strength;gl_PointSize=diameter;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const landingUniforms=`uniform float landing;uniform vec2 paperOrigin;uniform vec2 paperX;uniform vec2 paperY;`;
+const landVertex=`vec2 paper=paperOrigin+position.x*paperX+position.y*paperY;gl_Position.xy=mix(gl_Position.xy,paper*gl_Position.w,landing);`;
+const pointVertex=`${landingUniforms}attribute float strength;attribute float diameter;varying float alpha;void main(){alpha=strength;gl_PointSize=diameter;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`;
 const pointFragment=`varying float alpha;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;float core=exp(-r*r*28.);float halo=pow(1.-r,2.);vec3 colour=mix(vec3(.35,.75,1.),vec3(1.,.94,.76),core);gl_FragColor=vec4(colour,(core+halo*.55)*alpha);}`;
 
 // Projected vectors from the actual released sheets. Only the nozzle is a full 3D model.
@@ -50,19 +52,20 @@ export function createFlight(host,onReady=()=>{}){
      pens.push(strokes);
    });
    const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('inkColor',new THREE.Float32BufferAttribute(colors,3));geometry.setAttribute('birth',new THREE.Float32BufferAttribute(growth,1));
-   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{progress:{value:0},pulse:{value:0}},vertexShader:`attribute vec3 inkColor;attribute float birth;varying vec3 color;varying float born;void main(){color=inkColor;born=birth;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform float progress;uniform float pulse;varying vec3 color;varying float born;void main(){float laid=step(born,progress);float tip=laid*(1.-smoothstep(0.,.012,progress-born));gl_FragColor=vec4(sqrt(color)*(.7+tip*.65+pulse*.18),.045+laid*.85);}`});
+   const placement={landing:{value:0},paperOrigin:{value:new THREE.Vector2()},paperX:{value:new THREE.Vector2()},paperY:{value:new THREE.Vector2()}};
+   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{...placement,progress:{value:0},pulse:{value:0}},vertexShader:`${landingUniforms}attribute vec3 inkColor;attribute float birth;varying vec3 color;varying float born;void main(){color=inkColor;born=birth;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`,fragmentShader:`uniform float progress;uniform float pulse;varying vec3 color;varying float born;void main(){float laid=step(born,progress);float tip=laid*(1.-smoothstep(0.,.012,progress-born));gl_FragColor=vec4(sqrt(color)*(.7+tip*.65+pulse*.18),.045+laid*.85);}`});
    group.add(new THREE.LineSegments(geometry,material));
    const count=20+6*28,pp=new Float32Array(count*3),aa=new Float32Array(count),ss=new Float32Array(count),pg=new THREE.BufferGeometry();
    pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('strength',new THREE.BufferAttribute(aa,1));pg.setAttribute('diameter',new THREE.BufferAttribute(ss,1));
-   const pm=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
+   const pm=new THREE.ShaderMaterial({uniforms:placement,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:pointVertex,fragmentShader:pointFragment});
    const points=new THREE.Points(pg,pm);points.frustumCulled=false;group.add(points);
    const heroes=all.filter(s=>s.laser).sort((a,b)=>a.start-b.start);
    scene.add(group);group.visible=false;
-   return {data,group,material,pens,heroes,pp,aa,ss,pg,dispose(){scene.remove(group);geometry.dispose();material.dispose();pg.dispose();pm.dispose();}};
+   return {data,group,material,placement,pens,heroes,pp,aa,ss,pg,dispose(){scene.remove(group);geometry.dispose();material.dispose();pg.dispose();pm.dispose();}};
  }
  function prepare(id){
    if(cache.has(id)||pending.has(id)||unavailable.has(id))return;
-   const promise=fetch(`/gallery/destiny/drawing/${id}.json`).then(r=>{if(!r.ok)throw Error(r.status);return r.json();}).then(data=>{
+   const promise=fetch(`/gallery/destiny/drawing/${id}.json?v=registered-1`).then(r=>{if(!r.ok)throw Error(r.status);return r.json();}).then(data=>{
      if(failed)return;
      cache.set(id,build(data));
      // At most current, next, and four recent sheets live on the GPU.
@@ -102,7 +105,7 @@ export function createFlight(host,onReady=()=>{}){
    }
    sheet.pg.attributes.position.needsUpdate=true;sheet.pg.attributes.strength.needsUpdate=true;sheet.pg.attributes.diameter.needsUpdate=true;
  }
- function render(time,passage){
+ function render(time,passage,paperFrame){
    if(failed)return false;
    const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return false;
    if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
@@ -113,7 +116,7 @@ export function createFlight(host,onReady=()=>{}){
    camera.up.set(Math.sin(roll),Math.cos(roll),0);
    if(orbiting){
      detail.children.forEach((line,i)=>line.material.opacity=energy.active?.35+.55*[energy.bass,energy.mids,energy.highs][i%3]:.72);
-     renderer.setClearColor(0x100c10,1);
+     renderer.setClearColor(0x100c10,1);element.style.filter='none';
      const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,u=clamp(elapsed/duration),angle=-.8+u*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smooth(elapsed/1.7)));
      camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(u*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
      element.style.opacity=String(smooth(elapsed/.5)*(1-smooth((elapsed-duration+.8)/.8)));element.dataset.drawing='nozzle-orbit';
@@ -142,7 +145,26 @@ export function createFlight(host,onReady=()=>{}){
        default:target.set(bw*(.5-u)*.35*dive,-bh*.08*dive,0);pos.set(target.x,target.y+70*dive,fit*(1-.36*dive));
      }
      camera.position.copy(pos);camera.lookAt(target);
-     element.style.opacity=String(smooth(elapsed/.32)*(1-smooth((elapsed-duration+.42)/.42)));
+     // Resolve into the exact location/scale/roll of the baked device before fading.
+     // Both layers use the same live 2D camera, including responsive letterboxing.
+     const bridge=Math.min(2.3,duration*.43),handoff=clamp((elapsed-duration+bridge)/bridge);
+     const registration=sheet.data.registration;
+     let landed=0,fade=0;
+     if(paperFrame&&registration){
+       const {width,height,scale,x,y,roll}=paperFrame,r=roll*Math.PI/180,c=Math.cos(r),sn=Math.sin(r);
+       const dx=(registration.center[0]/2560-x)*width*scale,dy=(registration.center[1]/1080-y)*height*scale;
+       const unit=registration.unit*width*scale/2560;
+       sheet.placement.paperOrigin.value.set(2*(c*dx-sn*dy)/w,-2*(sn*dx+c*dy)/h);
+       sheet.placement.paperX.value.set(2*c*unit/w,-2*sn*unit/h);
+       sheet.placement.paperY.value.set(2*sn*unit/w,2*c*unit/h);
+       landed=smooth(handoff/.62);
+       fade=smooth((handoff-.58)/.42);
+     }else fade=smooth((elapsed-duration+1.1)/1.1);
+     sheet.placement.landing.value=landed;
+     element.style.opacity=String(smooth(elapsed/.32)*(1-fade));
+     // A subpixel focus dissolve softens tiny differences in ink/antialiasing only.
+     element.style.filter=fade>0?`blur(${(.65*Math.sin(fade*Math.PI)).toFixed(3)}px)`:'none';
+     element.dataset.landing=landed.toFixed(4);element.dataset.dissolve=fade.toFixed(4);
      element.dataset.drawing=current;element.dataset.progress=progress.toFixed(3);
    }
    element.style.display='block';renderer.render(scene,camera);return true;

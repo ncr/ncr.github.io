@@ -6,16 +6,16 @@
     "sourceSHA256": "c2a3ad13a616615726775fa2b74d6ca5c443c1544ab6ccfa0b59479d699ec987",
     "scope": "main projected source geometry",
     "strokes": 1173,
-    "bytes": 180602
+    "bytes": 180669
   },
   {
     "id": "o10",
-    "source": "tools/assets/hardware-family/truth-lamp-head.json",
+    "source": "tools/assets/hardware-family/truth-main-scene.json",
     "commit": "f4a51dd",
-    "sourceSHA256": "7a2404555a4666c0c91c3cc0691b09c7221dc55e9118f4be0ac352ff00f692ae",
+    "sourceSHA256": "90d0b5cadb2beb797694938b544dfbd0b67e2240f8e6343ccad2cbafc24c260a",
     "scope": "pendant reflector detail",
-    "strokes": 20,
-    "bytes": 7944
+    "strokes": 55,
+    "bytes": 8749
   },
   {
     "id": "o02",
@@ -24,7 +24,7 @@
     "sourceSHA256": "fb0ffebba70511a676c40405a9e228304ca27d5e2b82ad95167c141427758159",
     "scope": "main projected source geometry",
     "strokes": 1183,
-    "bytes": 162602
+    "bytes": 162669
   },
   {
     "id": "c087",
@@ -33,7 +33,7 @@
     "sourceSHA256": "0bd64c9ef3f0141583785bc208397b4999b045662ce274557dfcd090f679fe43",
     "scope": "main projected source geometry",
     "strokes": 1041,
-    "bytes": 134355
+    "bytes": 134418
   },
   {
     "id": "o09",
@@ -42,7 +42,7 @@
     "sourceSHA256": "26fdbb2f4f6529a49b91e0f01227bc949e4e2da90ddb640c17338752ca1f9412",
     "scope": "main projected source geometry",
     "strokes": 714,
-    "bytes": 78144
+    "bytes": 78211
   },
   {
     "id": "c001",
@@ -51,7 +51,7 @@
     "sourceSHA256": "4baa161d0bfb81c1313ca2ae649814023c30d075d3830963a0e58d7162d5a6d3",
     "scope": "main projected source geometry",
     "strokes": 1228,
-    "bytes": 128093
+    "bytes": 128156
   },
   {
     "id": "o01",
@@ -60,7 +60,7 @@
     "sourceSHA256": "3121ed852f5862f03a8d0e6e2d711824de0f61e565fb8addabdc7f962ba4d97a",
     "scope": "main projected source geometry",
     "strokes": 2313,
-    "bytes": 286989
+    "bytes": 287055
   },
   {
     "id": "c025",
@@ -69,16 +69,16 @@
     "sourceSHA256": "20aaea0674e4949dbc3dbf5609962e6841c4e2aeb84f4bc1231cdc122a99468e",
     "scope": "main projected source geometry",
     "strokes": 1821,
-    "bytes": 227734
+    "bytes": 227801
   },
   {
     "id": "o13",
-    "source": "tools/assets/mannequin3d/proxy.json",
+    "source": "tools/assets/hardware-family/proxy-main-scene.json",
     "commit": "f4a51dd",
-    "sourceSHA256": "6bfc90e312b6e542d7a09021c3399c1e148dceb89594de2369f632ba4999db71",
+    "sourceSHA256": "3639e0723a794822a9e5d81f2208e8b0d93f08608449dfaf20683df6f93be504",
     "scope": "main projected source geometry",
-    "strokes": 241,
-    "bytes": 32388
+    "strokes": 562,
+    "bytes": 75799
   },
   {
     "id": "c100",
@@ -87,7 +87,7 @@
     "sourceSHA256": "b11e813e4bf5e460b35afa9f598a3a97dffdf133d56170aa59712fa5fc88cfee",
     "scope": "main projected source geometry",
     "strokes": 1015,
-    "bytes": 114420
+    "bytes": 114487
   },
   {
     "id": "o11",
@@ -96,7 +96,7 @@
     "sourceSHA256": "b912a3bd828a58fc36b87d5d8efd8d2c4aec45080f268b0853087c1f214cccd6",
     "scope": "main projected source geometry",
     "strokes": 181,
-    "bytes": 39552
+    "bytes": 39614
   },
   {
     "id": "o05",
@@ -105,7 +105,7 @@
     "sourceSHA256": "d8b69c09a1acf5546b5244c01c312ea2f564b92c0471b82c92f2eb0fa4c45b54",
     "scope": "main projected source geometry",
     "strokes": 966,
-    "bytes": 132359
+    "bytes": 132426
   },
   {
     "id": "c017",
@@ -114,7 +114,7 @@
     "sourceSHA256": "69cab04902696d38131e46ff4f1a73c378d916924a91d8acd437a00a0e200497",
     "scope": "main projected source geometry",
     "strokes": 713,
-    "bytes": 89644
+    "bytes": 89706
   },
   {
     "id": "c056",
@@ -123,7 +123,7 @@
     "sourceSHA256": "e7462c036c1f36a5c6e17ca7330a2ba785e6807a739b08ed3a7a7bb7a60c4b1a",
     "scope": "main projected source geometry",
     "strokes": 969,
-    "bytes": 132260
+    "bytes": 132327
   },
   {
     "id": "c010",
@@ -132,7 +132,7 @@
     "sourceSHA256": "53efd13f917e3c6e9d106abd3e0bf394aeebfbbfa8a19392f27f0682fc3255cc",
     "scope": "main projected source geometry",
     "strokes": 523,
-    "bytes": 68831
+    "bytes": 68897
   },
   {
     "id": "c080",
@@ -141,7 +141,7 @@
     "sourceSHA256": "2a620e1f43ddc51ca03bc5c565164555c8e4543914f05a653469dfd444a54f4f",
     "scope": "main projected source geometry",
     "strokes": 806,
-    "bytes": 97922
+    "bytes": 97989
   },
   {
     "id": "c031",
@@ -150,7 +150,7 @@
     "sourceSHA256": "c87706e05211e06b292fb6bc1ee681925704c855ab468f1d84e51d3ffdd3f4d0",
     "scope": "main projected source geometry",
     "strokes": 859,
-    "bytes": 97286
+    "bytes": 97349
   },
   {
     "id": "c018",
@@ -159,7 +159,7 @@
     "sourceSHA256": "19e355e5ca705a83f366d99d30b20d66184eb0aec001cf731e6671bd5293e361",
     "scope": "main projected source geometry",
     "strokes": 628,
-    "bytes": 80664
+    "bytes": 80731
   },
   {
     "id": "o04",
@@ -168,7 +168,7 @@
     "sourceSHA256": "c5a1e24769bcc08fea600132cbd391c5fec8851f1c47112f17f8b2d3eb386265",
     "scope": "main projected source geometry",
     "strokes": 733,
-    "bytes": 97801
+    "bytes": 97863
   },
   {
     "id": "o07",
@@ -177,7 +177,7 @@
     "sourceSHA256": "0ea537ad444b0be6e16531348124c155dba9ca01d2af8a57b2b29f13aa267e09",
     "scope": "main projected source geometry",
     "strokes": 1478,
-    "bytes": 168462
+    "bytes": 168529
   },
   {
     "id": "o06",
@@ -186,7 +186,7 @@
     "sourceSHA256": "49c773dfe55d1c430057d7f0d633f7a082bae1343e273c3c2a58d9a1c14326e3",
     "scope": "main projected source geometry",
     "strokes": 254,
-    "bytes": 38077
+    "bytes": 38142
   },
   {
     "id": "c030",
@@ -195,7 +195,7 @@
     "sourceSHA256": "f69f3844354650f612ee5b022756c8093da0d42bb66c2c4c9acd7c5b21314f30",
     "scope": "main projected source geometry",
     "strokes": 445,
-    "bytes": 56530
+    "bytes": 56597
   },
   {
     "id": "c070",
@@ -204,7 +204,7 @@
     "sourceSHA256": "fa2c0c142cada023b0f24cde88e8fc4808a2328e57c53e62b8bc8ae8452487ee",
     "scope": "main projected source geometry",
     "strokes": 1265,
-    "bytes": 150460
+    "bytes": 150527
   },
   {
     "id": "c044",
@@ -213,7 +213,7 @@
     "sourceSHA256": "c97109561d03b36a1b9cef7d48debddd01e9d77d1645fc81e331596ba2853b09",
     "scope": "main projected source geometry",
     "strokes": 1137,
-    "bytes": 143902
+    "bytes": 143969
   },
   {
     "id": "c002",
@@ -222,16 +222,16 @@
     "sourceSHA256": "f188c7ed478365172e0aa4045593f0fcb6ee7f7a3494110dbc2dbf5e1576fccd",
     "scope": "main projected source geometry",
     "strokes": 1230,
-    "bytes": 154578
+    "bytes": 154643
   },
   {
     "id": "o14",
-    "source": "tools/assets/mannequin3d/presence.json",
+    "source": "tools/assets/century/presence-rig-A.json",
     "commit": "f4a51dd",
-    "sourceSHA256": "da60b6ec070e36115b4d6da311395259085015e2c9326e3a122c1994b5983e4e",
+    "sourceSHA256": "61a9fcddbf6cfb95f80be4fa51ad5a219a46ce1fe955b3afa7209096d454af8c",
     "scope": "main projected source geometry",
-    "strokes": 290,
-    "bytes": 39863
+    "strokes": 1439,
+    "bytes": 197237
   },
   {
     "id": "c099",
@@ -240,7 +240,7 @@
     "sourceSHA256": "257ed7064ad3324a2f1038a5e7dd7398b2b4109b747362e2500caaeef1cdf961",
     "scope": "main projected source geometry",
     "strokes": 1378,
-    "bytes": 157551
+    "bytes": 157616
   },
   {
     "id": "c042",
@@ -249,7 +249,7 @@
     "sourceSHA256": "96d7f583499a3d3ff250f651ce103bb59c41b78c7d37ed2d7fb1addefc1926f2",
     "scope": "main projected source geometry",
     "strokes": 1019,
-    "bytes": 134682
+    "bytes": 134747
   },
   {
     "id": "c060",
@@ -258,7 +258,7 @@
     "sourceSHA256": "95f4170ddb01049f96449836d2ef8374ba78ef71b6893fbd86b47d3efcbb3ac0",
     "scope": "main projected source geometry",
     "strokes": 779,
-    "bytes": 105152
+    "bytes": 105219
   },
   {
     "id": "c006",
@@ -267,7 +267,7 @@
     "sourceSHA256": "0ebd46d46bb054a71c5bd2c90b9f0fbfde0d76604a7b72a4ec627061f07e8260",
     "scope": "main projected source geometry",
     "strokes": 548,
-    "bytes": 66845
+    "bytes": 66912
   },
   {
     "id": "c065",
@@ -276,16 +276,16 @@
     "sourceSHA256": "96f23454f2235e99739c2c37ecb51a766eb271c6cbf82643e1773c233377568f",
     "scope": "main projected source geometry",
     "strokes": 524,
-    "bytes": 69322
+    "bytes": 69389
   },
   {
     "id": "o12",
-    "source": "tools/assets/hardware-family/volumetric-stage.json",
+    "source": "tools/assets/century/volumetric-stage-A.json",
     "commit": "f4a51dd",
-    "sourceSHA256": "1780d4e19bcce0ae6fb4aeed1dd8b67aa9075984b436bf6e1ee75c9ba1ba2009",
+    "sourceSHA256": "8dbc06d1e83124f721b144d667a4501274f7bb746fa52c0c0225ce677a31ea1c",
     "scope": "main projected source geometry",
-    "strokes": 187,
-    "bytes": 51658
+    "strokes": 3334,
+    "bytes": 391168
   },
   {
     "id": "o08",
@@ -294,7 +294,7 @@
     "sourceSHA256": "259b0d2486196f4ccbbdd24878fb48e372a04df27bdfb61c661893c06aa7c19a",
     "scope": "main projected source geometry",
     "strokes": 876,
-    "bytes": 111235
+    "bytes": 111298
   },
   {
     "id": "c038",
@@ -303,7 +303,7 @@
     "sourceSHA256": "80f2b97e392d5802008ce01cb7cf22e00cbf07cba87a7f8a7765f127a441bde1",
     "scope": "main projected source geometry",
     "strokes": 1945,
-    "bytes": 227204
+    "bytes": 227271
   },
   {
     "id": "c101",
@@ -312,7 +312,7 @@
     "sourceSHA256": "f8a8de92ba1c62f95bc47a6007a9e9d81bb183270606dd6c06ade72dbd96d50a",
     "scope": "main projected source geometry",
     "strokes": 1288,
-    "bytes": 162419
+    "bytes": 162486
   },
   {
     "id": "c103",
@@ -321,7 +321,7 @@
     "sourceSHA256": "568ccd8e0a58ee2b749dc56404f5705ffea6df5c8bf9d823f950acc43d7e3924",
     "scope": "main projected source geometry",
     "strokes": 1029,
-    "bytes": 119485
+    "bytes": 119551
   },
   {
     "id": "c104",
@@ -330,7 +330,7 @@
     "sourceSHA256": "99774746c88f8aec4da1f21fea63b62f8e7d93a8369ed804e8e9db377a6e7f2e",
     "scope": "main projected source geometry",
     "strokes": 679,
-    "bytes": 89971
+    "bytes": 90034
   },
   {
     "id": "c105",
@@ -339,7 +339,7 @@
     "sourceSHA256": "42fc8ae570f3cc75f91e8d311f537a46e77c80ae51fb275ee0379065e0cd4555",
     "scope": "main projected source geometry",
     "strokes": 1387,
-    "bytes": 179432
+    "bytes": 179499
   },
   {
     "id": "c106",
@@ -348,7 +348,7 @@
     "sourceSHA256": "7c51c34afc490071d10b603eae7a075e1ba653e12691fd5ac24189259f582e49",
     "scope": "main projected source geometry",
     "strokes": 1281,
-    "bytes": 152137
+    "bytes": 152200
   },
   {
     "id": "c107",
@@ -357,7 +357,7 @@
     "sourceSHA256": "a06b8104e54363e507dbdd2f017193214cff4df2f0eb12199a67c4fbd70f3fd9",
     "scope": "main projected source geometry",
     "strokes": 1344,
-    "bytes": 148452
+    "bytes": 148519
   },
   {
     "id": "c108",
@@ -366,7 +366,7 @@
     "sourceSHA256": "68075fc23774bfc1a587344e65d947e6995e033055c5d8ca8705572b93ce0e76",
     "scope": "main projected source geometry",
     "strokes": 992,
-    "bytes": 130177
+    "bytes": 130242
   },
   {
     "id": "c110",
@@ -375,6 +375,6 @@
     "sourceSHA256": "ba48d94ebf604a0131d29c24793266ebab8f02c9993fac8f4083aeaf8a9015ee",
     "scope": "main projected source geometry",
     "strokes": 761,
-    "bytes": 97415
+    "bytes": 97482
   }
 ]

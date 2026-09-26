@@ -26,6 +26,10 @@ try:
   for shot in score:
    t=round(shot['start']+(shot['end']-shot['start'])*.43,2);seek(t)
    page.wait_for_function('(id)=>{const c=document.querySelector(".fusion-flight");return c?.dataset.drawing===id&&getComputedStyle(c).display!=="none"}',arg=shot['id'])
+   bridge=min(2.3,(shot['end']-shot['start'])*.43)
+   seek(round(shot['end']-bridge*.2,2))
+   state=page.locator('.fusion-flight').evaluate('(e)=>({landing:Number(e.dataset.landing),dissolve:Number(e.dataset.dissolve),opacity:Number(e.style.opacity)})')
+   assert state['landing']==1 and .45<state['dissolve']<.6 and .4<state['opacity']<.55,(shot,state)
   # Cold/evicted geometry must appear even while the timeline is paused.
   seek(3);page.wait_for_function('document.querySelector(".fusion-flight").dataset.drawing==="o03"')
   first=page.locator('.fusion-flight').screenshot();seek(4);seek(3)
@@ -38,12 +42,12 @@ try:
   page.emulate_media(reduced_motion='reduce');page.wait_for_function('getComputedStyle(document.querySelector(".fusion-flight")).display==="none"')
   assert not errors,errors
   # A missing vector asset leaves the real wallpaper visible, without freezing controls.
-  fallback=browser.new_page();fallback.route('**/drawing/o01.json',lambda route:route.abort())
+  fallback=browser.new_page();fallback.route('**/drawing/o01.json*',lambda route:route.abort())
   fallback.goto(url,wait_until='domcontentloaded');fallback.locator('.gallery-launch').click()
   fallback.locator('.tour-seek').fill('12');fallback.locator('.tour-seek').dispatch_event('input');fallback.wait_for_timeout(500)
   assert not fallback.locator('.fusion-flight').is_visible()
   fallback.wait_for_function('Array.from(document.querySelectorAll(".viewer-image, .viewer-preview")).some(e=>e.complete&&e.naturalWidth>0&&getComputedStyle(e).visibility==="visible")')
   browser.close()
- print('PASS: all 43 passages, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
+ print('PASS: all 43 passages and registered dissolves, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
 finally:
  if server:server.shutdown()

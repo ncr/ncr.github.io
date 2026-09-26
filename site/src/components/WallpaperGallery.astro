@@ -204,11 +204,10 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     audio.addEventListener('error',()=>{music=false;soundState();q('.music-status').textContent='Muzyka niedostępna. Obraz gra dalej.';});
     let effects=true;
     q('.viewer-fx').onclick=()=>{effects=!effects;q('.viewer-fx').setAttribute('aria-pressed',String(effects));camera();};
-    function flightEvent(active){window.dispatchEvent(new CustomEvent('destiny-camera',{detail:{time,active,enabled:effects}}));}
+    function flightEvent(active,paper){window.dispatchEvent(new CustomEvent('destiny-camera',{detail:{time,active,enabled:effects,paper}}));}
     dialog.addEventListener('close',()=>flightEvent(false));
     function camera(){
       if(!touring)return;
-      flightEvent(dialog.open);
       let n=tour.findLastIndex(s=>s.at<=time);n=Math.max(0,n);
       const shot=tour[n], elapsed=time-shot.at;
       const previous=n>0&&tour[n-1].id===shot.id&&shot.motion!=='cut'?tour[n-1]:shot;
@@ -226,6 +225,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       frame.style.width=`${bw}px`;frame.style.height=`${bh}px`;
       const roll=reduced.matches?0:Math.sin(time*.23)*.65+Math.sin(time*.51)*.22;
       frame.style.transform=`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
+      flightEvent(dialog.open,{width:bw,height:bh,scale,x,y,roll});
       if(currentShot!==n){
         currentShot=n;
         const caption=q('.tour-caption');caption.replaceChildren();
@@ -280,6 +280,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     play.onclick=togglePlay;
     function scrub(t){pauseTour();seekTour(t);audioSeek();}
     seek.addEventListener('input',()=>scrub(Number(seek.value)));
+    new ResizeObserver(()=>{if(dialog.open&&touring)camera();}).observe(canvas);
     seek.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();scrub(e.key==='Home'?0:e.key==='End'?duration:time+(e.key==='ArrowRight'?5:-5));}});
     q('.tour-return').onclick=()=>startTour();
     q('.tour-track').querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>scrub(Number(b.dataset.time)));
