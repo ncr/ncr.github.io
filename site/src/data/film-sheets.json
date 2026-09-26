@@ -1,0 +1,1013 @@
+{
+ "atlas": "/gallery/destiny/film-data/scene-atlas-b78de3bfb7473992.webp",
+ "sheets": {
+  "o03": {
+   "name": "Fusion Transport",
+   "film": "/gallery/destiny/film/03-fusion-transport.webp",
+   "thumb": "/gallery/destiny/thumbs/03-fusion-transport.webp",
+   "drawing": "/gallery/destiny/drawing/o03.json",
+   "paper": [
+    42,
+    25,
+    20
+   ],
+   "device": [
+    890,
+    328,
+    1510,
+    632
+   ],
+   "strokes": 1173,
+   "uv": [
+    0.0005537098560354374,
+    0.8348484848484848,
+    0.14230343300110743,
+    0.9984848484848485
+   ]
+  },
+  "o10": {
+   "name": "Truth Lamp",
+   "film": "/gallery/destiny/film/10-truth-lamp.webp",
+   "thumb": "/gallery/destiny/thumbs/10-truth-lamp.webp",
+   "drawing": "/gallery/destiny/drawing/o10.json",
+   "paper": [
+    33,
+    25,
+    19
+   ],
+   "device": [
+    1200,
+    239,
+    1360,
+    428
+   ],
+   "strokes": 55,
+   "uv": [
+    0.1434108527131783,
+    0.8348484848484848,
+    0.2851605758582503,
+    0.9984848484848485
+   ]
+  },
+  "o02": {
+   "name": "Sky Racer",
+   "film": "/gallery/destiny/film/02-sky-racer.webp",
+   "thumb": "/gallery/destiny/thumbs/02-sky-racer.webp",
+   "drawing": "/gallery/destiny/drawing/o02.json",
+   "paper": [
+    17,
+    36,
+    44
+   ],
+   "device": [
+    970,
+    284,
+    1590,
+    696
+   ],
+   "strokes": 1183,
+   "uv": [
+    0.2862679955703212,
+    0.8348484848484848,
+    0.4280177187153931,
+    0.9984848484848485
+   ]
+  },
+  "c087": {
+   "name": "Neutrino Bell",
+   "film": "/gallery/destiny/film/087-neutrino-bell.webp",
+   "thumb": "/gallery/destiny/thumbs/087-neutrino-bell.webp",
+   "drawing": "/gallery/destiny/drawing/c087.json",
+   "paper": [
+    41,
+    20,
+    25
+   ],
+   "device": [
+    987,
+    158,
+    1573,
+    823
+   ],
+   "strokes": 1041,
+   "uv": [
+    0.429125138427464,
+    0.8348484848484848,
+    0.570874861572536,
+    0.9984848484848485
+   ]
+  },
+  "o09": {
+   "name": "Tether Climber",
+   "film": "/gallery/destiny/film/09-tether-climber.webp",
+   "thumb": "/gallery/destiny/thumbs/09-tether-climber.webp",
+   "drawing": "/gallery/destiny/drawing/o09.json",
+   "paper": [
+    12,
+    21,
+    35
+   ],
+   "device": [
+    1031,
+    143,
+    1529,
+    838
+   ],
+   "strokes": 714,
+   "uv": [
+    0.5719822812846068,
+    0.8348484848484848,
+    0.7137320044296789,
+    0.9984848484848485
+   ]
+  },
+  "c001": {
+   "name": "Light Sail",
+   "film": "/gallery/destiny/film/001-light-sail.webp",
+   "thumb": "/gallery/destiny/thumbs/001-light-sail.webp",
+   "drawing": "/gallery/destiny/drawing/c001.json",
+   "paper": [
+    28,
+    25,
+    48
+   ],
+   "device": [
+    950,
+    235,
+    1610,
+    745
+   ],
+   "strokes": 1228,
+   "uv": [
+    0.7148394241417497,
+    0.8348484848484848,
+    0.8565891472868217,
+    0.9984848484848485
+   ]
+  },
+  "o01": {
+   "name": "Quantum Simulator",
+   "film": "/gallery/destiny/film/01-quantum-simulator.webp",
+   "thumb": "/gallery/destiny/thumbs/01-quantum-simulator.webp",
+   "drawing": "/gallery/destiny/drawing/o01.json",
+   "paper": [
+    28,
+    25,
+    48
+   ],
+   "device": [
+    970,
+    136,
+    1636,
+    863
+   ],
+   "strokes": 2313,
+   "uv": [
+    0.8576965669988926,
+    0.8348484848484848,
+    0.9994462901439646,
+    0.9984848484848485
+   ]
+  },
+  "c025": {
+   "name": "Fibre Braid",
+   "film": "/gallery/destiny/film/025-fibre-braid.webp",
+   "thumb": "/gallery/destiny/thumbs/025-fibre-braid.webp",
+   "drawing": "/gallery/destiny/drawing/c025.json",
+   "paper": [
+    20,
+    40,
+    38
+   ],
+   "device": [
+    950,
+    249,
+    1610,
+    731
+   ],
+   "strokes": 1821,
+   "uv": [
+    0.0005537098560354374,
+    0.6681818181818182,
+    0.14230343300110743,
+    0.8318181818181818
+   ]
+  },
+  "o13": {
+   "name": "Proxy",
+   "film": "/gallery/destiny/film/13-proxy.webp",
+   "thumb": "/gallery/destiny/thumbs/13-proxy.webp",
+   "drawing": "/gallery/destiny/drawing/o13.json",
+   "paper": [
+    35,
+    31,
+    23
+   ],
+   "device": [
+    1009,
+    179,
+    1551,
+    823
+   ],
+   "strokes": 562,
+   "uv": [
+    0.1434108527131783,
+    0.6681818181818182,
+    0.2851605758582503,
+    0.8318181818181818
+   ]
+  },
+  "c100": {
+   "name": "Plant Alibi",
+   "film": "/gallery/destiny/film/100-plant-alibi.webp",
+   "thumb": "/gallery/destiny/thumbs/100-plant-alibi.webp",
+   "drawing": "/gallery/destiny/drawing/c100.json",
+   "paper": [
+    27,
+    24,
+    47
+   ],
+   "device": [
+    1052,
+    158,
+    1508,
+    823
+   ],
+   "strokes": 1015,
+   "uv": [
+    0.2862679955703212,
+    0.6681818181818182,
+    0.4280177187153931,
+    0.8318181818181818
+   ]
+  },
+  "o11": {
+   "name": "Organ Foundry",
+   "film": "/gallery/destiny/film/11-organ-foundry.webp",
+   "thumb": "/gallery/destiny/thumbs/11-organ-foundry.webp",
+   "drawing": "/gallery/destiny/drawing/o11.json",
+   "paper": [
+    21,
+    40,
+    38
+   ],
+   "device": [
+    1048,
+    143,
+    1512,
+    837
+   ],
+   "strokes": 181,
+   "uv": [
+    0.429125138427464,
+    0.6681818181818182,
+    0.570874861572536,
+    0.8318181818181818
+   ]
+  },
+  "o05": {
+   "name": "Cortical Mesh",
+   "film": "/gallery/destiny/film/05-cortical-mesh.webp",
+   "thumb": "/gallery/destiny/thumbs/05-cortical-mesh.webp",
+   "drawing": "/gallery/destiny/drawing/o05.json",
+   "paper": [
+    40,
+    24,
+    40
+   ],
+   "device": [
+    981,
+    143,
+    1579,
+    837
+   ],
+   "strokes": 966,
+   "uv": [
+    0.5719822812846068,
+    0.6681818181818182,
+    0.7137320044296789,
+    0.8318181818181818
+   ]
+  },
+  "c017": {
+   "name": "Memory Kiln",
+   "film": "/gallery/destiny/film/017-memory-kiln.webp",
+   "thumb": "/gallery/destiny/thumbs/017-memory-kiln.webp",
+   "drawing": "/gallery/destiny/drawing/c017.json",
+   "paper": [
+    43,
+    25,
+    20
+   ],
+   "device": [
+    1039,
+    158,
+    1521,
+    823
+   ],
+   "strokes": 713,
+   "uv": [
+    0.7148394241417497,
+    0.6681818181818182,
+    0.8565891472868217,
+    0.8318181818181818
+   ]
+  },
+  "c056": {
+   "name": "Dune Skimmer",
+   "film": "/gallery/destiny/film/056-dune-skimmer.webp",
+   "thumb": "/gallery/destiny/thumbs/056-dune-skimmer.webp",
+   "drawing": "/gallery/destiny/drawing/c056.json",
+   "paper": [
+    27,
+    24,
+    47
+   ],
+   "device": [
+    950,
+    197,
+    1610,
+    783
+   ],
+   "strokes": 969,
+   "uv": [
+    0.8576965669988926,
+    0.6681818181818182,
+    0.9994462901439646,
+    0.8318181818181818
+   ]
+  },
+  "c010": {
+   "name": "Sock Oracle",
+   "film": "/gallery/destiny/film/010-sock-oracle.webp",
+   "thumb": "/gallery/destiny/thumbs/010-sock-oracle.webp",
+   "drawing": "/gallery/destiny/drawing/c010.json",
+   "paper": [
+    27,
+    34,
+    20
+   ],
+   "device": [
+    962,
+    158,
+    1598,
+    822
+   ],
+   "strokes": 523,
+   "uv": [
+    0.0005537098560354374,
+    0.5015151515151515,
+    0.14230343300110743,
+    0.6651515151515152
+   ]
+  },
+  "c080": {
+   "name": "Compliment Mill",
+   "film": "/gallery/destiny/film/080-compliment-mill.webp",
+   "thumb": "/gallery/destiny/thumbs/080-compliment-mill.webp",
+   "drawing": "/gallery/destiny/drawing/c080.json",
+   "paper": [
+    20,
+    40,
+    38
+   ],
+   "device": [
+    985,
+    157,
+    1575,
+    822
+   ],
+   "strokes": 806,
+   "uv": [
+    0.1434108527131783,
+    0.5015151515151515,
+    0.2851605758582503,
+    0.6651515151515152
+   ]
+  },
+  "c031": {
+   "name": "Petal Eye",
+   "film": "/gallery/destiny/film/031-petal-eye.webp",
+   "thumb": "/gallery/destiny/thumbs/031-petal-eye.webp",
+   "drawing": "/gallery/destiny/drawing/c031.json",
+   "paper": [
+    18,
+    37,
+    23
+   ],
+   "device": [
+    950,
+    220,
+    1610,
+    760
+   ],
+   "strokes": 859,
+   "uv": [
+    0.2862679955703212,
+    0.5015151515151515,
+    0.4280177187153931,
+    0.6651515151515152
+   ]
+  },
+  "c018": {
+   "name": "Lunar Porch",
+   "film": "/gallery/destiny/film/018-lunar-porch.webp",
+   "thumb": "/gallery/destiny/thumbs/018-lunar-porch.webp",
+   "drawing": "/gallery/destiny/drawing/c018.json",
+   "paper": [
+    20,
+    27,
+    49
+   ],
+   "device": [
+    1012,
+    158,
+    1548,
+    822
+   ],
+   "strokes": 628,
+   "uv": [
+    0.429125138427464,
+    0.5015151515151515,
+    0.570874861572536,
+    0.6651515151515152
+   ]
+  },
+  "o04": {
+   "name": "Greener",
+   "film": "/gallery/destiny/film/04-greener.webp",
+   "thumb": "/gallery/destiny/thumbs/04-greener.webp",
+   "drawing": "/gallery/destiny/drawing/o04.json",
+   "paper": [
+    19,
+    37,
+    24
+   ],
+   "device": [
+    970,
+    281,
+    1590,
+    699
+   ],
+   "strokes": 733,
+   "uv": [
+    0.5719822812846068,
+    0.5015151515151515,
+    0.7137320044296789,
+    0.6651515151515152
+   ]
+  },
+  "o07": {
+   "name": "Air Refinery",
+   "film": "/gallery/destiny/film/07-air-refinery.webp",
+   "thumb": "/gallery/destiny/thumbs/07-air-refinery.webp",
+   "drawing": "/gallery/destiny/drawing/o07.json",
+   "paper": [
+    28,
+    35,
+    21
+   ],
+   "device": [
+    1049,
+    142,
+    1511,
+    838
+   ],
+   "strokes": 1478,
+   "uv": [
+    0.7148394241417497,
+    0.5015151515151515,
+    0.8565891472868217,
+    0.6651515151515152
+   ]
+  },
+  "o06": {
+   "name": "Bounder",
+   "film": "/gallery/destiny/film/06-bounder.webp",
+   "thumb": "/gallery/destiny/thumbs/06-bounder.webp",
+   "drawing": "/gallery/destiny/drawing/o06.json",
+   "paper": [
+    20,
+    27,
+    49
+   ],
+   "device": [
+    1156,
+    142,
+    1404,
+    838
+   ],
+   "strokes": 254,
+   "uv": [
+    0.8576965669988926,
+    0.5015151515151515,
+    0.9994462901439646,
+    0.6651515151515152
+   ]
+  },
+  "c030": {
+   "name": "Advice Filter",
+   "film": "/gallery/destiny/film/030-advice-filter.webp",
+   "thumb": "/gallery/destiny/thumbs/030-advice-filter.webp",
+   "drawing": "/gallery/destiny/drawing/c030.json",
+   "paper": [
+    36,
+    32,
+    23
+   ],
+   "device": [
+    963,
+    158,
+    1597,
+    823
+   ],
+   "strokes": 445,
+   "uv": [
+    0.0005537098560354374,
+    0.33484848484848484,
+    0.14230343300110743,
+    0.49848484848484853
+   ]
+  },
+  "c070": {
+   "name": "Queue Garden",
+   "film": "/gallery/destiny/film/070-queue-garden.webp",
+   "thumb": "/gallery/destiny/thumbs/070-queue-garden.webp",
+   "drawing": "/gallery/destiny/drawing/c070.json",
+   "paper": [
+    34,
+    26,
+    20
+   ],
+   "device": [
+    1076,
+    157,
+    1484,
+    823
+   ],
+   "strokes": 1265,
+   "uv": [
+    0.1434108527131783,
+    0.33484848484848484,
+    0.2851605758582503,
+    0.49848484848484853
+   ]
+  },
+  "c044": {
+   "name": "Coral Cradle",
+   "film": "/gallery/destiny/film/044-coral-cradle.webp",
+   "thumb": "/gallery/destiny/thumbs/044-coral-cradle.webp",
+   "drawing": "/gallery/destiny/drawing/c044.json",
+   "paper": [
+    12,
+    21,
+    36
+   ],
+   "device": [
+    954,
+    158,
+    1606,
+    823
+   ],
+   "strokes": 1137,
+   "uv": [
+    0.2862679955703212,
+    0.33484848484848484,
+    0.4280177187153931,
+    0.49848484848484853
+   ]
+  },
+  "c002": {
+   "name": "Tidal Loom",
+   "film": "/gallery/destiny/film/002-tidal-loom.webp",
+   "thumb": "/gallery/destiny/thumbs/002-tidal-loom.webp",
+   "drawing": "/gallery/destiny/drawing/c002.json",
+   "paper": [
+    17,
+    36,
+    44
+   ],
+   "device": [
+    950,
+    218,
+    1610,
+    762
+   ],
+   "strokes": 1230,
+   "uv": [
+    0.429125138427464,
+    0.33484848484848484,
+    0.570874861572536,
+    0.49848484848484853
+   ]
+  },
+  "o14": {
+   "name": "Presence Rig",
+   "film": "/gallery/destiny/film/14-presence-rig.webp",
+   "thumb": "/gallery/destiny/thumbs/14-presence-rig.webp",
+   "drawing": "/gallery/destiny/drawing/o14.json",
+   "paper": [
+    30,
+    31,
+    32
+   ],
+   "device": [
+    954,
+    180,
+    1606,
+    810
+   ],
+   "strokes": 1439,
+   "uv": [
+    0.5719822812846068,
+    0.33484848484848484,
+    0.7137320044296789,
+    0.49848484848484853
+   ]
+  },
+  "c099": {
+   "name": "Sleep Cocoon",
+   "film": "/gallery/destiny/film/099-sleep-cocoon.webp",
+   "thumb": "/gallery/destiny/thumbs/099-sleep-cocoon.webp",
+   "drawing": "/gallery/destiny/drawing/c099.json",
+   "paper": [
+    12,
+    21,
+    36
+   ],
+   "device": [
+    1099,
+    158,
+    1461,
+    823
+   ],
+   "strokes": 1378,
+   "uv": [
+    0.7148394241417497,
+    0.33484848484848484,
+    0.8565891472868217,
+    0.49848484848484853
+   ]
+  },
+  "c042": {
+   "name": "Wind Kite",
+   "film": "/gallery/destiny/film/042-wind-kite.webp",
+   "thumb": "/gallery/destiny/thumbs/042-wind-kite.webp",
+   "drawing": "/gallery/destiny/drawing/c042.json",
+   "paper": [
+    18,
+    37,
+    24
+   ],
+   "device": [
+    976,
+    157,
+    1584,
+    823
+   ],
+   "strokes": 1019,
+   "uv": [
+    0.8576965669988926,
+    0.33484848484848484,
+    0.9994462901439646,
+    0.49848484848484853
+   ]
+  },
+  "c060": {
+   "name": "Meeting Buoy",
+   "film": "/gallery/destiny/film/060-meeting-buoy.webp",
+   "thumb": "/gallery/destiny/thumbs/060-meeting-buoy.webp",
+   "drawing": "/gallery/destiny/drawing/c060.json",
+   "paper": [
+    29,
+    18,
+    42
+   ],
+   "device": [
+    1090,
+    157,
+    1470,
+    823
+   ],
+   "strokes": 779,
+   "uv": [
+    0.0005537098560354374,
+    0.1681818181818182,
+    0.14230343300110743,
+    0.3318181818181818
+   ]
+  },
+  "c006": {
+   "name": "Manta Foil",
+   "film": "/gallery/destiny/film/006-manta-foil.webp",
+   "thumb": "/gallery/destiny/thumbs/006-manta-foil.webp",
+   "drawing": "/gallery/destiny/drawing/c006.json",
+   "paper": [
+    43,
+    25,
+    20
+   ],
+   "device": [
+    950,
+    282,
+    1610,
+    698
+   ],
+   "strokes": 548,
+   "uv": [
+    0.1434108527131783,
+    0.1681818181818182,
+    0.2851605758582503,
+    0.3318181818181818
+   ]
+  },
+  "c065": {
+   "name": "Seam Surgeon",
+   "film": "/gallery/destiny/film/065-seam-surgeon.webp",
+   "thumb": "/gallery/destiny/thumbs/065-seam-surgeon.webp",
+   "drawing": "/gallery/destiny/drawing/c065.json",
+   "paper": [
+    42,
+    21,
+    25
+   ],
+   "device": [
+    950,
+    173,
+    1610,
+    807
+   ],
+   "strokes": 524,
+   "uv": [
+    0.2862679955703212,
+    0.1681818181818182,
+    0.4280177187153931,
+    0.3318181818181818
+   ]
+  },
+  "o12": {
+   "name": "Volumetric Stage",
+   "film": "/gallery/destiny/film/12-volumetric-stage.webp",
+   "thumb": "/gallery/destiny/thumbs/12-volumetric-stage.webp",
+   "drawing": "/gallery/destiny/drawing/o12.json",
+   "paper": [
+    30,
+    19,
+    43
+   ],
+   "device": [
+    954,
+    197,
+    1606,
+    793
+   ],
+   "strokes": 3334,
+   "uv": [
+    0.429125138427464,
+    0.1681818181818182,
+    0.570874861572536,
+    0.3318181818181818
+   ]
+  },
+  "o08": {
+   "name": "Aroma Organ",
+   "film": "/gallery/destiny/film/08-aroma-organ.webp",
+   "thumb": "/gallery/destiny/thumbs/08-aroma-organ.webp",
+   "drawing": "/gallery/destiny/drawing/o08.json",
+   "paper": [
+    41,
+    20,
+    25
+   ],
+   "device": [
+    970,
+    211,
+    1590,
+    709
+   ],
+   "strokes": 876,
+   "uv": [
+    0.5719822812846068,
+    0.1681818181818182,
+    0.7137320044296789,
+    0.3318181818181818
+   ]
+  },
+  "c038": {
+   "name": "Quiet Stair",
+   "film": "/gallery/destiny/film/038-quiet-stair.webp",
+   "thumb": "/gallery/destiny/thumbs/038-quiet-stair.webp",
+   "drawing": "/gallery/destiny/drawing/c038.json",
+   "paper": [
+    30,
+    18,
+    43
+   ],
+   "device": [
+    950,
+    181,
+    1610,
+    799
+   ],
+   "strokes": 1945,
+   "uv": [
+    0.7148394241417497,
+    0.1681818181818182,
+    0.8565891472868217,
+    0.3318181818181818
+   ]
+  },
+  "c101": {
+   "name": "Velvet Hammer",
+   "film": "/gallery/destiny/film/101-velvet-hammer.webp",
+   "thumb": "/gallery/destiny/thumbs/101-velvet-hammer.webp",
+   "drawing": "/gallery/destiny/drawing/c101.json",
+   "paper": [
+    34,
+    25,
+    20
+   ],
+   "device": [
+    1020,
+    158,
+    1540,
+    822
+   ],
+   "strokes": 1288,
+   "uv": [
+    0.8576965669988926,
+    0.1681818181818182,
+    0.9994462901439646,
+    0.3318181818181818
+   ]
+  },
+  "c103": {
+   "name": "Bubble Bailiff",
+   "film": "/gallery/destiny/film/103-bubble-bailiff.webp",
+   "thumb": "/gallery/destiny/thumbs/103-bubble-bailiff.webp",
+   "drawing": "/gallery/destiny/drawing/c103.json",
+   "paper": [
+    12,
+    21,
+    36
+   ],
+   "device": [
+    997,
+    158,
+    1563,
+    823
+   ],
+   "strokes": 1029,
+   "uv": [
+    0.0005537098560354374,
+    0.0015151515151514694,
+    0.14230343300110743,
+    0.16515151515151516
+   ]
+  },
+  "c104": {
+   "name": "Key Concord",
+   "film": "/gallery/destiny/film/104-key-concord.webp",
+   "thumb": "/gallery/destiny/thumbs/104-key-concord.webp",
+   "drawing": "/gallery/destiny/drawing/c104.json",
+   "paper": [
+    18,
+    37,
+    24
+   ],
+   "device": [
+    950,
+    241,
+    1610,
+    739
+   ],
+   "strokes": 679,
+   "uv": [
+    0.1434108527131783,
+    0.0015151515151514694,
+    0.2851605758582503,
+    0.16515151515151516
+   ]
+  },
+  "c105": {
+   "name": "Metric Embassy",
+   "film": "/gallery/destiny/film/105-metric-embassy.webp",
+   "thumb": "/gallery/destiny/thumbs/105-metric-embassy.webp",
+   "drawing": "/gallery/destiny/drawing/c105.json",
+   "paper": [
+    30,
+    31,
+    32
+   ],
+   "device": [
+    1012,
+    157,
+    1548,
+    822
+   ],
+   "strokes": 1387,
+   "uv": [
+    0.2862679955703212,
+    0.0015151515151514694,
+    0.4280177187153931,
+    0.16515151515151516
+   ]
+  },
+  "c106": {
+   "name": "Muon Customs",
+   "film": "/gallery/destiny/film/106-muon-customs.webp",
+   "thumb": "/gallery/destiny/thumbs/106-muon-customs.webp",
+   "drawing": "/gallery/destiny/drawing/c106.json",
+   "paper": [
+    40,
+    21,
+    25
+   ],
+   "device": [
+    950,
+    167,
+    1610,
+    813
+   ],
+   "strokes": 1281,
+   "uv": [
+    0.429125138427464,
+    0.0015151515151514694,
+    0.570874861572536,
+    0.16515151515151516
+   ]
+  },
+  "c107": {
+   "name": "Resonance Tailor",
+   "film": "/gallery/destiny/film/107-resonance-tailor.webp",
+   "thumb": "/gallery/destiny/thumbs/107-resonance-tailor.webp",
+   "drawing": "/gallery/destiny/drawing/c107.json",
+   "paper": [
+    30,
+    19,
+    43
+   ],
+   "device": [
+    1035,
+    157,
+    1525,
+    823
+   ],
+   "strokes": 1344,
+   "uv": [
+    0.5719822812846068,
+    0.0015151515151514694,
+    0.7137320044296789,
+    0.16515151515151516
+   ]
+  },
+  "c108": {
+   "name": "Suture Loom",
+   "film": "/gallery/destiny/film/108-suture-loom.webp",
+   "thumb": "/gallery/destiny/thumbs/108-suture-loom.webp",
+   "drawing": "/gallery/destiny/drawing/c108.json",
+   "paper": [
+    18,
+    36,
+    23
+   ],
+   "device": [
+    950,
+    246,
+    1610,
+    734
+   ],
+   "strokes": 992,
+   "uv": [
+    0.7148394241417497,
+    0.0015151515151514694,
+    0.8565891472868217,
+    0.16515151515151516
+   ]
+  },
+  "c110": {
+   "name": "Spin Table",
+   "film": "/gallery/destiny/film/110-spin-table.webp",
+   "thumb": "/gallery/destiny/thumbs/110-spin-table.webp",
+   "drawing": "/gallery/destiny/drawing/c110.json",
+   "paper": [
+    34,
+    26,
+    20
+   ],
+   "device": [
+    996,
+    157,
+    1564,
+    823
+   ],
+   "strokes": 761,
+   "uv": [
+    0.8576965669988926,
+    0.0015151515151514694,
+    0.9994462901439646,
+    0.16515151515151516
+   ]
+  }
+ }
+}

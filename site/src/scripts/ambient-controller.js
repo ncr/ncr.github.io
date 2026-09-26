@@ -6,9 +6,9 @@ async function prepare(){
  if(!ready)ready=Promise.all([import(/* @vite-ignore */ '/gallery/destiny/ambient/renderer.js'),fetch('/gallery/destiny/ambient/profiles.json').then(r=>r.json())]).then(([module,data])=>{profiles=data;renderer=module.createAmbient(document.querySelector('.viewer-frame'));});
  await ready;
 }
-function state(){renderer?.setEnabled(visible&&enabled&&!covered&&document.querySelector('.viewer-canvas')?.dataset.atlasActive!=='1'&&!reduced.matches&&!document.hidden);}
+function state(){renderer?.setEnabled(visible&&enabled&&!covered&&document.querySelector('.viewer-canvas')?.dataset.atlasActive!=='1'&&document.querySelector('.viewer-canvas')?.dataset.filmActive!=='1'&&!reduced.matches&&!document.hidden);}
 window.addEventListener('destiny-wallpaper',async e=>{
- current=e.detail;visible=true;
+ current=e.detail;visible=true;if(document.querySelector('.viewer-canvas')?.dataset.filmActive==='1'){state();return;}
  try{await prepare();const w=current;await renderer.load(w.thumb,profiles[w.id],`/gallery/destiny/ambient/masks/${w.id}.png`);state();}catch{renderer?.setEnabled(false);}
 });
 window.addEventListener('destiny-camera',e=>{visible=e.detail.active;enabled=e.detail.enabled;covered=Boolean(e.detail.paper?.drawingCovered);state();});

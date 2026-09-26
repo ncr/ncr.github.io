@@ -376,3 +376,36 @@ checks pass. CUA Chrome review compares frames before/after the first arrival,
 Truth Lamp and the nozzle, including 390 px portrait framing. Colors and geometry
 continue across the boundary; the incoming drawing is visible before its nominal
 phrase begins. Actual MP3 playback was checked through successive arrivals.
+
+## 2026-09-26 — music-video recut on the song's structure
+
+The tour no longer repeats one four-bar template. A new edit decision list
+(`site/src/scripts/film/edit.js`) follows the measured structure of the track:
+arpeggio intro without kick (0–21.66 s, four unnamed machines drawn in lines
+only), drum entrance reveal, melody phrases, chorus (150.06 s), bass-less
+breakdown (188.31 s), filtered build, second groove, final chorus with the long
+high note (226.86 s), stop (273.76 s), peak (278.03 s) and fade-out. All cut
+times after the entrance come from `music-grid.json` and are checked to sit on a
+beat or half-beat (`node tools/check-film-edit.mjs`).
+
+105 shots use about twenty shot types: pen drawing with layered depth, flat
+wipe reveals, low flyovers, crane moves, snap moves between the shared layout
+regions (title, side diagrams, graph), split screens of 2/3/4/9 sheets, conveyor
+strips, a 3D wall of all 42 sheets (existing atlas texture), the real nozzle
+mesh, the real dinner scene, and one-sheet-per-beat montages. Transitions: hard
+cut, flash, whip pan, zoom-through, scan wipe, iris and dissolve. Beat punches
+use the measured bass attack strength. All 42 wallpapers appear.
+
+`site/src/scripts/film/engine.js` renders everything as a pure function of the
+soundtrack time (seekable, deterministic) in one WebGL context: HDR targets,
+camera motion blur, bloom, vignette and grain. It reads only existing release
+assets: film images, thumbnails, the atlas, original vector paths, nozzle and
+dinner geometry. `tools/prepare-film-sheets.mjs` writes `film-sheets.json`
+(paper colour, device bounds, URLs, atlas tile). Resolution adapts to frame time.
+Reduced motion and the effects switch keep the photo fallback. The previous
+fusion-flight/atlas modules and their prepared tables are no longer loaded.
+
+Review: full-length 4 fps frame renders inspected section by section at 16:9,
+the in-page strip and 390 px phone layout; real-time playback in Chromium at
+1920×1080 held 16.7 ms frames across the heaviest sections (RTX 5080; not a
+guarantee for integrated GPUs).
