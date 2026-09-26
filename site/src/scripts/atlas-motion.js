@@ -18,8 +18,7 @@ export function atlasCamera(data,bridge,time,aspect,departure){
  const arc=.055*lift*(1+.2*Math.sin(2*Math.PI*t));
  const x=mix(start.x,end.x,u)-dy/distance*arc,y=mix(start.y,end.y,u)+dx/distance*arc;
  const roll=mix(start.roll,end.roll,u)+sign*2.4*lift+.35*Math.sin(2*Math.PI*t)*lift;
- const dissolve=e.spatial?.55:.34;
- const opacity=smoother(phase/.22)*(1-smoother((phase-(4-dissolve))/dissolve));
+ const opacity=smoother(phase/.22);
  // A portrait viewport must not reveal six extra rows in its letterbox space.
  // The local aperture follows the zoom continuously and never opens to the atlas.
  const apertureWidth=Math.min(height*aspect,1.5*data.tileWidth),apertureHeight=Math.min(height,1.5);

@@ -34,5 +34,5 @@ export function createDinner(scene,renderer){
   uniforms.landing.value=smoother((b-plan.pullBeat)/2);uniforms.glow.value=1+.17*motion.pulse;
   const fade=smoother((b-(plan.revealBeat-2))/2);return {opacity:smoother(b)*(1-fade),fade,landing:uniforms.landing.value,beat:b,az,bank};
  }
- return {group,prepare,render};
+ return {group,prepare,render,isReady:()=>ready};
 }

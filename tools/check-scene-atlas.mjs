@@ -14,7 +14,7 @@ for(const [i,b]of data.bridges.entries()){
  for(const aspect of [.78,1,1440/407,2.4]){
   const height=500,width=height*aspect,paperHeight=Math.min(height,width/data.tileWidth),departure={x:.5,y:.5,viewportHeight:height,height:paperHeight,scale:1.032,roll:0};
   const pose=t=>atlasCamera(data,b,t,aspect,departure);
-  const first=pose(b.beats[0]),last=pose(b.beats[4]);assert(Math.abs(first.opacity)<1e-10);assert(Math.abs(last.opacity)<1e-10);assert(Math.abs(first.x-a.x)<1e-10);assert(Math.abs(first.y-a.y)<1e-10);assert(Math.abs(last.x-z.x-(b.entry.x-.5)*data.tileWidth)<1e-10);
+  const first=pose(b.beats[0]),last=pose(b.beats[4]);assert(Math.abs(first.opacity)<1e-10);assert(Math.abs(last.opacity-1)<1e-10);assert(Math.abs(first.x-a.x)<1e-10);assert(Math.abs(first.y-a.y)<1e-10);assert(Math.abs(last.x-z.x-(b.entry.x-.5)*data.tileWidth)<1e-10);
   assert.equal(bridgeAt(data,b.beats[0]),b);assert.notEqual(bridgeAt(data,b.beats[4]),b);
   directions.add(first.direction);
   // Internal beats must keep moving, with continuous velocity in world space.

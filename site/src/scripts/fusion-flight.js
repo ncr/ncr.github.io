@@ -56,7 +56,7 @@ export function createFlight(host,onReady=()=>{}){
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
  const element=renderer.domElement;element.className='fusion-flight';element.setAttribute('aria-hidden','true');host.append(element);
- const atlas=createSceneAtlas(host,onReady);
+ const atlas=createSceneAtlas(host,onReady,renderer,renderIncoming);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.2,4000);
  const dinner=createDinner(scene,renderer);let dinnerQueued=false;
  const cache=new Map(),pending=new Map(),unavailable=new Set();
@@ -71,7 +71,7 @@ export function createFlight(host,onReady=()=>{}){
  let cutBefore,cutAfter,cutKey='',cutSize='';const fallbackBridge=host.querySelector('.scene-bridge');
  function cutTargets(w,h){const size=w+':'+h;if(cutSize===size)return;cutSize=size;cutKey='';cutBefore?.dispose();cutAfter?.dispose();const ratio=renderer.getPixelRatio();cutBefore=new THREE.WebGLRenderTarget(Math.round(w*ratio),Math.round(h*ratio),{samples:2});cutAfter=new THREE.WebGLRenderTarget(Math.round(w*ratio),Math.round(h*ratio),{samples:2});}
  const detail=new THREE.Group();scene.add(detail);detail.visible=false;
- const spectrum=new Float32Array(16),beatFrame=new Float32Array(4),pose=new Float32Array(7);let previousFrame=0;
+ const spectrum=new Float32Array(16),beatFrame=new Float32Array(4),pose=new Float32Array(7);let previousFrame=0;const liveClear=new THREE.Color();
  const gp=new THREE.BufferGeometry(),lanes=Array.from({length:26},(_,i)=>i);
  gp.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lanes.length*3),3));gp.setAttribute('lane',new THREE.Float32BufferAttribute(lanes,1));
  const idle=fn=>(window.requestIdleCallback?requestIdleCallback(fn,{timeout:1200}):setTimeout(fn,0));
@@ -98,7 +98,7 @@ export function createFlight(host,onReady=()=>{}){
    const was=sheet.group.visible;sheet.group.visible=true;const first=Object.values(sheet.plans)[0];sheet.pm.uniforms.penTable.value=first.texture;sheet.pm.uniforms.tableSize.value.set(first.penWidth,first.penRows||20);
    for(const p of Object.values(sheet.plans))renderer.initTexture(p.texture);
    if(sheet.contours)sheet.contours.lines.visible=true;
-   const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();sheet.group.visible=was;
+   const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();renderer.compile(scene,camera);sheet.group.visible=was;
    if(sheet.contours)sheet.contours.lines.visible=false;
  }
  function prepare(id){
@@ -117,11 +117,17 @@ export function createFlight(host,onReady=()=>{}){
   const mat=new THREE.ShaderMaterial({transparent:true,uniforms:{levels:{value:new THREE.Vector3(.6,.6,.6)}},vertexShader:`attribute vec3 inkColor;attribute float band;uniform vec3 levels;varying vec3 c;varying float a;void main(){c=inkColor;a=.35+.55*(band<.5?levels.x:band<1.5?levels.y:levels.z);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec3 c;varying float a;void main(){gl_FragColor=vec4(c,a);}`});
   detail.add(new THREE.LineSegments(g,mat));idle(()=>{if(failed)return;const was=detail.visible;detail.visible=true;const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();detail.visible=was;nozzleReady=true;onReady();});
  }).catch(()=>{});}
- function render(time,passage,paperFrame,internal=false){
+ function renderIncoming(bridge,audioTime,elapsed,paperFrame,paperMix){
+   const passage=drawingScore.find(p=>p.id===bridge.toId&&Math.abs(p.start-bridge.beats[2])<.001);
+   if(bridge.toId==='o03'){prepareNozzle();if(!nozzleReady)return false;}
+   else{prepare(bridge.toId);if(!cache.has(bridge.toId)||bridge.toId==='o10'&&!dinner.isReady())return false;}
+   return render(bridge.beats[2]+elapsed,passage,paperFrame,true,{paperMix,audioTime});
+ }
+ function render(time,passage,paperFrame,internal=false,liveFrame=null){
    if(failed)return false;
    if(!internal){
     if(passage)prepare(passage.id);
-    if(atlas.render(time,paperFrame)){element.style.display='none';host.dataset.liveBlend='0';return true;}
+    if(atlas.render(time,paperFrame)){host.dataset.liveBlend='0';return true;}
    }
    const w=paperFrame?.viewportWidth||lastW||host.clientWidth,h=paperFrame?.viewportHeight||lastH||host.clientHeight;if(!w||!h)return false;
    if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
@@ -167,8 +173,9 @@ export function createFlight(host,onReady=()=>{}){
      sheet.material.uniforms.audible.value=energy.active?1:0;
      if(plan.choirWindows)for(let v=0;v<6;v++){const [start,end]=plan.choirWindows[v];sheet.material.uniforms.choirProgress.value[v]=clamp((musicalElapsed-start)/(end-start));}
      sheet.pm.uniforms.mutedHero.value=plan.mutedHero??-1;
-     bassAttacksAt(time,energy.active&&time>=musicGrid.entrance,beatFrame);
-     sheet.pm.uniforms.beatTimes.value.set(beatFrame[0]-passage.start,beatFrame[2]-passage.start);
+     const audioTime=liveFrame?.audioTime??time,offset=time-audioTime;
+     bassAttacksAt(audioTime,energy.active&&audioTime>=musicGrid.entrance,beatFrame);
+     sheet.pm.uniforms.beatTimes.value.set(beatFrame[0]-passage.start+offset,beatFrame[2]-passage.start+offset);
      sheet.pm.uniforms.beatStrengths.value.set(beatFrame[1],beatFrame[3]);
      sheet.pm.uniforms.penTable.value=plan.texture;sheet.pm.uniforms.tableSize.value.set(plan.penWidth,plan.penRows||20);sheet.pm.uniforms.elapsed.value=elapsed;sheet.pm.uniforms.audible.value=energy.active?1:0;
      const paper=sheet.data.paper;paperMaterial.uniforms.paper.value.set(paper[0]/255,paper[1]/255,paper[2]/255);renderer.setClearColor(new THREE.Color(paper[0]/255,paper[1]/255,paper[2]/255),1);
@@ -190,6 +197,11 @@ export function createFlight(host,onReady=()=>{}){
        landed=smoother(pull/.5);
        fade=smoother((pull-.5)/.5);
      }else fade=smoother((pull-.5)/.5);
+     if(liveFrame&&registration){
+       sheet.placement.paperOrigin.value.set(2*registration.center[0]/2560-1,1-2*registration.center[1]/1080);
+       sheet.placement.paperX.value.set(2*registration.unit/2560,0);sheet.placement.paperY.value.set(0,2*registration.unit/1080);
+       landed=liveFrame.paperMix;
+     }
      sheet.placement.landing.value=landed;
      const cue=sheet.contours?.update(passage,elapsed,energy.active);
      if(cue){element.dataset.contourCue=cue.cue.mode;element.dataset.contourOpen=cue.open.toFixed(4);element.dataset.contourOpacity=cue.opacity.toFixed(4);}
@@ -206,7 +218,10 @@ export function createFlight(host,onReady=()=>{}){
      element.dataset.drawing=current;element.dataset.progress=progress.toFixed(3);
    }
    element.style.display='block';
-   if(Number(element.style.opacity)>.001){
+   // Render targets use linear clear colors; the live quad transports the same
+   // display-referred pixels as the regular canvas, including the spatial scenes.
+   if(liveFrame){renderer.getClearColor(liveClear).convertLinearToSRGB();renderer.setClearColor(liveClear,1);}
+   if(liveFrame||Number(element.style.opacity)>.001){
     if(introBlend){renderer.setRenderTarget(cutAfter);renderer.render(scene,camera);renderer.setRenderTarget(null);cutMaterial.uniforms.before.value=cutBefore.texture;cutMaterial.uniforms.after.value=cutAfter.texture;cutMaterial.uniforms.blend.value=blend;renderer.render(cutScene,cutCamera);}
     else renderer.render(scene,camera);
    }

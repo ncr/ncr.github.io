@@ -341,3 +341,38 @@ velocity through all intermediate beats, plus the 1.5-tile aperture bounds at
 four aspect ratios. Existing musical/contour tests, Astro build and diff checks
 pass. CUA review covers the close atlas view, stronger nibs and 390 px portrait
 framing; no shader errors were reported.
+
+## 2026-09-26 — the next tile is already the live scene
+
+The author identified the remaining abrupt change: the camera approached a
+finished wallpaper, then swapped it for the drawing animation. The incoming tile
+now contains the actual next scene from the beginning of the outgoing zoom.
+Its baked image and generic contour overlay are suppressed. It uses the same pen
+lookup tables, stroke shader, spectrum values and geometry as the full-frame shot;
+the dinner and nozzle likewise run their real spatial scenes while still in the grid.
+
+A deterministic pre-roll starts drawing during departure. Its monotone clock
+reaches the regular scene's exact time and velocity at the end of the bridge.
+The pre-roll eases into normal pen speed once; it does not modulate pen speed on
+beats. Bass pulses still sample actual audio time. Paper registration gradually
+becomes the normal detail camera while the live tile fills the viewport. The last
+atlas frame and first regular frame therefore carry the same animation, framing
+and background; there is no end-of-flight bitmap swap or restart. The four-beat
+bridge, local 1.5-tile framing and the four-bar musical edit remain unchanged.
+
+The atlas now shares the main WebGL renderer/context. One reusable, multisampled
+GPU render target carries the incoming scene; no canvas copying, pixel readback,
+CPU path sampling, new WebGL context or duplicate geometry is required. The target
+is allocated ahead of the bridge and reused. Shaders are warmed for offscreen and
+screen rendering. The outgoing full-frame renderer is skipped during the atlas:
+there is one incoming scene render plus the batched atlas and its live quad.
+This replaces the previous design that stopped all detailed rendering while the
+atlas was opaque. Asset fetching and source wallpaper files are unchanged.
+
+`check-live-arrivals.mjs` covers all 31 early starts, monotone clocks, matching
+clock/velocity and completed viewport projection at handoff, renderer sharing and
+absence of readback. The atlas, musical and contour checks, Astro build and diff
+checks pass. CUA Chrome review compares frames before/after the first arrival,
+Truth Lamp and the nozzle, including 390 px portrait framing. Colors and geometry
+continue across the boundary; the incoming drawing is visible before its nominal
+phrase begins. Actual MP3 playback was checked through successive arrivals.
