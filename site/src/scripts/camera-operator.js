@@ -1,4 +1,4 @@
-import {pullAt,inkTime,smoother} from './musical-motion.js';
+import {pullAt,inkTime,smoother,phraseMotion} from './musical-motion.js';
 // A damped camera operator follows the actual pen, not a pre-authored spatial spline.
 // Fixed-rate integration is cached: seek/replay never depends on previous rendered frames.
 const clamp=t=>Math.max(0,Math.min(1,t));
@@ -21,7 +21,7 @@ export function createOperator(nib,plan,fit,beats=[]){
  };
  const spring=(p,v,g,omega,damping)=>{for(let j=0;j<3;j++){v[j]+=(omega*omega*(g[j]-p[j])-2*damping*omega*v[j])*dt;p[j]+=v[j]*dt;}};
  for(let i=0;i<=Math.ceil(duration/dt)+1;i++){
-  const t=i*dt,enter=plan.intro?1:smoother(t/plan.establish),pull=smoother(pullAt(plan,t));
+  const t=i*dt,motion=phraseMotion(plan,t),enter=plan.intro?1:smoother(t/plan.establish),pull=smoother(pullAt(plan,t));
   const p=nib(inkTime(plan,t)),a=nib(inkTime(plan,t+.045)),z=nib(inkTime(plan,t-.045)),len=Math.hypot(a.x-z.x,a.y-z.y)||1,tx=(a.x-z.x)/len,ty=(a.y-z.y)/len;
   const flight=1,breath=noise(t*.7,seed),sway=noise(t*.91,seed+71);
   const offset=plan.intro?4:8+seed%7,range=plan.closeRange??(.24+(seed%5)*.014),beat=beatPulse(plan.start+t);
@@ -31,7 +31,7 @@ export function createOperator(nib,plan,fit,beats=[]){
   const desiredRoll=(noise(t*.55,seed+139)*.034+tx*.012)*flight;
   rv+=(30*(desiredRoll-roll)-9*rv)*dt;roll+=rv*dt;
   // Apply the scored approach/retreat after spring integration: it arrives on the downbeat, without spring lag.
-  frames.push([pos[0]*enter*(1-pull),pos[1]*enter*(1-pull),(pos[2]*(1-beat*.035)*enter+fit*(1-enter))*(1-pull)+fit*pull,...aim.map(v=>v*enter*(1-pull)),(roll+beat*.012*(seed%2?1:-1))*enter*(1-pull)]);
+  frames.push([pos[0]*enter*(1-pull),pos[1]*enter*(1-pull),((pos[2]*(1-beat*.035)*enter+fit*(1-enter))*(1-pull)+fit*pull)/motion.zoom,...aim.map(v=>v*enter*(1-pull)),(roll+beat*.012*(seed%2?1:-1))*enter*(1-pull)-motion.roll*Math.PI/180]);
  }
  return time=>{
   const t=clamp(time/duration)*duration/dt,i=Math.min(frames.length-2,Math.floor(t)),u=t-i;

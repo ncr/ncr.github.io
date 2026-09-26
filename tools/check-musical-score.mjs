@@ -1,5 +1,5 @@
 import fs from 'node:fs';import assert from 'node:assert/strict';import {fileURLToPath} from 'node:url';import path from 'node:path';
-import {inkTime,pullAt} from '../site/src/scripts/musical-motion.js';
+import {inkTime,pullAt,phraseMotion} from '../site/src/scripts/musical-motion.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),read=p=>JSON.parse(fs.readFileSync(path.join(root,p))),grid=read('site/src/data/music-grid.json'),score=read('site/src/data/drawing-score.json'),assets=read('site/src/data/film-assets.json'),tour=read('site/src/data/destiny-tour.json');
 assert.equal(read('site/src/data/destiny-gallery.json').length,42);assert.equal(grid.phrases.length,32);
 for(const [i,p]of grid.phrases.entries()){
@@ -13,7 +13,7 @@ for(const s of score.filter(s=>s.beats)){
  assert(pullAt(s,s.followEnd)<1e-5);assert(pullAt(s,s.holdStart)>.99999);
  const base='site/public'+assets[s.id],meta=read(base+'.json'),buf=fs.readFileSync(path.join(root,base+'.bin')),plan=meta.plans[s.start],a=plan.camera;
  const floats=new Float32Array(buf.buffer,buf.byteOffset+a.offset*4,a.count),frame=Math.ceil(s.holdStart*plan.cameraFPS)*7;
- assert(Math.abs(floats[frame+2]-1)<1e-5,'Camera must reach the registered overview on its scored beat');assert(Math.abs(floats[frame+6])<1e-5);
+ const motion=phraseMotion(s,frame/7/plan.cameraFPS);assert(Math.abs(floats[frame+2]-1/motion.zoom)<1e-5,'Camera must reach the registered overview with its scored beat accent');assert(Math.abs(floats[frame+6]+motion.roll*Math.PI/180)<1e-5);
 }
 for(const s of tour.filter(s=>s.at>=grid.entrance))assert(grid.beats.some(t=>Math.abs(t-s.at)<1e-6),'Caption/edit off beat: '+s.at);
 assert.equal(grid.duration,299.21);assert(grid.duration-grid.tailStart<5);

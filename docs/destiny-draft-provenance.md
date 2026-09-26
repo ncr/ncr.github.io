@@ -189,3 +189,37 @@ crossfades; true MP3 with zero pause events through cuts/docking/reopening; mobi
 reduced motion, missing-asset fallback, and draft exclusion from normal routes/feed.
 Software-GL integration profile: callback p95 0.30 ms, max 0.90 ms, no measured
 main-thread long tasks during the sampled intro; this is not a hardware FPS claim.
+
+### Truth Lamp spatial scene and rhythmic retreat (2026-09-26)
+
+The author requested a camera rotation around the dinner and a visible event on
+all eight beats in the last two bars. Regular shots now build approximately 16°
+of bank before retreating, unwind it through a beat-modulated continuous clock,
+and retain a smooth 3.2% push / small lateral accent / 5.5% light lift on each beat
+through the overview. The fourth bar still shows the complete wallpaper. These
+accents also apply to the nozzle orbit. Reduced-motion mode remains static.
+The intro's pre-entrance clock does not emit the later beat pulses.
+
+Truth Lamp uses the **actual full dinner model** from `f4a51dd`, regenerated from
+`tools/hardware3d/main_scenes_build.py:dinner` in an isolated source archive. The
+export preserves all 373 mesh parts, six participants, table/chairs, lamp and dog.
+No new wallpaper was rendered or installed. A display-only 0.12 decimation ratio
+on dense meshes, offline contour-adjacency filtering, and quantized GPU attributes
+reduce the new asset to about 6.01 MiB (86,218 candidate edges; 60,706 depth-only
+triangles). Mesh faces only occlude hidden lines: no shaded surfaces are displayed.
+The final projection is registered against the released Truth Lamp vectors and
+Cairo layout before the moving dissolve. Source data remain unchanged.
+
+`export-truth-dinner.py` documents the Blender export. The asset is fetched ahead
+of the scene, uploaded once, and rendered as immutable line/depth buffers. Runtime
+does not build geometry, calculate mesh adjacency, or regenerate contour paths.
+The full scene follows a lamp-to-table approach, a lateral orbit, and a banked
+retreat into the original wallpaper. Mobile framing was visually reviewed.
+
+Checks: `check-rhythmic-retreat.py` covers beats 8–15 of regular and nozzle phrases,
+progressive leveling, the real 3D dinner camera, the registered dissolve, mobile,
+reduced motion, and uninterrupted actual MP3 playback across the dinner exit.
+Warmed dinner playback on software GL: callback p95 0.40 ms, max 3.90 ms, no observed
+main-thread long tasks. These callback timings are not a device GPU/FPS guarantee.
+Existing drawing, intro, scene-transition, soundtrack-continuity and musical-score
+checks also passed; original wallpapers and the four-bar edit duration are retained.

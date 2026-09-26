@@ -219,8 +219,21 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     function flightEvent(active,paper){window.dispatchEvent(new CustomEvent('destiny-camera',{detail:{time,active,enabled:effects,paper}}));}
     dialog.addEventListener('close',()=>flightEvent(false));
     const captionElement=q('.tour-caption'),timeLabel=q('.tour-time');let captionSpans=[],lastClock='';
+    const orbitPhrase=musicGrid.phrases.find(p=>p.kind==='orbit');
+    const orbitMotionPlan={beats:orbitPhrase.beats.map(t=>t-orbitPhrase.start),seed:102,pullBeat:8,revealBeat:12};
     // Same beat interpolation as the offline operator; native paper and WebGL share the score.
     const easeScore=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
+    function scoreBeat(p,t){
+      if(!p.beats)return 0;const b=p.beats;if(t<b[0])return (t-b[0])/(b[1]-b[0]);let i=0;while(i<b.length-2&&b[i+1]<=t)i++;
+      return i+Math.max(0,Math.min(1,(t-b[i])/(b[i+1]-b[i])));
+    }
+    function phraseMotion(p,t){
+      if(!p?.beats)return {roll:0,zoom:1,pan:0,light:1,pulse:0};
+      const b=scoreBeat(p,t),u=b-Math.floor(b),clock=Math.floor(b)+u+.65*Math.sin(2*Math.PI*u)/(2*Math.PI);
+      const settle=1-easeScore((clock-p.pullBeat)/(p.revealBeat-p.pullBeat)),ready=easeScore((b-(p.pullBeat-4))/4),sign=p.seed%2?1:-1;
+      const pulse=Math.pow((1+Math.cos(2*Math.PI*b))/2,5)*easeScore(b-(p.pullBeat-1))*(1-easeScore(b-15));
+      return {roll:sign*(16*ready*settle+.9*pulse*settle),zoom:1+.032*pulse,pan:.003*Math.sin(Math.PI*b/2)*pulse,light:1+.055*pulse,pulse};
+    }
     function scorePull(p,t){
       if(!p.beats)return Math.max(0,Math.min(1,(t-p.followEnd)/(p.holdStart-p.followEnd)));
       const b=p.beats;let i=0;while(i<b.length-2&&b[i+1]<=t)i++;
@@ -254,9 +267,12 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       if(passage?.intro&&at<musicGrid.entrance){const crop=introFrames[passage.start];x=crop.x;y=crop.y;w=crop.w;h=crop.h;}
       const cw=surface.width||canvas.clientWidth,ch=surface.height||canvas.clientHeight;
       const bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120;
-      const scale=Math.min(cw/(bw*w),ch/(bh*h));
-      const roll=reduced.matches?0:Math.sin(at*.23)*.65+Math.sin(at*.51)*.22;
-      return {n,shot,elapsed,passage,paperPull,width:bw,height:bh,scale,x,y,roll,viewportWidth:cw,viewportHeight:ch,transform:`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`};
+      const motionPlan=passage||(at>=orbitPhrase.start&&at<orbitPhrase.end?orbitMotionPlan:null),motionStart=passage?.start??orbitPhrase.start;
+      const motion=effects&&!reduced.matches&&motionPlan?phraseMotion(motionPlan,at-motionStart):{roll:0,zoom:1,pan:0,light:1,pulse:0};
+      x+=motion.pan;
+      const scale=Math.min(cw/(bw*w),ch/(bh*h))*motion.zoom;
+      const roll=reduced.matches?0:motionPlan?.beats?motion.roll:Math.sin(at*.23)*.65+Math.sin(at*.51)*.22;
+      return {n,shot,elapsed,passage,paperPull,motion,width:bw,height:bh,scale,x,y,roll,viewportWidth:cw,viewportHeight:ch,transform:`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`};
     }
     function sceneBlend(view){
       const {n,elapsed,passage}=view,previous=n?tour[n-1]:null;
@@ -276,7 +292,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       if(!touring)return;
       const view=composition(time),{n,shot,elapsed,passage,paperPull}=view;
       const size=`${view.width}:${view.height}`;if(frameSize!==size){frameSize=size;frame.style.width=view.width+'px';frame.style.height=view.height+'px';}
-      frame.style.transform=view.transform;
+      frame.style.transform=view.transform;frame.style.filter=`brightness(${view.motion.light})`;canvas.dataset.beatPulse=view.motion.pulse.toFixed(4);canvas.dataset.paperRoll=view.roll.toFixed(4);
       const pull=passage?scorePull(passage,time-passage.start):1;
       flightEvent(dialog.open,{...view,drawingCovered:effects&&Boolean(passage)&&pull<.5});
       sceneBlend(view);
@@ -334,7 +350,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     let tourWarmed=false;
     function warmTour(){if(tourWarmed)return;tourWarmed=true;for(const id of [...new Set(tour.map(s=>s.id))].slice(0,2)){const w=wallpapers.find(w=>w.id===id);warmImage(w);}}
     function startTour(resume=false){warmTour();const continuous=music&&!audio.paused&&(resume||!touring);const position=continuous?audio.currentTime:resume?(music&&audio.src?audio.currentTime:time):0;if(!continuous)pauseTour();else cancelAnimationFrame(tickId);setZoom(false);touring=true;dialog.classList.add('is-touring');player.hidden=false;q('.tour-return').hidden=true;currentShot=-1;seekTour(position);if(continuous){playing=true;play.textContent='Ⅱ';play.setAttribute('aria-label','Wstrzymaj oprowadzanie');lastTick=performance.now();tickId=requestAnimationFrame(tick);}else{audioSeek();if(!reduced.matches)togglePlay();}}
-    function leaveTour(){bridge.hidden=true;frameSize='';bridgeKey='';flightEvent(false);pauseTour();touring=false;dialog.classList.remove('is-touring');player.hidden=true;q('.tour-return').hidden=false;frame.style.width='';frame.style.height='';frame.style.transform='';}
+    function leaveTour(){bridge.hidden=true;frameSize='';bridgeKey='';flightEvent(false);pauseTour();touring=false;dialog.classList.remove('is-touring');player.hidden=true;q('.tour-return').hidden=false;frame.style.width='';frame.style.height='';frame.style.transform='';frame.style.filter='';}
     play.onclick=togglePlay;
     function scrub(t){pauseTour();seekTour(t);audioSeek();}
     seek.addEventListener('input',()=>scrub(Number(seek.value)));

@@ -15,6 +15,7 @@ for i,id in enumerate(ids):
  s.update(start=start,end=end,establish=g[i*16+1]-start,leadStart=0,leadEnd=g[i*16+10]-start,followEnd=g[i*16+8]-start,holdStart=g[i*16+12]-start,pullBeat=8,revealBeat=12,beats=[round(t-start,6) for t in g[i*16:i*16+17]],phrase=i,blendSpan=g[i*16+2]-start)
  if i==0:
   s=dict(old[3]);s.update(end=end,followEnd=start-s['start'],holdStart=g[4]-s['start'],leadEnd=g[2]-s['start'],pullBeat=0,revealBeat=4,beats=[round(t-s['start'],6) for t in g[:17]],phrase=0,blendSpan=1.8,mystery=False)
+ if id=='o10':s['framing']={'x':.5,'y':.47,'w':.39,'h':.74};s['spatial']='truth-dinner'
  score.append(s)
  authored=[t for t in tour if t['id']==id and not t.get('portrait') and t['at']>30 and not t.get('orbit')]
  # Preserve the author's narrative captions for the hero sheets, on bar boundaries.

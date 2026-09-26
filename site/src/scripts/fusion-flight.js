@@ -1,12 +1,13 @@
 import * as THREE from 'three';
+import {createDinner} from './truth-dinner-flight.js';
 import timing from '../data/flight-timing.json';
 import drawingScore from '../data/drawing-score.json';
 import musicGrid from '../data/music-grid.json';
-import {inkTime,pullAt,smoother,beatAt} from './musical-motion.js';
+import {inkTime,pullAt,smoother,beatAt,phraseMotion} from './musical-motion.js';
 import filmAssets from '../data/film-assets.json';
 import {bassAttacksAt} from './bass-particles.js';
 
-const orbitPlan={beats:timing.beats.map(t=>t-timing.orbit)};
+const orbitPlan={beats:timing.beats.map(t=>t-timing.orbit),seed:102,pullBeat:8,revealBeat:12};
 const clamp=t=>THREE.MathUtils.clamp(t,0,1);
 const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const landingUniforms=`uniform float landing;uniform vec2 paperOrigin;uniform vec2 paperX;uniform vec2 paperY;`;
@@ -65,13 +66,14 @@ const pointVertex=`${landingUniforms}
  }`;
 const pointFragment=`varying float alpha;varying vec3 tint;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;float core=exp(-r*r*28.);float halo=pow(1.-r,2.);gl_FragColor=vec4(mix(tint,vec3(1.,.96,.88),core),(core+halo*.55)*alpha);}`;
 
-// Projected vectors from the actual released sheets. Only the nozzle is a full 3D model.
+// Projected vectors from the released sheets; the nozzle and dinner use original full 3D geometry.
 // Other sheets float as linework, with slight depth separation; no invented reverse side.
 export function createFlight(host,onReady=()=>{}){
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
  const element=renderer.domElement;element.className='fusion-flight';element.setAttribute('aria-hidden','true');host.append(element);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,1,.2,4000);
+ const dinner=createDinner(scene,renderer);let dinnerQueued=false;
  const cache=new Map(),pending=new Map(),unavailable=new Set();
  let current,lastW=0,lastH=0,failed=false,energy={active:false,bass:0,mids:0,highs:0};
  const paperMaterial=new THREE.ShaderMaterial({uniforms:{paper:{value:new THREE.Vector3(.1,.05,.05)}},vertexShader:`varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform vec3 paper;varying vec2 v;void main(){float grain=fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);float light=exp(-length((v-.5)*2.)*2.);gl_FragColor=vec4(paper*(.66+light*.5)+(grain-.5)*.008,1.);}`});
@@ -114,6 +116,7 @@ export function createFlight(host,onReady=()=>{}){
    const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();sheet.group.visible=was;
  }
  function prepare(id){
+   if(id==='o10'&&!dinnerQueued){dinnerQueued=true;dinner.prepare().then(onReady);}
    if(cache.has(id)||pending.has(id)||unavailable.has(id))return;
    const base=filmAssets[id];
    const promise=Promise.all([fetch(base+'.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();})]).then(([data,buffer])=>new Promise(resolve=>idle(()=>{
@@ -148,18 +151,23 @@ export function createFlight(host,onReady=()=>{}){
    for(let i=0;i<16;i++){const target=energy.active?(energy.spectrum?.[i]??[energy.bass,energy.mids,energy.highs][Math.min(2,Math.floor(i/6))]):0;spectrum[i]+=(target-spectrum[i])*(1-Math.exp(-dt/(target>spectrum[i]?(i<6?.055:.025):(i<6?.18:.075))));}
    const orbiting=time>=timing.orbit&&time<timing.end;
    for(const sheet of cache.values())sheet.group.visible=false;
-   detail.visible=orbiting;board.visible=!orbiting;
+   detail.visible=orbiting;board.visible=!orbiting;dinner.group.visible=false;
    const roll=Math.sin(time*.42)*.04+Math.sin(time*.17)*.019;
    camera.up.set(Math.sin(roll),Math.cos(roll),0);
-   if(orbiting){
-     prepareNozzle();if(!nozzleReady){hide();return false;}detail.children[0].material.uniforms.levels.value.set(energy.active?energy.bass:.6,energy.active?energy.mids:.6,energy.active?energy.highs:.6);
+   const dinnerState=passage?.id==='o10'&&paperFrame?dinner.render(camera,passage,time-passage.start,paperFrame):null;
+   if(dinnerState){
+     board.visible=false;current='o10';const state=dinnerState;
+     const p=cache.get('o10')?.data.paper||[41,31,21];paperMaterial.uniforms.paper.value.set(p[0]/255,p[1]/255,p[2]/255);renderer.setClearColor(new THREE.Color().setRGB(p[0]/255,p[1]/255,p[2]/255,THREE.SRGBColorSpace),1);
+     element.style.opacity=String(state.opacity);element.style.filter='none';element.dataset.drawing='o10';element.dataset.spatial='truth-dinner';element.dataset.orbitAzimuth=state.az.toFixed(5);element.dataset.beat=String(state.beat);element.dataset.phase=state.beat>=12?'hold':state.beat>=8?'pull':'orbit';element.dataset.dissolve=state.fade.toFixed(5);element.dataset.landing=state.landing.toFixed(5);
+   }else if(orbiting){
+     element.dataset.spatial='nozzle';prepareNozzle();if(!nozzleReady){hide();return false;}detail.children[0].material.uniforms.levels.value.set(energy.active?energy.bass:.6,energy.active?energy.mids:.6,energy.active?energy.highs:.6);
      renderer.setClearColor(0x100c10,1);element.style.filter='none';
-     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,b=beatAt(orbitPlan,elapsed),u=clamp((b-4)/8),angle=-.8+smoother(u)*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smoother(b/4))+.3*smoother((b-12)/4));
-     camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(smoother(u)*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
+     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,b=beatAt(orbitPlan,elapsed),motion=phraseMotion(orbitPlan,elapsed),u=clamp((b-4)/8),angle=-.8+smoother(u)*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smoother(b/4))+.3*smoother((b-12)/4))/motion.zoom;
+     const bank=-motion.roll*Math.PI/180;camera.up.set(Math.sin(bank),Math.cos(bank),0);camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(smoother(u)*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
      element.style.opacity=String(smoother(b/2)*(1-smoother((b-12)/4)));element.dataset.drawing='nozzle-orbit';
    }else{
      if(!passage){hide();return false;}
-     current=passage.id;prepare(current);const sheet=cache.get(current);if(!sheet){hide();return false;}
+     element.dataset.spatial='drawing';current=passage.id;prepare(current);const sheet=cache.get(current);if(!sheet){hide();return false;}
      sheet.group.visible=true;
      const duration=passage.end-passage.start,elapsed=time-passage.start,u=clamp(elapsed/duration);
      const drawDuration=passage.leadEnd,musicalElapsed=inkTime(passage,elapsed),progress=clamp(musicalElapsed/drawDuration);

@@ -25,6 +25,8 @@ try:
   def seek(t):
    page.locator('.tour-seek').fill(f'{t:.2f}'.rstrip('0').rstrip('.'));page.locator('.tour-seek').dispatch_event('input')
   for shot in score:
+   if shot.get('spatial'):
+    seek(shot['start']+shot['beats'][6]);page.wait_for_function('document.querySelector(".fusion-flight")?.dataset.spatial==="truth-dinner"');continue
    pull=shot['holdStart']-shot['followEnd']
    follow=(shot['end']-shot['start'])*.6 if shot.get('mystery') else shot['establish']+(shot['followEnd']-shot['establish'])*.7
    seek(round(shot['start']+follow,2))
