@@ -316,3 +316,28 @@ CUA Chrome review includes desktop and 390 px mobile, the whole grid, detail
 arrivals and the dinner crop. Actual MP3 playback advanced through several bridges
 without changing its source or pausing; no shader errors were reported. The draft
 remains unlisted, with draft:true and noindex/nofollow.
+
+## 2026-09-26 — one continuous, close atlas flight
+
+The author's follow-up supersedes the three-stage flight and periodic collection
+wide shots. Pan, zoom and bank now share a single smooth clock across the entire
+four-beat bridge. Translation never stops at the former pull/pan/push joins.
+A continuous time warp places the widest view on the middle beat without inserting
+velocity changes at individual beat boundaries. A small lateral arc and bank
+remain part of this same movement; all 31 cuts use the same continuity rules.
+
+The view is local: at most about 1.5 tile widths/heights, never the whole atlas.
+A centered scissor aperture prevents a portrait viewport from exposing extra rows
+in its letterbox space. It changes continuously with zoom; close arrivals retain
+the existing native detail framing. The 42-scene layout and animated source
+contours remain, and no geometry or asset needs regenerating.
+
+Laser nibs are now 2.20–2.65 framebuffer pixels with a brighter core, up from
+1.12–1.30. The small bass pulse remains; there are no particles or broad halos.
+Pen velocity, music playback, four-bar phrases and the intro are unchanged.
+
+Validation: the atlas test now checks nonzero internal camera velocity and smooth
+velocity through all intermediate beats, plus the 1.5-tile aperture bounds at
+four aspect ratios. Existing musical/contour tests, Astro build and diff checks
+pass. CUA review covers the close atlas view, stronger nibs and 390 px portrait
+framing; no shader errors were reported.

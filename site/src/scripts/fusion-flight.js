@@ -41,10 +41,10 @@ const pointVertex=`${landingUniforms}
   vec4 tip=pen(lane,elapsed);vec3 at=tip.xyz;
   float pulse=clamp(max(hit(beatTimes.x,beatStrengths.x),hit(beatTimes.y,beatStrengths.y)),0.,1.);
   float power=lane>=20.?voiceEnergy(lane-20.):(bands[0]+bands[1]+bands[2])/3.;
-  tint=lane>=20.?voiceColor(lane-20.):vec3(.76,.86,.91);
-  alpha=tip.w*(.72+.28*pulse+.15*power*audible);
-  // Lines are one framebuffer pixel wide. The nib stays that size: no halo or spray.
-  gl_PointSize=1.12+.18*pulse;
+  tint=lane>=20.?voiceColor(lane-20.):vec3(.84,.93,1.);
+  alpha=tip.w*(.88+.12*pulse+.12*power*audible);
+  // A small, legible core with a restrained bass pulse; no halo or spray.
+  gl_PointSize=2.2+.45*pulse;
   gl_Position=projectionMatrix*modelViewMatrix*vec4(at,1.);
   vec2 paper=paperOrigin+at.x*paperX+at.y*paperY;gl_Position.xy=mix(gl_Position.xy,paper*gl_Position.w,landing);
  }`;

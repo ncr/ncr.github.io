@@ -51,8 +51,13 @@ export function createSceneAtlas(host,onReady){
   uniforms.close.value=Math.max(0,1-pose.phase,pose.phase-3);
   for(const [id,key,index]of [[bridge.fromId,'A',pose.from],[bridge.toId,'B',pose.to]]){uniforms['high'+key].value=textures.get(id)||uniforms.atlas.value;uniforms['index'+key].value=textures.has(id)?index:-1;}
   element.style.display='block';element.style.opacity=String(pose.opacity);host.dataset.atlasActive='1';host.dataset.atlasOpaque=String(pose.opacity>.998?1:0);
-  element.dataset.from=bridge.fromId;element.dataset.to=bridge.toId;element.dataset.direction=pose.direction;element.dataset.phase=pose.phase.toFixed(4);element.dataset.viewHeight=pose.height.toFixed(4);element.dataset.scenes='42';element.dataset.clock=time.toFixed(3);
-  if(pose.opacity>.001)renderer.render(scene,camera);
+  element.dataset.from=bridge.fromId;element.dataset.to=bridge.toId;element.dataset.direction=pose.direction;element.dataset.phase=pose.phase.toFixed(4);element.dataset.viewHeight=pose.height.toFixed(4);element.dataset.scenes='42';element.dataset.clock=time.toFixed(3);element.dataset.apertureWidth=pose.apertureWidth.toFixed(4);element.dataset.apertureHeight=pose.apertureHeight.toFixed(4);
+  if(pose.opacity>.001){
+   const frameW=Math.min(w,pose.apertureWidth*h/pose.height),frameH=Math.min(h,pose.apertureHeight*h/pose.height);
+   renderer.setScissorTest(false);renderer.clear();renderer.autoClear=false;
+   renderer.setScissor((w-frameW)/2,(h-frameH)/2,frameW,frameH);renderer.setScissorTest(true);
+   renderer.render(scene,camera);renderer.setScissorTest(false);renderer.autoClear=true;
+  }
   return pose.opacity>.998;
  }
  function hide(){element.style.display='none';host.dataset.atlasActive='0';host.dataset.atlasOpaque='0';}
