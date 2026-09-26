@@ -42,6 +42,10 @@ try:
    assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.style.opacity)')==0
    assert float(page.locator('.viewer-canvas').get_attribute('data-paper-pull'))==1
    assert shot['end']-shot['start']-shot['holdStart']>=1.59
+   endScale=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'))
+   seek(round(shot['start']+shot['holdStart']+.1,2))
+   startScale=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'))
+   assert endScale<startScale*.995,'Whole-sheet overview must continue slowly outward'
   # Cold/evicted geometry must appear even while the timeline is paused.
   seek(3);page.wait_for_function('document.querySelector(".fusion-flight").dataset.drawing==="o03"')
   first=page.locator('.fusion-flight').screenshot();seek(4);seek(3)

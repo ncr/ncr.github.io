@@ -54,13 +54,13 @@ try:
    assert page.evaluate('!originalAudio.paused&&window.pauses===0&&document.querySelector(".tour-music")===originalAudio')
   page.locator('.viewer-close').click();page.wait_for_timeout(450);page.locator('.music-hide').click();page.locator('.soundtrack-reveal').click();page.locator('.gallery-launch').click();page.wait_for_timeout(300)
   assert page.evaluate('!originalAudio.paused&&window.pauses===0&&document.querySelector(".tour-music")===originalAudio')
-  # Controlled spectral input: same camera/time must produce a visibly different particle fan.
+  # Controlled spectral input: same camera/time must produce different laser-head lighting.
   seek(2.4)
   def energy(value):
    page.evaluate('(v)=>window.dispatchEvent(new CustomEvent("destiny-audio",{detail:{active:true,bass:0,mids:0,highs:0,spectrum:Array(16).fill(v)}}))',value)
    for _ in range(15):page.wait_for_timeout(40);seek(2.4)
    return page.locator('.fusion-flight').screenshot()
-  dark=energy(0);bright=energy(.85);assert dark!=bright,'Spectrum must change rendered particles at fixed camera/time'
+  dark=energy(0);bright=energy(.85);assert dark!=bright,'Spectrum must change laser lighting at fixed camera/time'
   (out/'film-equalizer-particles.png').write_bytes(bright)
   page.set_viewport_size({'width':390,'height':844});seek(8.5);page.wait_for_timeout(150);page.screenshot(path=str(out/'film-mobile-blend.png'));assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
   # Free gallery then return must restore the tour frame's explicit size.

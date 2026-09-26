@@ -224,9 +224,10 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const travel=shot.motion==='float'?2.8:shot.motion==='pan'?1.8:1.15;
       let u=reduced.matches?1:Math.min(1,elapsed/travel);u=u*u*(3-2*u);
       let x=previous.x+(shot.x-previous.x)*u,y=previous.y+(shot.y-previous.y)*u;
-      const drift=reduced.matches?1:1-Math.min(elapsed,4)*.007;
+      const shotDrift=(s,t)=>s.w>=.9&&s.h>=.9?1+.05*(1-Math.exp(-t/8)):1-Math.min(t,4)*.007;
+      const drift=reduced.matches?1:shotDrift(shot,elapsed);
       const priorDuration=n>0?shot.at-tour[n-1].at:0;
-      const startDrift=previous===shot?1:1-Math.min(priorDuration,4)*.007;
+      const startDrift=previous===shot||reduced.matches?1:shotDrift(previous,priorDuration);
       let w=Math.exp(Math.log(previous.w*startDrift)*(1-u)+Math.log(shot.w)*u)*drift;
       let h=Math.exp(Math.log(previous.h*startDrift)*(1-u)+Math.log(shot.h)*u)*drift;
       let paperPull=null;
@@ -236,6 +237,8 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
         const pull=(1-Math.cos(Math.PI*u))/2,f=passage.framing;
         x=f.x+(.5-f.x)*pull;y=f.y+(.5-f.y)*pull;
         w=Math.exp(Math.log(f.w)*(1-pull));h=Math.exp(Math.log(f.h)*(1-pull));
+        const overview=Math.max(0,Math.min(1,(elapsed-passage.holdStart)/(passage.end-passage.start-passage.holdStart)));
+        const breathe=1+.032*overview*overview*(3-2*overview);w*=breathe;h*=breathe;
         paperPull=u;
       }
       const cw=surface.width||canvas.clientWidth,ch=surface.height||canvas.clientHeight;
