@@ -14,7 +14,7 @@ else:
  url=f'http://127.0.0.1:{server.server_port}/draft/dfe721c83120beddf965ffaf03237223/'
 try:
  with sync_playwright() as p:
-  browser=p.chromium.launch(args=['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']);page=browser.new_page(viewport={'width':1440,'height':1000});errors=[]
+  browser=p.chromium.launch(args=['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']);page=browser.new_page(viewport={'width':1440,'height':1400});errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)));page.on('console',lambda e:errors.append(e.text) if e.type=='error' and 'WebGL' in e.text else None)
   page.goto(url,wait_until='domcontentloaded');page.locator('.gallery-launch').click()
   def seek():page.locator('.tour-seek').fill('2.4');page.locator('.tour-seek').dispatch_event('input')
@@ -23,8 +23,22 @@ try:
    page.evaluate('(bins)=>window.dispatchEvent(new CustomEvent("destiny-audio",{detail:{active:true,bass:0,mids:0,highs:0,spectrum:bins}}))',bins)
    for _ in range(25):page.wait_for_timeout(40);seek()
    return np.asarray(Image.open(io.BytesIO(page.screenshot())).convert('RGB')).astype(float)
-  # Measured screen-space centers of the six authentic contour tips at the fixed 2.4s review frame.
-  centers=[(758,455),(740,408),(717,359),(699,307),(681,254),(661,196)]
+  # Locate the six real pen tips in the prepared camera view; measure their rendered response.
+  asset=json.loads((root/'site/src/data/film-assets.json').read_text())['o03'];asset=root/'site/public'/asset.lstrip('/')
+  meta=json.loads(asset.with_suffix('.json').read_text());plan=meta['plans']['0']
+  data=np.fromfile(asset.with_suffix('.bin'),dtype='<f4')
+  c=plan['camera'];camera=data[c['offset']:c['offset']+c['count']].reshape(-1,7)
+  f=2.4*plan['cameraFPS'];i=int(f);pose=camera[i]*(1-(f-i))+camera[i+1]*(f-i)
+  box=page.locator('.fusion-flight').bounding_box();w,h=box['width'],box['height'];aspect=w/h;tan=np.tan(np.deg2rad(24))
+  fit=max(meta['size'][1]/2,meta['size'][0]/(2*aspect))/tan*1.22
+  origin=pose[:3].copy();origin[2]*=fit;z=origin-pose[3:6];z/=np.linalg.norm(z);right=np.cross([np.sin(pose[6]),np.cos(pose[6]),0],z);right/=np.linalg.norm(right);up=np.cross(z,right)
+  d=plan['pens'];pens=data[d['offset']:d['offset']+d['count']].reshape(plan['penRows'],plan['penWidth'],4);centers=[]
+  f=2.4*plan['penFPS'];i=int(f)
+  for voice in range(6):
+   at=pens[20+voice,i,:3]*(1-(f-i))+pens[20+voice,i+1,:3]*(f-i);v=at-origin;depth=-np.dot(v,z)
+   x=round(box['x']+w/2*(1+np.dot(v,right)/(depth*tan*aspect)));y=round(box['y']+h/2*(1-np.dot(v,up)/(depth*tan)))
+   assert box['x']+8<x<box['x']+w-8 and box['y']+8<y<box['y']+h-8,(voice,x,y,box)
+   centers.append((x,y))
   results=[]
   for voice,group in enumerate([range(0,3),range(3,6),range(6,9),range(9,12),range(12,14),range(14,16)]):
    baseline=spectrum([0]*16);bins=[0]*16

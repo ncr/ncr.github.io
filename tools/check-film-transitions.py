@@ -32,10 +32,16 @@ try:
    current=next((p for p in score if p['start']<=s['at']<p['end']),None)
    if shots[n-1]['id']==s['id'] and not(s['motion']=='cut' and not(current and current==prior)):continue
    span=min(.85,((shots[n+1]['at'] if n+1<len(shots) else 299.21)-s['at'])*.24)
-   seek(s['at']+span*.15);bridge=page.locator('.scene-bridge');assert bridge.is_visible(),s
-   first=float(bridge.evaluate('(e)=>e.style.opacity'))
-   page.wait_for_function('document.querySelector(".scene-bridge img").complete&&document.querySelector(".scene-bridge img").naturalWidth>0')
-   seek(s['at']+span*.7);assert 0<float(bridge.evaluate('(e)=>e.style.opacity'))<first<1
+   seek(s['at']+span*.15);bridge=page.locator('.scene-bridge')
+   if current and current.get('intro'):
+    page.wait_for_function('(id)=>document.querySelector(".fusion-flight")?.dataset.drawing===id',arg=s['id']);seek(s['at']+span*.15)
+    page.wait_for_function('document.querySelector(".viewer-canvas").dataset.liveBlend==="1"')
+    first=float(page.locator('.viewer-canvas').get_attribute('data-intro-blend'))
+    seek(s['at']+span*.7);assert first<float(page.locator('.viewer-canvas').get_attribute('data-intro-blend'))<1
+   else:
+    assert bridge.is_visible(),s;first=float(bridge.evaluate('(e)=>e.style.opacity'))
+    page.wait_for_function('document.querySelector(".scene-bridge img").complete&&document.querySelector(".scene-bridge img").naturalWidth>0')
+    seek(s['at']+span*.7);assert 0<float(bridge.evaluate('(e)=>e.style.opacity'))<first<1
    seek(s['at']+span+.05);assert not bridge.is_visible();cuts+=1
   for t in [8.3,8.6,8.95,116.7,126.9]:
    seek(t);page.wait_for_timeout(150);page.screenshot(path=str(out/f'film-blend-{t}.png'))

@@ -1,8 +1,8 @@
 // Offline preparation. No geometry sorting, stroke search or spring integration in playback.
-import fs from 'node:fs';import path from 'node:path';import * as THREE from '../site/node_modules/three/build/three.module.js';
+import fs from 'node:fs';import {createHash} from 'node:crypto';import path from 'node:path';import * as THREE from '../site/node_modules/three/build/three.module.js';
 import {createOperator} from '../site/src/scripts/camera-operator.js';
 const root=path.resolve(import.meta.dirname,'..'),folder=path.join(root,'site/public/gallery/destiny/film-data');fs.mkdirSync(folder,{recursive:true});
-const read=p=>JSON.parse(fs.readFileSync(path.join(root,p))),score=read('site/src/data/drawing-score.json');
+const read=p=>JSON.parse(fs.readFileSync(path.join(root,p))),score=read('site/src/data/drawing-score.json'),beats=read('site/src/data/bass-beats.json').beats,introFrames={},filmAssets={};
 const clamp=t=>Math.max(0,Math.min(1,t)),hash=name=>[...name].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,0),length=p=>p.slice(1).reduce((s,v,i)=>s+Math.hypot(v[0]-p[i][0],v[1]-p[i][1]),0);
 function sample(s,u){const d=clamp(u)*s.total,ds=s.distances;let lo=1,hi=ds.length-1;while(lo<hi){const m=(lo+hi)>>1;if(ds[m]<d)lo=m+1;else hi=m;}const a=s.path.p[lo-1],b=s.path.p[lo],v=(d-ds[lo-1])/Math.max(.001,ds[lo]-ds[lo-1]);return {x:a[0]+(b[0]-a[0])*v,y:a[1]+(b[1]-a[1])*v,z:s.z+.4};}
 let bytes=0;
@@ -26,7 +26,8 @@ for(const id of new Set(score.map(s=>s.id))){
  const append=(v,itemSize)=>{const a=new Float32Array(v),d={offset,count:a.length,itemSize};chunks.push(Buffer.from(a.buffer));offset+=a.length;return d;};
  for(const [k,a]of Object.entries(attrs))meta.attributes[k]=append(a,k==='position'||k==='inkColor'?3:1);
  for(const plan of score.filter(s=>s.id===id)){
-  const duration=plan.end-plan.start,leadIndex=plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1);
+  const duration=plan.end-plan.start,leadIndex=plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1,beats);
+  if(plan.intro){const q=sample(hero,.18),reg=data.registration;introFrames[plan.start]={x:(reg.center[0]+q.x*reg.unit)/2560,y:(reg.center[1]-q.y*reg.unit)/1080,w:plan.framing.w*.23,h:plan.framing.h*.23};}
   const camera=[],cameraFPS=90,penFPS=60,rows=Math.ceil(duration*penFPS)+2;
   for(let i=0;i<=Math.ceil(duration*cameraFPS)+1;i++)camera.push(...operator(i/cameraFPS));
   const penRows=lanes.length,choirWindows=choir.map((_,i)=>[plan.leadStart+(i-2)*.065,plan.leadEnd]);
@@ -37,8 +38,10 @@ for(const id of new Set(score.map(s=>s.id))){
   }
   meta.plans[plan.start]={camera:append(camera,7),pens:append(texture,4),cameraFPS,penFPS,penWidth:rows,leadIndex,...(choir.length?{penRows,choirWindows,choirNames:choir.map(p=>p.name),mutedHero:choir.includes(hero.path)?14+leadIndex:-1}: {})};
  }
- const buffer=Buffer.concat(chunks);bytes+=buffer.length;fs.writeFileSync(path.join(folder,id+'.bin'),buffer);fs.writeFileSync(path.join(folder,id+'.json'),JSON.stringify(meta));
+ const buffer=Buffer.concat(chunks),json=JSON.stringify(meta),key=id+'-'+createHash('sha256').update(json).update(buffer).digest('hex').slice(0,16);bytes+=buffer.length;fs.writeFileSync(path.join(folder,key+'.bin'),buffer);fs.writeFileSync(path.join(folder,key+'.json'),json);filmAssets[id]='/gallery/destiny/film-data/'+key;
 }
+fs.writeFileSync(path.join(root,'site/src/data/film-assets.json'),JSON.stringify(filmAssets));
+fs.writeFileSync(path.join(root,'site/src/data/intro-framing.json'),JSON.stringify(introFrames));
 // Merge the nozzle's 56 source parts to one precomputed edge buffer/draw call.
 const pos=[],cols=[],bands=[];
 for(const [i,part]of read('site/src/data/fusion-nozzle.json').entries()){
@@ -46,4 +49,4 @@ for(const [i,part]of read('site/src/data/fusion-nozzle.json').entries()){
  pos.push(...p);for(let n=0;n<p.length/3;n++){cols.push(c.r,c.g,c.b);bands.push(i%3);}g.dispose();e.dispose();
 }
 const arrays=[pos,cols,bands].map(a=>new Float32Array(a));fs.writeFileSync(path.join(folder,'nozzle.bin'),Buffer.concat(arrays.map(a=>Buffer.from(a.buffer))));fs.writeFileSync(path.join(folder,'nozzle.json'),JSON.stringify({vertices:pos.length/3}));
-console.log('Prepared 42 geometries, 43 camera/pen tables and merged nozzle:',(bytes/1048576).toFixed(2),'MiB');
+console.log('Prepared',new Set(score.map(s=>s.id)).size,'geometries,',score.length,'camera/pen tables and merged nozzle:',(bytes/1048576).toFixed(2),'MiB');

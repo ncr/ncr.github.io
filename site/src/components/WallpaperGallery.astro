@@ -3,6 +3,7 @@ import gallery from '../data/destiny-gallery.json'
 const wallpapers=gallery.map(w=>({...w,film:w.src.replace('/destiny/','/destiny/film/')}))
 import tour from '../data/destiny-tour.json'
 import drawingScore from '../data/drawing-score.json'
+import introFrames from '../data/intro-framing.json'
 const tourDuration = 299.21
 const chapters = tour.filter(s => s.chapter && !["Prolog", "Finał"].includes(s.chapter))
 const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
@@ -66,7 +67,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
   import "../scripts/ambient-controller.js";
   import "../scripts/audio-reactivity.js";
 </script>
-<script define:vars={{ wallpapers, tour, tourDuration, drawingScore }}>
+<script define:vars={{introFrames, wallpapers, tour, tourDuration, drawingScore }}>
   (() => {
     const dialog = document.querySelector('#wallpaper-viewer');
     const q = s => dialog.querySelector(s) || document.querySelector(s);
@@ -104,7 +105,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       window.dispatchEvent(new CustomEvent('destiny-wallpaper',{detail:w}));
       setZoom(false); q('.viewer-error').hidden = true;
       q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
-      q('.viewer-title').textContent=w.name;
+      q('.viewer-title').textContent=fromTour&&time<22.203?'Światło i linie':w.name;
       q('.viewer-download').href=w.src;
       preview.style.visibility='visible'; preview.src=w.thumb; photo.style.visibility='hidden'; photo.alt=w.name;
       const source=fromTour?w.film:w.src;
@@ -241,6 +242,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
         const breathe=1+.032*overview*overview*(3-2*overview);w*=breathe;h*=breathe;
         paperPull=u;
       }
+      if(passage?.intro&&at<20.443){const crop=introFrames[passage.start];x=crop.x;y=crop.y;w=crop.w;h=crop.h;}
       const cw=surface.width||canvas.clientWidth,ch=surface.height||canvas.clientHeight;
       const bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120;
       const scale=Math.min(cw/(bw*w),ch/(bh*h));
@@ -249,7 +251,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     }
     function sceneBlend(view){
       const {n,elapsed,passage}=view,previous=n?tour[n-1]:null;
-      if(!previous||reduced.matches){bridge.hidden=true;return;}
+      if(!previous||reduced.matches||canvas.dataset.liveBlend==='1'){bridge.hidden=true;return;}
       const priorPassage=drawingScore.find(s=>tour[n].at-.001>=s.start&&tour[n].at-.001<s.end);
       const cut=previous.id!==view.shot.id||(view.shot.motion==='cut'&&!(passage&&passage===priorPassage));
       const span=Math.min(.85,((tour[n+1]?.at||duration)-tour[n].at)*.24);
@@ -269,6 +271,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const pull=passage?(time-passage.start-passage.followEnd)/(passage.holdStart-passage.followEnd):1;
       flightEvent(dialog.open,{...view,drawingCovered:effects&&Boolean(passage)&&pull<.46});
       sceneBlend(view);
+      const title=q('.viewer-title'),label=time<22.203?'Światło i linie':wallpapers[index].name;if(title.textContent!==label)title.textContent=label;
       canvas.dataset.paperScale=view.scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
       if(currentShot!==n){
         currentShot=n;

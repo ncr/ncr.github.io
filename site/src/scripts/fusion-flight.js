@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import timing from '../data/flight-timing.json';
+import drawingScore from '../data/drawing-score.json';
+import filmAssets from '../data/film-assets.json';
 import {bassAttacksAt} from './bass-particles.js';
 
 const clamp=t=>THREE.MathUtils.clamp(t,0,1);
@@ -71,6 +73,13 @@ export function createFlight(host,onReady=()=>{}){
  let current,lastW=0,lastH=0,failed=false,energy={active:false,bass:0,mids:0,highs:0};
  const paperMaterial=new THREE.ShaderMaterial({uniforms:{paper:{value:new THREE.Vector3(.1,.05,.05)}},vertexShader:`varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform vec3 paper;varying vec2 v;void main(){float grain=fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);float light=exp(-length((v-.5)*2.)*2.);gl_FragColor=vec4(paper*(.66+light*.5)+(grain-.5)*.008,1.);}`});
  const board=new THREE.Mesh(new THREE.PlaneGeometry(3500,2500),paperMaterial);board.position.z=-25;scene.add(board);
+ // Only the three introductory close-up cuts use this GPU-only dissolve.
+ // Render the outgoing pose once into a texture: no screenshot/readback or second live scene.
+ const cutScene=new THREE.Scene(),cutCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+ const cutMaterial=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,uniforms:{before:{value:null},after:{value:null},blend:{value:1}},vertexShader:`varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}`,fragmentShader:`uniform sampler2D before;uniform sampler2D after;uniform float blend;varying vec2 uv0;void main(){gl_FragColor=mix(texture2D(before,uv0),texture2D(after,uv0),blend);}`});
+ cutScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cutMaterial));renderer.compile(cutScene,cutCamera);
+ let cutBefore,cutAfter,cutKey='',cutSize='';const fallbackBridge=host.querySelector('.scene-bridge');
+ function cutTargets(w,h){const size=w+':'+h;if(cutSize===size)return;cutSize=size;cutKey='';cutBefore?.dispose();cutAfter?.dispose();const ratio=renderer.getPixelRatio();cutBefore=new THREE.WebGLRenderTarget(Math.round(w*ratio),Math.round(h*ratio),{samples:2});cutAfter=new THREE.WebGLRenderTarget(Math.round(w*ratio),Math.round(h*ratio),{samples:2});}
  const detail=new THREE.Group();scene.add(detail);detail.visible=false;
  const spectrum=new Float32Array(16),beatFrame=new Float32Array(4),pose=new Float32Array(7);let previousFrame=0;
  const gp=new THREE.BufferGeometry(),lanes=[],sparks=[];
@@ -103,8 +112,8 @@ export function createFlight(host,onReady=()=>{}){
  }
  function prepare(id){
    if(cache.has(id)||pending.has(id)||unavailable.has(id))return;
-   const base=`/gallery/destiny/film-data/${id}`;
-   const promise=Promise.all([fetch(base+'.json?v=2').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin?v=2').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();})]).then(([data,buffer])=>new Promise(resolve=>idle(()=>{
+   const base=filmAssets[id];
+   const promise=Promise.all([fetch(base+'.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json();}),fetch(base+'.bin').then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();})]).then(([data,buffer])=>new Promise(resolve=>idle(()=>{
      if(failed){resolve();return;}const sheet=build(data,buffer);cache.set(id,sheet);warm(sheet);
      for(const [key,value]of cache){if(cache.size<=6)break;if(key!==current){value.dispose();cache.delete(key);}}
      onReady();resolve();
@@ -116,10 +125,22 @@ export function createFlight(host,onReady=()=>{}){
   const mat=new THREE.ShaderMaterial({transparent:true,uniforms:{levels:{value:new THREE.Vector3(.6,.6,.6)}},vertexShader:`attribute vec3 inkColor;attribute float band;uniform vec3 levels;varying vec3 c;varying float a;void main(){c=inkColor;a=.35+.55*(band<.5?levels.x:band<1.5?levels.y:levels.z);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec3 c;varying float a;void main(){gl_FragColor=vec4(c,a);}`});
   detail.add(new THREE.LineSegments(g,mat));idle(()=>{if(failed)return;const was=detail.visible;detail.visible=true;const target=new THREE.WebGLRenderTarget(1,1);renderer.setRenderTarget(target);renderer.render(scene,camera);renderer.setRenderTarget(null);target.dispose();detail.visible=was;nozzleReady=true;onReady();});
  }).catch(()=>{});}
- function render(time,passage,paperFrame){
+ function render(time,passage,paperFrame,internal=false){
    if(failed)return false;
    const w=paperFrame?.viewportWidth||lastW||host.clientWidth,h=paperFrame?.viewportHeight||lastH||host.clientHeight;if(!w||!h)return false;
    if(w!==lastW||h!==lastH){renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();lastW=w;lastH=h;}
+   let introBlend=false,blend=1;
+   if(!internal){
+    host.dataset.liveBlend='0';
+    if(passage?.intro&&passage.start>0&&time-passage.start<.85){
+     const prior=drawingScore.find(p=>p.end===passage.start);
+     if(prior){prepare(prior.id);if(cache.has(prior.id)&&cache.has(passage.id)){
+      cutTargets(w,h);const key=passage.start+':'+cutSize;
+      if(cutKey!==key){renderer.setRenderTarget(cutBefore);render(prior.end-.001,prior,paperFrame,true);renderer.setRenderTarget(null);cutKey=key;}
+      introBlend=true;blend=smooth((time-passage.start)/.85);host.dataset.liveBlend='1';host.dataset.introBlend=blend.toFixed(4);if(fallbackBridge)fallbackBridge.hidden=true;
+     }}
+    }else if(time>=23.85&&cutBefore){cutBefore.dispose();cutAfter.dispose();cutBefore=cutAfter=null;cutSize='';cutKey='';}
+   }
    const now=performance.now(),dt=Math.min(.05,(now-previousFrame)/1000||.016);previousFrame=now;
    for(let i=0;i<16;i++){const target=energy.active?(energy.spectrum?.[i]??[energy.bass,energy.mids,energy.highs][Math.min(2,Math.floor(i/6))]):0;spectrum[i]+=(target-spectrum[i])*(1-Math.exp(-dt/(target>spectrum[i]?(i<6?.055:.025):(i<6?.18:.075))));}
    const orbiting=time>=timing.orbit&&time<timing.end;
@@ -145,7 +166,7 @@ export function createFlight(host,onReady=()=>{}){
      sheet.material.uniforms.audible.value=energy.active?1:0;
      if(plan.choirWindows)for(let v=0;v<6;v++){const [start,end]=plan.choirWindows[v];sheet.material.uniforms.choirProgress.value[v]=clamp((elapsed-start)/(end-start));}
      sheet.pm.uniforms.mutedHero.value=plan.mutedHero??-1;
-     bassAttacksAt(time,energy.active,beatFrame);
+     bassAttacksAt(time,energy.active&&time>=20.443,beatFrame);
      sheet.pm.uniforms.beatTimes.value.set(beatFrame[0]-passage.start,beatFrame[2]-passage.start);
      sheet.pm.uniforms.beatStrengths.value.set(beatFrame[1],beatFrame[3]);
      sheet.pm.uniforms.penTable.value=plan.texture;sheet.pm.uniforms.tableSize.value.set(plan.penWidth,plan.penRows||20);sheet.pm.uniforms.elapsed.value=elapsed;sheet.pm.uniforms.audible.value=energy.active?1:0;
@@ -169,7 +190,7 @@ export function createFlight(host,onReady=()=>{}){
        fade=smooth((pull-.45)/.47);
      }else fade=smooth((pull-.45)/.47);
      sheet.placement.landing.value=landed;
-     element.style.opacity=String(smooth(elapsed/.32)*(1-fade));
+     element.style.opacity=String((passage.intro?1:smooth(elapsed/.32))*(1-fade));
      // A subpixel focus dissolve softens tiny differences in ink/antialiasing only.
      element.style.filter=fade>0?`blur(${(.65*Math.sin(fade*Math.PI)).toFixed(3)}px)`:'none';
      element.dataset.landing=landed.toFixed(4);element.dataset.dissolve=fade.toFixed(4);
@@ -180,9 +201,14 @@ export function createFlight(host,onReady=()=>{}){
      element.dataset.spectrumPeak=Math.max(...spectrum).toFixed(4);
      element.dataset.drawing=current;element.dataset.progress=progress.toFixed(3);
    }
-   element.style.display='block';if(Number(element.style.opacity)>.001)renderer.render(scene,camera);return true;
+   element.style.display='block';
+   if(Number(element.style.opacity)>.001){
+    if(introBlend){renderer.setRenderTarget(cutAfter);renderer.render(scene,camera);renderer.setRenderTarget(null);cutMaterial.uniforms.before.value=cutBefore.texture;cutMaterial.uniforms.after.value=cutAfter.texture;cutMaterial.uniforms.blend.value=blend;renderer.render(cutScene,cutCamera);}
+    else renderer.render(scene,camera);
+   }
+   return true;
  }
- function hide(){element.style.display='none';}
+ function hide(){element.style.display='none';host.dataset.liveBlend='0';}
  element.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;hide();});
  prepare('o03');
  return {render,prepare,prepareNozzle,setAudioLevels(value){energy=value;},hide};

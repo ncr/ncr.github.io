@@ -31,6 +31,10 @@ try:
    page.wait_for_function('(id)=>{const c=document.querySelector(".fusion-flight");return c?.dataset.drawing===id&&getComputedStyle(c).display!=="none"}',arg=shot['id'])
    close=page.locator('.fusion-flight').evaluate('(e)=>({range:Number(e.dataset.range),lead:Number(e.dataset.leadProgress),error:Number(e.dataset.followError)})')
    assert close['range']<.56 and 0<close['lead']<1 and close['error']<.65,(shot,close)
+   if shot.get('mystery'):
+    for at in [shot['start']+.03,shot['end']-.03]:
+     seek(round(at,2));assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.dataset.range)<.23&&Number(e.dataset.dissolve)===0&&Number(e.style.opacity)===1')
+    continue
    seek(round(shot['start']+shot['followEnd']+pull*.685,2))
    state=page.locator('.fusion-flight').evaluate('(e)=>({landing:Number(e.dataset.landing),dissolve:Number(e.dataset.dissolve),opacity:Number(e.style.opacity)})')
    assert state['landing']==1 and .45<state['dissolve']<.55,(shot,state)
@@ -58,12 +62,14 @@ try:
   page.emulate_media(reduced_motion='reduce');page.wait_for_function('getComputedStyle(document.querySelector(".fusion-flight")).display==="none"')
   assert not errors,errors
   # A missing vector asset leaves the real wallpaper visible, without freezing controls.
-  fallback=browser.new_page();fallback.route('**/film-data/o01.*',lambda route:route.abort())
+  fallback=browser.new_page();fallback.route('**/film-data/o01-*',lambda route:route.abort())
   fallback.goto(url,wait_until='domcontentloaded');fallback.locator('.gallery-launch').click()
   fallback.locator('.tour-seek').fill('12');fallback.locator('.tour-seek').dispatch_event('input');fallback.wait_for_timeout(500)
   assert not fallback.locator('.fusion-flight').is_visible()
+  assert float(fallback.locator('.viewer-canvas').get_attribute('data-paper-scale'))>3
+  assert fallback.locator('.viewer-title').inner_text()=='Światło i linie'
   fallback.wait_for_function('Array.from(document.querySelectorAll(".viewer-image, .viewer-preview")).some(e=>e.complete&&e.naturalWidth>0&&getComputedStyle(e).visibility==="visible")')
   browser.close()
- print('PASS: all 43 close follows, moving registered dissolves and overview holds, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
+ print('PASS: all scored close follows, moving registered dissolves and overview holds, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
 finally:
  if server:server.shutdown()

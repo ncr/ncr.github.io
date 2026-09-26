@@ -2,55 +2,103 @@
   {
     "id": "o03",
     "start": 0,
-    "end": 8.18,
-    "view": 0,
+    "end": 5.85,
+    "view": 3,
     "seed": 41,
-    "followEnd": 3.9034,
-    "holdStart": 6.112,
-    "establish": 0.8,
-    "leadStart": 0.48,
-    "leadEnd": 4.7868,
+    "followEnd": 5.949999999999999,
+    "holdStart": 7.85,
+    "establish": 0.12,
+    "leadStart": 0,
+    "leadEnd": 5.85,
     "framing": {
       "x": 0.468749,
       "y": 0.444444,
       "w": 0.309999,
       "h": 0.361246
-    }
+    },
+    "intro": true,
+    "mystery": true,
+    "closeRange": 0.155
+  },
+  {
+    "id": "o13",
+    "start": 5.85,
+    "end": 11.31,
+    "view": 2,
+    "seed": 589,
+    "followEnd": 5.5600000000000005,
+    "holdStart": 7.460000000000001,
+    "establish": 0.12,
+    "leadStart": 0,
+    "leadEnd": 5.460000000000001,
+    "framing": {
+      "x": 0.5,
+      "y": 0.463893,
+      "w": 0.271258,
+      "h": 0.76326
+    },
+    "intro": true,
+    "mystery": true,
+    "closeRange": 0.17
   },
   {
     "id": "o01",
-    "start": 8.18,
-    "end": 18.25,
+    "start": 11.31,
+    "end": 16.963,
     "view": 1,
     "seed": 178,
-    "followEnd": 5.0941,
-    "holdStart": 7.813,
-    "establish": 0.28,
-    "leadStart": 0.168,
-    "leadEnd": 6.1817,
+    "followEnd": 5.753,
+    "holdStart": 7.6530000000000005,
+    "establish": 0.12,
+    "leadStart": 0,
+    "leadEnd": 5.6530000000000005,
     "framing": {
       "x": 0.508944,
       "y": 0.462531,
       "w": 0.332802,
       "h": 0.86144
-    }
+    },
+    "intro": true,
+    "mystery": true,
+    "closeRange": 0.155
   },
   {
     "id": "o02",
-    "start": 23.85,
-    "end": 27.91,
+    "start": 16.963,
+    "end": 23.85,
     "view": 2,
     "seed": 315,
+    "followEnd": 3.4800000000000004,
+    "holdStart": 5.239999999999998,
+    "establish": 0.12,
+    "leadStart": 0,
+    "leadEnd": 4.1839999999999975,
+    "framing": {
+      "x": 0.500001,
+      "y": 0.453705,
+      "w": 0.310002,
+      "h": 0.487235
+    },
+    "intro": true,
+    "mystery": false,
+    "closeRange": 0.17
+  },
+  {
+    "id": "o01",
+    "start": 23.85,
+    "end": 27.91,
+    "view": 1,
+    "seed": 178,
     "followEnd": 1.204,
     "holdStart": 2.404,
     "establish": 0.2648799999999998,
     "leadStart": 0.1589,
     "leadEnd": 1.684,
     "framing": {
-      "x": 0.500001,
-      "y": 0.453705,
-      "w": 0.310002,
-      "h": 0.487235
+      "x": 0.508944,
+      "y": 0.462531,
+      "w": 0.332802,
+      "h": 0.86144
     }
   },
   {
