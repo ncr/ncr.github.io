@@ -3,8 +3,8 @@ import Base from '../../layouts/Base.astro'
 import WallpaperGallery from '../../components/WallpaperGallery.astro'
 import { getEntry, render } from 'astro:content'
 // Explicit opt-in for this one draft; other drafts keep their existing visibility.
-const post = await getEntry('blog', 'omarchy-destiny-theme')
-if (!post || !post.data.draft) throw new Error('Expected the Destiny draft')
+const post = await getEntry('blog', 'omarchy-p-bloom-theme')
+if (!post || !post.data.draft) throw new Error('Expected the p(bloom) draft')
 const { Content } = await render(post)
 ---
 <Base title={post.data.title} description={post.data.description} lang="en" robots="noindex, nofollow, noarchive">

@@ -11,7 +11,7 @@ const clipDuration = 108.23
     <span class="gallery-teaser" aria-hidden="true" hidden><span class="teaser-frame"></span><span class="teaser-progress"></span></span>
     <span class="gallery-invite"><span><strong>Step into the aquarium</strong><small>Music video · 42 wallpapers</small></span><span class="entry-arrow" aria-hidden="true">↗</span></span>
   </button>
-  <noscript><p><a href={`${video}split-signal-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={cover.src}>Full-size wallpaper</a> · <a href="https://github.com/ncr/omarchy-destiny-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
+  <noscript><p><a href={`${video}split-signal-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={cover.src}>Full-size wallpaper</a> · <a href="https://github.com/ncr/omarchy-p-bloom-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
 </section>
 <dialog id="wallpaper-viewer" aria-label="Music video and 42 wallpapers" data-cover={wallpapers.indexOf(cover)}>
   <div class="gallery-shell">
@@ -20,7 +20,7 @@ const clipDuration = 108.23
       <button type="button" class="viewer-close icon-button" aria-label="Close" title="Close (Esc)">✕</button>
     </header>
     <div class="viewer-canvas" tabindex="0" aria-label="Wallpaper. Arrow keys change the image, Z toggles zoom.">
-      <video class="mv-video" playsinline preload="none" poster={`${video}split-signal-poster.webp`} aria-label="Split Signal music video: the Destiny theme and 42 wallpapers"></video>
+      <video class="mv-video" playsinline preload="none" poster={`${video}split-signal-poster.webp`} aria-label="Split Signal music video: the p(bloom) theme and 42 wallpapers"></video>
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
     <p class="viewer-error" role="status" hidden>Could not load the full image. <button type="button" class="viewer-retry">Try again</button></p>
@@ -100,7 +100,7 @@ const clipDuration = 108.23
     }
 
     // ── Music video ──
-    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}split-signal-av-${big?'1080':'720'}p60.mp4`; } }
+    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}split-signal-av-${big?'1080':'720'}p60.mp4?v=2`; } }
     function progress() { if(!seeking) seek.value = String(mv.currentTime); seek.setAttribute('aria-valuetext', `${Math.floor(mv.currentTime/60)}:${String(Math.floor(mv.currentTime%60)).padStart(2,'0')}`); }
     function loop() { progress(); tick = mv.paused ? 0 : requestAnimationFrame(loop); }
     function playState() {
@@ -176,7 +176,7 @@ const clipDuration = 108.23
     function teaserFrameTick() { if(dialog.open || document.hidden) { stopTeaser(); return; } launch.querySelector('.teaser-progress').style.transform = `scaleX(${teaserVideo.currentTime/teaserVideo.duration||0})`; teaserTick = requestAnimationFrame(teaserFrameTick); }
     function startTeaser() {
       if(reduced.matches || dialog.open || teaserTick) return;
-      if(!teaserVideo) { teaserVideo = document.createElement('video'); teaserVideo.muted = true; teaserVideo.playsInline = true; teaserVideo.loop = true; teaserVideo.src = `${video}split-signal-av-720p60.mp4#t=35.8`; teaserFrame.replaceChildren(teaserVideo); }
+      if(!teaserVideo) { teaserVideo = document.createElement('video'); teaserVideo.muted = true; teaserVideo.playsInline = true; teaserVideo.loop = true; teaserVideo.src = `${video}split-signal-av-720p60.mp4?v=2#t=35.8`; teaserFrame.replaceChildren(teaserVideo); }
       teaser.hidden = false; launch.classList.add('is-previewing'); teaserVideo.play().catch(() => {}); teaserTick = requestAnimationFrame(teaserFrameTick);
     }
     launch.addEventListener('pointerenter', e => { if(e.pointerType === 'mouse') startTeaser(); });

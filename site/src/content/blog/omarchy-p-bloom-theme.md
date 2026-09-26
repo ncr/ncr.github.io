@@ -5,15 +5,16 @@ description: A theme for Omarchy with 42 wallpapers of machines from a hopeful f
 draft: true
 ---
 
-Destiny is a theme for [Omarchy](https://omarchy.org). It comes with 42
+p(bloom) is a theme for [Omarchy](https://omarchy.org). It comes with 42
 wallpapers of machines from a hopeful future, and it started on September 18
 as circles and rectangles.
 
 Four days later the figures had joints and the machines had parts, but
 everything still looked flat. Then every machine got a real 3D model in
-Blender, and every sheet got its own camera, composition and story. A robot
-now goes running with your watch while you sleep. The lawn next door is 4%
-less green than yours, and the neighbor's garden gnome has a camera too.
+Blender, and every sheet got its own camera and composition. Each wallpaper
+is full of detail, yet it doesn't shout. It sits quietly behind your windows,
+and when you have a minute, you can wander around it with your eyes and find
+a small mechanism or a caption worth reading.
 
 <div class="detail-pair detail-triptych">
 
@@ -48,4 +49,4 @@ p(bloom) >> p(doom). What a great time to be alive!
 
 <hr />
 
-<p class="fan-note"><small><strong>Fan project.</strong> Destiny and its world belong to Bungie. The theme's name, the energy colors and the mood of the sheets are a fan's homage; the drawings, machines and texts are original, with no art, logos or other material from the game. Not affiliated with or endorsed by Bungie. I hope they don't mind. Music: <a href="https://x.com/koozeex1">Kevin Koontz</a>, <a href="https://x.com/koozeex1/status/2096140707329368181">"We Can Fix Everything"</a>.</small></p>
+<p class="fan-note"><small>The look is inspired by Bungie's Destiny. p(bloom) is not affiliated with or endorsed by Bungie and uses no art, logos or other material from the game. Music: <a href="https://x.com/koozeex1">Kevin Koontz</a>, <a href="https://x.com/koozeex1/status/2096140707329368181">"We Can Fix Everything"</a>.</small></p>
