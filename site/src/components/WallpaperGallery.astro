@@ -1,6 +1,7 @@
 ---
 import wallpapers from '../data/destiny-gallery.json'
 import tour from '../data/destiny-tour.json'
+import drawingScore from '../data/drawing-score.json'
 const tourDuration = 299.21
 const chapters = tour.filter(s => s.chapter && !["Prolog", "Finał"].includes(s.chapter))
 const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
@@ -63,7 +64,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
   import "../scripts/ambient-controller.js";
   import "../scripts/audio-reactivity.js";
 </script>
-<script define:vars={{ wallpapers, tour, tourDuration }}>
+<script define:vars={{ wallpapers, tour, tourDuration, drawingScore }}>
   (() => {
     const dialog = document.querySelector('#wallpaper-viewer');
     const q = s => dialog.querySelector(s) || document.querySelector(s);
@@ -213,12 +214,21 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const previous=n>0&&tour[n-1].id===shot.id&&shot.motion!=='cut'?tour[n-1]:shot;
       const travel=shot.motion==='float'?2.8:shot.motion==='pan'?1.8:1.15;
       let u=reduced.matches?1:Math.min(1,elapsed/travel);u=u*u*(3-2*u);
-      const x=previous.x+(shot.x-previous.x)*u,y=previous.y+(shot.y-previous.y)*u;
+      let x=previous.x+(shot.x-previous.x)*u,y=previous.y+(shot.y-previous.y)*u;
       const drift=reduced.matches?1:1-Math.min(elapsed,4)*.007;
       const priorDuration=n>0?shot.at-tour[n-1].at:0;
       const startDrift=previous===shot?1:1-Math.min(priorDuration,4)*.007;
-      const w=Math.exp(Math.log(previous.w*startDrift)*(1-u)+Math.log(shot.w)*u)*drift;
-      const h=Math.exp(Math.log(previous.h*startDrift)*(1-u)+Math.log(shot.h)*u)*drift;
+      let w=Math.exp(Math.log(previous.w*startDrift)*(1-u)+Math.log(shot.w)*u)*drift;
+      let h=Math.exp(Math.log(previous.h*startDrift)*(1-u)+Math.log(shot.h)*u)*drift;
+      let paperPull=null;
+      const passage=drawingScore.find(s=>s.id===shot.id&&time>=s.start&&time<s.end);
+      if(passage&&effects&&!reduced.matches){
+        const elapsed=time-passage.start,u=Math.max(0,Math.min(1,(elapsed-passage.followEnd)/(passage.holdStart-passage.followEnd)));
+        const pull=(1-Math.cos(Math.PI*u))/2,f=passage.framing;
+        x=f.x+(.5-f.x)*pull;y=f.y+(.5-f.y)*pull;
+        w=Math.exp(Math.log(f.w)*(1-pull));h=Math.exp(Math.log(f.h)*(1-pull));
+        paperPull=u;
+      }
       const cw=canvas.clientWidth,ch=canvas.clientHeight;
       const bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120;
       const scale=Math.min(cw/(bw*w),ch/(bh*h));
@@ -226,6 +236,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       const roll=reduced.matches?0:Math.sin(time*.23)*.65+Math.sin(time*.51)*.22;
       frame.style.transform=`rotate(${roll}deg) translate(${-x*bw*scale}px,${-y*bh*scale}px) scale(${scale})`;
       flightEvent(dialog.open,{width:bw,height:bh,scale,x,y,roll});
+      canvas.dataset.paperScale=scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
       if(currentShot!==n){
         currentShot=n;
         const caption=q('.tour-caption');caption.replaceChildren();

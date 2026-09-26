@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {createOperator} from './camera-operator.js';
 import nozzle from '../data/fusion-nozzle.json';
 import timing from '../data/flight-timing.json';
 
@@ -29,7 +30,7 @@ export function createFlight(host,onReady=()=>{}){
    detail.add(new THREE.LineSegments(new THREE.EdgesGeometry(g,9),new THREE.LineBasicMaterial({color:part.name.includes('coil')?0xd7b783:0x77b6cc,transparent:true,opacity:.72})));g.dispose();
  }
  function build(data){
-   const group=new THREE.Group(),positions=[],colors=[],growth=[],lanes=Array.from({length:14},()=>[]),pens=[];
+   const group=new THREE.Group(),positions=[],colors=[],growth=[],penIds=[],along=[],lanes=Array.from({length:14},()=>[]),pens=[];
    const ranked=data.strokes.map(p=>({...p,total:length(p.p)})).filter(p=>p.total>.12).sort((a,b)=>b.total-a.total);
    // A few long structural paths carry laser accents. Small detail stays quiet.
    const leaders=new Set(),families=new Set();
@@ -46,14 +47,14 @@ export function createFlight(host,onReady=()=>{}){
        const z=/radiator|cable|accent|outline/.test(path.role)?6:2;
        const color=new THREE.Color(/cable|accent|coil/.test(path.role)?0xe8ba79:/radiator|screen|glass/.test(path.role)?0x8ad3e1:0xdbcbb3);
        const distances=[0];for(let i=1;i<path.p.length;i++)distances.push(distances.at(-1)+distance(path.p[i],path.p[i-1]));
-       for(let i=1;i<path.p.length;i++)for(const j of [i-1,i]){positions.push(...path.p[j],z);colors.push(color.r,color.g,color.b);growth.push(a+distances[j]/path.total*(b-a));}
+       for(let i=1;i<path.p.length;i++)for(const j of [i-1,i]){positions.push(...path.p[j],z);colors.push(color.r,color.g,color.b);growth.push(a+distances[j]/path.total*(b-a));penIds.push(lead?leadIndex:-1);along.push(distances[j]/path.total);}
        const stroke={path,start:a,end:b,distances,total:path.total,z,laser:leaders.has(path),seed:hash(path.name)};strokes.push(stroke);all.push(stroke);
      }
      pens.push(strokes);
    });
-   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('inkColor',new THREE.Float32BufferAttribute(colors,3));geometry.setAttribute('birth',new THREE.Float32BufferAttribute(growth,1));
+   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('inkColor',new THREE.Float32BufferAttribute(colors,3));geometry.setAttribute('birth',new THREE.Float32BufferAttribute(growth,1));geometry.setAttribute('penId',new THREE.Float32BufferAttribute(penIds,1));geometry.setAttribute('along',new THREE.Float32BufferAttribute(along,1));
    const placement={landing:{value:0},paperOrigin:{value:new THREE.Vector2()},paperX:{value:new THREE.Vector2()},paperY:{value:new THREE.Vector2()}};
-   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{...placement,progress:{value:0},pulse:{value:0}},vertexShader:`${landingUniforms}attribute vec3 inkColor;attribute float birth;varying vec3 color;varying float born;void main(){color=inkColor;born=birth;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`,fragmentShader:`uniform float progress;uniform float pulse;varying vec3 color;varying float born;void main(){float laid=step(born,progress);float tip=laid*(1.-smoothstep(0.,.012,progress-born));gl_FragColor=vec4(sqrt(color)*(.7+tip*.65+pulse*.18),.045+laid*.85);}`});
+   const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{...placement,leadIndex:{value:0},leadProgress:{value:0},progress:{value:0},pulse:{value:0}},vertexShader:`${landingUniforms}attribute vec3 inkColor;attribute float birth;attribute float penId;attribute float along;uniform float leadIndex;varying float selected;varying vec3 color;varying float born;void main(){selected=1.-step(.1,abs(penId-leadIndex));color=inkColor;born=mix(birth,along,selected);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);${landVertex}}`,fragmentShader:`uniform float progress;uniform float pulse;uniform float leadProgress;varying float selected;varying vec3 color;varying float born;void main(){float front=mix(progress,leadProgress,selected);float laid=step(born,front);float tip=laid*(1.-smoothstep(0.,.012,front-born));gl_FragColor=vec4(sqrt(color)*(.7+tip*.65+pulse*.18),.045+laid*.85);}`});
    group.add(new THREE.LineSegments(geometry,material));
    const count=20+6*28,pp=new Float32Array(count*3),aa=new Float32Array(count),ss=new Float32Array(count),pg=new THREE.BufferGeometry();
    pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('strength',new THREE.BufferAttribute(aa,1));pg.setAttribute('diameter',new THREE.BufferAttribute(ss,1));
@@ -79,24 +80,25 @@ export function createFlight(host,onReady=()=>{}){
    const a=stroke.path.p[lo-1],b=stroke.path.p[lo],u=(d-ds[lo-1])/Math.max(.001,ds[lo]-ds[lo-1]);
    return new THREE.Vector3(a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u,stroke.z+.4);
  }
- function updateInk(sheet,progress,elapsed,duration){
+ function updateInk(sheet,progress,elapsed,drawDuration,primary,plan){
+   const phase=(s,age=0)=>s===primary?(elapsed-age-plan.leadStart)/(plan.leadEnd-plan.leadStart):(progress-age/drawDuration-s.start)/(s.end-s.start);
    sheet.material.uniforms.progress.value=progress;sheet.material.uniforms.pulse.value=energy.active?energy.bass:0;
    sheet.aa.fill(0);let particle=20;
    const write=(i,p,alpha,size)=>{sheet.pp.set(p.toArray(),i*3);sheet.aa[i]=alpha;sheet.ss[i]=size*Math.min(devicePixelRatio,1.5);};
    sheet.pens.forEach((strokes,i)=>{
-     const s=strokes.find(s=>s.start<=progress&&s.end>=progress);if(!s)return;
-     const u=(progress-s.start)/(s.end-s.start),p=sample(s,u);
+     const s=strokes.find(s=>phase(s)>=0&&phase(s)<1);if(!s)return;
+     const u=phase(s),p=sample(s,u);
      write(i,p,s.laser?1:.65,s.laser?26:4);
    });
    for(const s of sheet.heroes){
-     const u=(progress-s.start)/(s.end-s.start);if(u<0||u>1.15)continue;
+     const u=phase(s);if(u<0||u>1.15)continue;
      const band=energy.active?.65+energy.highs*.7:.75;
      // A short ignition at the start; small sparks then trail that same moving nib.
      // Analytic ages/seeds make seeking deterministic, with no frame-rate-dependent emitter.
      for(let j=0;j<28;j++){
        if(particle>=sheet.aa.length)break;
        const age=((elapsed*1.6+j*.618+s.seed%97*.01)%1)*.42;
-       const previous=progress-age/(duration*.82),v=(previous-s.start)/(s.end-s.start);if(v<0||v>1)continue;
+       const v=phase(s,age);if(v<0||v>1)continue;
        const p=sample(s,v),a=(s.seed%360+j*137.508)*Math.PI/180;
        const ignition=1-smooth(u/.2),spread=(9+ignition*25)*age;
        p.x+=Math.cos(a)*spread;p.y+=Math.sin(a)*spread-age*age*12;p.z+=Math.sin(a*1.7)*spread+1;
@@ -125,29 +127,20 @@ export function createFlight(host,onReady=()=>{}){
      current=passage.id;prepare(current);const sheet=cache.get(current);if(!sheet){hide();return false;}
      sheet.group.visible=true;
      const duration=passage.end-passage.start,elapsed=time-passage.start,u=clamp(elapsed/duration);
-     const progress=clamp(u/.83);updateInk(sheet,progress,elapsed,duration);
+     const drawDuration=passage.leadEnd,progress=clamp(elapsed/drawDuration);
+     const leadIndex=passage.seed%sheet.heroes.length,hero=sheet.heroes[leadIndex]||sheet.pens.flat()[0];
+     const leadProgress=clamp((elapsed-passage.leadStart)/(passage.leadEnd-passage.leadStart));
+     sheet.material.uniforms.leadIndex.value=leadIndex;sheet.material.uniforms.leadProgress.value=leadProgress;
+     updateInk(sheet,progress,elapsed,drawDuration,hero,passage);
      const paper=sheet.data.paper.map(v=>v/255);paperMaterial.uniforms.paper.value.set(...paper);renderer.setClearColor(new THREE.Color(...paper),1);
      const [bw,bh]=sheet.data.size;
      const fit=Math.max(bh/2,bw/(2*camera.aspect))/Math.tan(24*Math.PI/180)*1.22;
-     const hero=sheet.heroes[passage.seed%sheet.heroes.length]||sheet.pens.flat()[0];
-     const tracking=sample(hero,clamp((progress-hero.start)/(hero.end-hero.start)));
-     // Establish silhouette, follow a genuine contour, then reconnect to the whole sheet.
-     // Six flight grammars + different paths/orientations avoid the same repeated zoom.
-     const enter=smooth((u-.14)/.25),leave=1-smooth((u-.67)/.28),dive=enter*leave;
-     const target=new THREE.Vector3(),pos=new THREE.Vector3(0,0,fit);
-     const phase=u*Math.PI*2+passage.seed*.01;
-     switch(passage.view){
-       case 0:target.copy(tracking).multiplyScalar(.62*dive);pos.set(target.x-35*dive,target.y-45*dive,fit*(1-.47*dive));break;
-       case 1:target.set(bw*(u-.5)*.32*dive,bh*.08*dive,0);pos.set(target.x+55*dive,target.y,fit*(1-.38*dive));break;
-       case 2:target.copy(tracking).multiplyScalar(.5*dive);pos.set(target.x+Math.sin(phase)*85*dive,target.y+Math.cos(phase)*55*dive,fit*(1-.42*dive));break;
-       case 3:target.set(bw*.12*dive,bh*(.5-u)*.4*dive,0);pos.set(target.x-70*dive,target.y+25*dive,fit*(1-.4*dive));break;
-       case 4:target.copy(tracking).multiplyScalar(.65*dive);pos.set(target.x+45*dive,target.y-55*dive,fit*(1-.48*dive));break;
-       default:target.set(bw*(.5-u)*.35*dive,-bh*.08*dive,0);pos.set(target.x,target.y+70*dive,fit*(1-.36*dive));
-     }
-     camera.position.copy(pos);camera.lookAt(target);
-     // Resolve into the exact location/scale/roll of the baked device before fading.
-     // Both layers use the same live 2D camera, including responsive letterboxing.
-     const bridge=Math.min(2.3,duration*.43),handoff=clamp((elapsed-duration+bridge)/bridge);
+     const trackKey=`${passage.start}:${passage.seed}:${fit.toFixed(3)}`;
+     if(sheet.trackKey!==trackKey){sheet.trackKey=trackKey;sheet.operator=createOperator(t=>sample(hero,clamp((t-passage.leadStart)/(passage.leadEnd-passage.leadStart))),passage,fit);}
+     const pose=sheet.operator(elapsed);
+     camera.position.set(...pose.slice(0,3));camera.up.set(Math.sin(pose[6]),Math.cos(pose[6]),0);camera.lookAt(...pose.slice(3,6));
+     const pull=clamp((elapsed-passage.followEnd)/(passage.holdStart-passage.followEnd));
+     // Register early in the retreat; both layers keep pulling back together while dissolving.
      const registration=sheet.data.registration;
      let landed=0,fade=0;
      if(paperFrame&&registration){
@@ -157,14 +150,18 @@ export function createFlight(host,onReady=()=>{}){
        sheet.placement.paperOrigin.value.set(2*(c*dx-sn*dy)/w,-2*(sn*dx+c*dy)/h);
        sheet.placement.paperX.value.set(2*c*unit/w,-2*sn*unit/h);
        sheet.placement.paperY.value.set(2*sn*unit/w,2*c*unit/h);
-       landed=smooth(handoff/.62);
-       fade=smooth((handoff-.58)/.42);
-     }else fade=smooth((elapsed-duration+1.1)/1.1);
+       landed=smooth(pull/.46);
+       fade=smooth((pull-.45)/.47);
+     }else fade=smooth((pull-.45)/.47);
      sheet.placement.landing.value=landed;
      element.style.opacity=String(smooth(elapsed/.32)*(1-fade));
      // A subpixel focus dissolve softens tiny differences in ink/antialiasing only.
      element.style.filter=fade>0?`blur(${(.65*Math.sin(fade*Math.PI)).toFixed(3)}px)`:'none';
      element.dataset.landing=landed.toFixed(4);element.dataset.dissolve=fade.toFixed(4);
+     element.dataset.phase=elapsed>=passage.holdStart?'hold':elapsed>=passage.followEnd?'pull':'follow';
+     element.dataset.range=(camera.position.z/fit).toFixed(4);element.dataset.leadProgress=leadProgress.toFixed(4);
+     camera.updateMatrixWorld();const penInFrame=sample(hero,leadProgress).project(camera);
+     element.dataset.followError=Math.hypot(penInFrame.x,penInFrame.y).toFixed(4);
      element.dataset.drawing=current;element.dataset.progress=progress.toFixed(3);
    }
    element.style.display='block';renderer.render(scene,camera);return true;

@@ -39,7 +39,7 @@
     "w": 1,
     "h": 1,
     "caption": "Z daleka zostaje fioletowy spokój.",
-    "motion": "pull"
+    "motion": "cut"
   },
   {
     "id": "o02",
@@ -243,7 +243,7 @@
     "w": 1,
     "h": 1,
     "caption": "Z daleka znów zostaje spokojna plama koloru.",
-    "motion": "pull"
+    "motion": "cut"
   },
   {
     "id": "o03",
@@ -459,7 +459,7 @@
     "w": 0.22,
     "h": 0.55,
     "caption": "Punkt odniesienia? Sąsiad za płotem.",
-    "motion": "pan"
+    "motion": "cut"
   },
   {
     "at": 213.31,
@@ -566,7 +566,7 @@
     "w": 1,
     "h": 1,
     "caption": "Wybierz swoje akwarium. Zostań na chwilę.",
-    "motion": "pull"
+    "motion": "cut"
   },
   {
     "id": "c104",

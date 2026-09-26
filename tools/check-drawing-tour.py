@@ -24,12 +24,23 @@ try:
   def seek(t):
    page.locator('.tour-seek').fill(f'{t:.2f}'.rstrip('0').rstrip('.'));page.locator('.tour-seek').dispatch_event('input')
   for shot in score:
-   t=round(shot['start']+(shot['end']-shot['start'])*.43,2);seek(t)
+   pull=shot['holdStart']-shot['followEnd']
+   follow=shot['establish']+(shot['followEnd']-shot['establish'])*.7
+   seek(round(shot['start']+follow,2))
    page.wait_for_function('(id)=>{const c=document.querySelector(".fusion-flight");return c?.dataset.drawing===id&&getComputedStyle(c).display!=="none"}',arg=shot['id'])
-   bridge=min(2.3,(shot['end']-shot['start'])*.43)
-   seek(round(shot['end']-bridge*.2,2))
+   close=page.locator('.fusion-flight').evaluate('(e)=>({range:Number(e.dataset.range),lead:Number(e.dataset.leadProgress),error:Number(e.dataset.followError)})')
+   assert close['range']<.56 and 0<close['lead']<1 and close['error']<.65,(shot,close)
+   seek(round(shot['start']+shot['followEnd']+pull*.685,2))
    state=page.locator('.fusion-flight').evaluate('(e)=>({landing:Number(e.dataset.landing),dissolve:Number(e.dataset.dissolve),opacity:Number(e.style.opacity)})')
-   assert state['landing']==1 and .45<state['dissolve']<.6 and .4<state['opacity']<.55,(shot,state)
+   assert state['landing']==1 and .45<state['dissolve']<.55,(shot,state)
+   scale=page.locator('.viewer-canvas').get_attribute('data-paper-scale')
+   seek(round(shot['start']+shot['followEnd']+pull*.83,2))
+   assert float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'))<float(scale)*.99,'Dissolve must still move outward'
+   seek(round(shot['end']-.2,2))
+   assert page.locator('.fusion-flight').get_attribute('data-phase')=='hold'
+   assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.style.opacity)')==0
+   assert float(page.locator('.viewer-canvas').get_attribute('data-paper-pull'))==1
+   assert shot['end']-shot['start']-shot['holdStart']>=1.59
   # Cold/evicted geometry must appear even while the timeline is paused.
   seek(3);page.wait_for_function('document.querySelector(".fusion-flight").dataset.drawing==="o03"')
   first=page.locator('.fusion-flight').screenshot();seek(4);seek(3)
@@ -48,6 +59,6 @@ try:
   assert not fallback.locator('.fusion-flight').is_visible()
   fallback.wait_for_function('Array.from(document.querySelectorAll(".viewer-image, .viewer-preview")).some(e=>e.complete&&e.naturalWidth>0&&getComputedStyle(e).visibility==="visible")')
   browser.close()
- print('PASS: all 43 passages and registered dissolves, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
+ print('PASS: all 43 close follows, moving registered dissolves and overview holds, paused cold seeks, deterministic particles, effects switch, mobile, reduced motion, missing-asset fallback.')
 finally:
  if server:server.shutdown()
