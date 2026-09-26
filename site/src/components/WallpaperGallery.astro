@@ -3,6 +3,7 @@ import gallery from '../data/destiny-gallery.json'
 const wallpapers=gallery.map(w=>({...w,film:w.src.replace('/destiny/','/destiny/film/')}))
 import tour from '../data/destiny-tour.json'
 import drawingScore from '../data/drawing-score.json'
+import musicGrid from '../data/music-grid.json'
 import introFrames from '../data/intro-framing.json'
 const tourDuration = 299.21
 const chapters = tour.filter(s => s.chapter && !["Prolog", "Finał"].includes(s.chapter))
@@ -12,7 +13,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
   <button class="gallery-launch" type="button" aria-haspopup="dialog" aria-controls="wallpaper-viewer">
     <img src={cover.thumb} width="5120" height="2160" alt="" />
     <span class="gallery-teaser" aria-hidden="true" hidden><span class="teaser-frame"><img alt="" /></span><span class="teaser-caption"></span><span class="teaser-progress"></span></span>
-    <span class="gallery-invite"><span><strong>Wejdź do akwarium</strong><small>42 światy · 4:59 z muzyką</small></span><span class="entry-arrow" aria-hidden="true">↗</span></span>
+    <span class="gallery-invite"><span><strong>Wejdź do akwarium</strong><small>Film z muzyką · galeria 42 tapet</small></span><span class="entry-arrow" aria-hidden="true">↗</span></span>
   </button>
   <noscript><p><a href={cover.src}>Otwórz tapetę w pełnej rozdzielczości</a> · <a href="https://github.com/ncr/omarchy-destiny-theme/tree/ultrawide/backgrounds">Cała kolekcja</a></p></noscript>
 </section>
@@ -67,7 +68,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
   import "../scripts/ambient-controller.js";
   import "../scripts/audio-reactivity.js";
 </script>
-<script define:vars={{introFrames, wallpapers, tour, tourDuration, drawingScore }}>
+<script define:vars={{musicGrid, introFrames, wallpapers, tour, tourDuration, drawingScore }}>
   (() => {
     const dialog = document.querySelector('#wallpaper-viewer');
     const q = s => dialog.querySelector(s) || document.querySelector(s);
@@ -105,7 +106,7 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       window.dispatchEvent(new CustomEvent('destiny-wallpaper',{detail:w}));
       setZoom(false); q('.viewer-error').hidden = true;
       q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
-      q('.viewer-title').textContent=fromTour&&time<22.203?'Światło i linie':w.name;
+      q('.viewer-title').textContent=fromTour&&time<musicGrid.firstReveal?'Światło i linie':w.name;
       q('.viewer-download').href=w.src;
       preview.style.visibility='visible'; preview.src=w.thumb; photo.style.visibility='hidden'; photo.alt=w.name;
       const source=fromTour?w.film:w.src;
@@ -218,11 +219,19 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
     function flightEvent(active,paper){window.dispatchEvent(new CustomEvent('destiny-camera',{detail:{time,active,enabled:effects,paper}}));}
     dialog.addEventListener('close',()=>flightEvent(false));
     const captionElement=q('.tour-caption'),timeLabel=q('.tour-time');let captionSpans=[],lastClock='';
+    // Same beat interpolation as the offline operator; native paper and WebGL share the score.
+    const easeScore=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
+    function scorePull(p,t){
+      if(!p.beats)return Math.max(0,Math.min(1,(t-p.followEnd)/(p.holdStart-p.followEnd)));
+      const b=p.beats;let i=0;while(i<b.length-2&&b[i+1]<=t)i++;
+      const beat=i+Math.max(0,Math.min(1,(t-b[i])/(b[i+1]-b[i])));
+      return Math.max(0,Math.min(1,(beat-p.pullBeat)/(p.revealBeat-p.pullBeat)));
+    }
     function composition(at){
       let n=tour.findLastIndex(s=>s.at<=at);n=Math.max(0,n);
       const shot=tour[n], elapsed=at-shot.at;
       const previous=n>0&&tour[n-1].id===shot.id&&shot.motion!=='cut'?tour[n-1]:shot;
-      const travel=shot.motion==='float'?2.8:shot.motion==='pan'?1.8:1.15;
+      const travel=shot.travel||(shot.motion==='float'?2.8:shot.motion==='pan'?1.8:1.15);
       let u=reduced.matches?1:Math.min(1,elapsed/travel);u=u*u*(3-2*u);
       let x=previous.x+(shot.x-previous.x)*u,y=previous.y+(shot.y-previous.y)*u;
       const shotDrift=(s,t)=>s.w>=.9&&s.h>=.9?1+.05*(1-Math.exp(-t/8)):1-Math.min(t,4)*.007;
@@ -234,15 +243,15 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       let paperPull=null;
       const passage=drawingScore.find(s=>s.id===shot.id&&at>=s.start&&at<s.end);
       if(passage&&effects&&!reduced.matches){
-        const elapsed=at-passage.start,u=Math.max(0,Math.min(1,(elapsed-passage.followEnd)/(passage.holdStart-passage.followEnd)));
-        const pull=(1-Math.cos(Math.PI*u))/2,f=passage.framing;
+        const elapsed=at-passage.start,u=scorePull(passage,elapsed);
+        const pull=easeScore(u),f=passage.framing;
         x=f.x+(.5-f.x)*pull;y=f.y+(.5-f.y)*pull;
         w=Math.exp(Math.log(f.w)*(1-pull));h=Math.exp(Math.log(f.h)*(1-pull));
         const overview=Math.max(0,Math.min(1,(elapsed-passage.holdStart)/(passage.end-passage.start-passage.holdStart)));
         const breathe=1+.032*overview*overview*(3-2*overview);w*=breathe;h*=breathe;
         paperPull=u;
       }
-      if(passage?.intro&&at<20.443){const crop=introFrames[passage.start];x=crop.x;y=crop.y;w=crop.w;h=crop.h;}
+      if(passage?.intro&&at<musicGrid.entrance){const crop=introFrames[passage.start];x=crop.x;y=crop.y;w=crop.w;h=crop.h;}
       const cw=surface.width||canvas.clientWidth,ch=surface.height||canvas.clientHeight;
       const bw=Math.min(cw,ch*5120/2160),bh=bw*2160/5120;
       const scale=Math.min(cw/(bw*w),ch/(bh*h));
@@ -254,24 +263,24 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
       if(!previous||reduced.matches||canvas.dataset.liveBlend==='1'){bridge.hidden=true;return;}
       const priorPassage=drawingScore.find(s=>tour[n].at-.001>=s.start&&tour[n].at-.001<s.end);
       const cut=previous.id!==view.shot.id||(view.shot.motion==='cut'&&!(passage&&passage===priorPassage));
-      const span=Math.min(.85,((tour[n+1]?.at||duration)-tour[n].at)*.24);
+      const span=tour[n].at<musicGrid.entrance?musicGrid.introDissolve:(passage?.blendSpan||musicGrid.beats[2]-musicGrid.beats[0]);
       if(!cut||elapsed>=span){bridge.hidden=true;canvas.dataset.sceneBlend='1';return;}
       const key=`${n}:${view.viewportWidth}:${view.viewportHeight}:${effects}`;
       if(bridgeKey!==key){
         bridgeKey=key;const out=composition(tour[n].at-.001),w=wallpapers.find(w=>w.id===previous.id);
         bridgeImage.src=w.film;bridgeFrame.style.width=out.width+'px';bridgeFrame.style.height=out.height+'px';bridgeFrame.style.transform=out.transform;
       }
-      const x=Math.max(0,elapsed/span),blend=x*x*(3-2*x);bridge.hidden=false;bridge.style.opacity=String(1-blend);canvas.dataset.sceneBlend=blend.toFixed(4);
+      const x=Math.max(0,elapsed/span),blend=easeScore(x);bridge.hidden=false;bridge.style.opacity=String(1-blend);canvas.dataset.sceneBlend=blend.toFixed(4);
     }
     function camera(){
       if(!touring)return;
       const view=composition(time),{n,shot,elapsed,passage,paperPull}=view;
       const size=`${view.width}:${view.height}`;if(frameSize!==size){frameSize=size;frame.style.width=view.width+'px';frame.style.height=view.height+'px';}
       frame.style.transform=view.transform;
-      const pull=passage?(time-passage.start-passage.followEnd)/(passage.holdStart-passage.followEnd):1;
-      flightEvent(dialog.open,{...view,drawingCovered:effects&&Boolean(passage)&&pull<.46});
+      const pull=passage?scorePull(passage,time-passage.start):1;
+      flightEvent(dialog.open,{...view,drawingCovered:effects&&Boolean(passage)&&pull<.5});
       sceneBlend(view);
-      const title=q('.viewer-title'),label=time<22.203?'Światło i linie':wallpapers[index].name;if(title.textContent!==label)title.textContent=label;
+      const title=q('.viewer-title'),label=time<musicGrid.firstReveal?'Światło i linie':wallpapers[index].name;if(title.textContent!==label)title.textContent=label;
       canvas.dataset.paperScale=view.scale.toFixed(5);canvas.dataset.paperPull=paperPull===null?'':paperPull.toFixed(4);
       if(currentShot!==n){
         currentShot=n;

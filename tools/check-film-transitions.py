@@ -15,6 +15,7 @@ else:
  threading.Thread(target=server.serve_forever,daemon=True).start()
  url=f'http://127.0.0.1:{server.server_port}/draft/dfe721c83120beddf965ffaf03237223/'
 shots=json.loads((root/'site/src/data/destiny-tour.json').read_text());score=json.loads((root/'site/src/data/drawing-score.json').read_text())
+grid=json.loads((root/'site/src/data/music-grid.json').read_text())
 out=Path('/tmp/destiny-blog-review');out.mkdir(exist_ok=True)
 try:
  with sync_playwright() as p:
@@ -31,9 +32,9 @@ try:
    prior=next((p for p in score if p['start']<=s['at']-.001<p['end']),None)
    current=next((p for p in score if p['start']<=s['at']<p['end']),None)
    if shots[n-1]['id']==s['id'] and not(s['motion']=='cut' and not(current and current==prior)):continue
-   span=min(.85,((shots[n+1]['at'] if n+1<len(shots) else 299.21)-s['at'])*.24)
+   span=grid['introDissolve'] if s['at']<grid['entrance'] else (current.get('blendSpan',grid['beats'][2]-grid['beats'][0]) if current else grid['beats'][2]-grid['beats'][0])
    seek(s['at']+span*.15);bridge=page.locator('.scene-bridge')
-   if current and current.get('intro'):
+   if current and current.get('intro') and s['at']<grid['entrance']:
     page.wait_for_function('(id)=>document.querySelector(".fusion-flight")?.dataset.drawing===id',arg=s['id']);seek(s['at']+span*.15)
     page.wait_for_function('document.querySelector(".viewer-canvas").dataset.liveBlend==="1"')
     first=float(page.locator('.viewer-canvas').get_attribute('data-intro-blend'))

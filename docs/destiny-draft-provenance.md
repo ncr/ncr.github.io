@@ -152,3 +152,40 @@ Bass particles are held back until 20.443s. After the entrance, the same measure
 Prepared geometry/camera files now use content-addressed URLs in `film-assets.json`. Previous fixed URLs remain intact so an already-open older player cannot fetch a new incompatible score mid-playback. Only the current manifest's assets are loaded, within the existing bounded cache.
 
 QA: all 45 close/retreat/overview passages, three intro GPU blends and 48 other cut dissolves; all six isolated laser frequency responses; attack-versus-gap particles; desktop/mobile close details and the 22.20s reveal visually inspected. Real MP3 continued across intro cuts and later transitions with zero pause events. An 11-second software-GL sample crossing intro transitions recorded p95 animation callback cost .30 ms, maximum .90 ms, no main-thread long tasks (not a hardware FPS guarantee). `tools/check-mystery-opening.py` checks the four unrevealed devices, name concealment, GPU blends, reveal timing, real audio through the entrance, mobile layout and noindex. Original wallpaper pixels and blog prose remain unchanged.
+
+### Four-bar musical edit (2026-09-26)
+
+Supersedes the earlier fixed-second passage layout. The author approved a selected
+film programme while retaining all 42 originals in the free gallery. The film now
+has 32 contiguous phrases of four 4/4 bars, featuring 31 distinct wallpapers plus
+the authentic wireframe nozzle orbit, followed by the recording's short outro.
+The complete 299.21-second soundtrack is unchanged.
+
+`music-grid.json` records the source recording hash, the editorial entrance at
+21.663 seconds, and an adaptive quarter-note grid from the measured bass attacks.
+This recording drifts in tempo; a single fixed BPM would lose phase. Missing beats
+in fills and quiet breaks are interpolated or extrapolated, and marked as inferred.
+This is an authored musical grid, not a claim of automatic musicological certainty.
+
+Regular phrases allocate beats 0–8 to contour following, 8–12 to the retreat,
+10–12 to the registered wireframe/paper dissolve, and 12–16 to a slow overview.
+The first reveal occupies the entrance's first bar; the nozzle uses a complete
+four-bar approach/orbit/retreat variation. Caption changes and object changes land
+on grid beats. Pen velocity crests on pulses; camera accents crest at detected bass
+attacks. The scored approach/retreat is applied after the organic spring-follow so
+its endpoints do not inherit spring delay. Camera and pen tables remain baked.
+
+The three introductory dissolves last 1.8 seconds with a quintic opacity envelope.
+Both outgoing and incoming baked cameras/contours continue moving, using a short
+precomputed outgoing tail and two temporary GPU render targets. The targets are
+released at the musical entrance. Older content-addressed assets are retained so
+already-open previews do not load incompatible camera tables.
+
+Rebuild: `prepare-musical-score.py`, `score-camera-passages.py`, `prepare-film.mjs`,
+then Astro build. `film-editorial.json` preserves the pre-edit caption/contour source.
+Checks: musical-grid/baked-endpoint assertions; all scored follows, moving
+registered dissolves and overview holds; three intro dissolves; all 34 scene
+crossfades; true MP3 with zero pause events through cuts/docking/reopening; mobile,
+reduced motion, missing-asset fallback, and draft exclusion from normal routes/feed.
+Software-GL integration profile: callback p95 0.30 ms, max 0.90 ms, no measured
+main-thread long tasks during the sampled intro; this is not a hardware FPS claim.

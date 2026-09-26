@@ -17,7 +17,7 @@
     "y": 0.45,
     "w": 0.12,
     "h": 0.22,
-    "caption": "Z bliska trudno jeszcze zgadnąć.",
+    "caption": "Z bliska trudno jeszcze zgadn\u0105\u0107.",
     "motion": "cut"
   },
   {
@@ -27,7 +27,7 @@
     "y": 0.45,
     "w": 0.12,
     "h": 0.22,
-    "caption": "Każdy detal ma swój rytm.",
+    "caption": "Ka\u017cdy detal ma sw\u00f3j rytm.",
     "motion": "cut",
     "chapter": "Maszyna"
   },
@@ -42,27 +42,29 @@
     "motion": "cut"
   },
   {
-    "at": 20.443,
+    "at": 21.663,
     "id": "o02",
     "x": 0.5,
-    "y": 0.45,
-    "w": 0.12,
-    "h": 0.22,
-    "caption": "Teraz złap rytm.",
-    "motion": "cut"
+    "y": 0.5,
+    "w": 1,
+    "h": 1,
+    "caption": "Teraz z\u0142ap rytm.",
+    "motion": "pull",
+    "travel": 2.1499999999999986
   },
   {
-    "at": 22.203,
+    "at": 23.813,
     "id": "o02",
     "x": 0.5,
-    "y": 0.45,
-    "w": 0.12,
-    "h": 0.22,
+    "y": 0.5,
+    "w": 1,
+    "h": 1,
     "caption": "Sky Racer",
-    "motion": "cut"
+    "motion": "float",
+    "travel": 2.155000000000001
   },
   {
-    "at": 23.85,
+    "at": 30.268,
     "id": "o01",
     "x": 0.5,
     "y": 0.5,
@@ -70,599 +72,511 @@
     "h": 1,
     "caption": "Quantum Simulator",
     "motion": "cut",
-    "portrait": true
+    "portrait": true,
+    "travel": 2.1499999999999986
   },
   {
+    "at": 38.858,
     "id": "c087",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Neutrino Bell",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 28.11
+    "travel": 2.1500000000000057
   },
   {
+    "at": 47.458,
     "id": "o09",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Tether Climber",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 32.98
+    "travel": 2.145000000000003
   },
   {
+    "at": 56.048,
     "id": "c025",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Fibre Braid",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 38.05
+    "travel": 2.1499999999999986
   },
   {
-    "id": "c100",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Plant Alibi",
-    "motion": "float",
-    "portrait": true,
-    "at": 42.11
-  },
-  {
-    "id": "o11",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Organ Foundry",
-    "motion": "float",
-    "portrait": true,
-    "at": 46.91
-  },
-  {
-    "at": 51.78,
+    "at": 64.648,
     "id": "o13",
     "x": 0.84,
     "y": 0.22,
     "w": 0.24,
     "h": 0.44,
-    "caption": "Twój zastępca nabiera kształtów.",
+    "caption": "Tw\u00f3j zast\u0119pca nabiera kszta\u0142t\u00f3w.",
     "motion": "cut",
-    "chapter": "Zastępstwo"
+    "chapter": "Zast\u0119pstwo",
+    "travel": 2.1450000000000102
   },
   {
-    "at": 57.65,
+    "at": 66.793,
     "id": "o13",
     "x": 0.455,
     "y": 0.315,
     "w": 0.2,
     "h": 0.4,
-    "caption": "Za chwilę będzie biegał za ciebie.",
-    "motion": "cut"
+    "caption": "Za chwil\u0119 b\u0119dzie biega\u0142 za ciebie.",
+    "motion": "cut",
+    "travel": 2.1499999999999915
   },
   {
-    "at": 62.51,
+    "at": 71.088,
     "id": "o13",
     "x": 0.52,
     "y": 0.46,
     "w": 0.4,
     "h": 0.84,
     "caption": "Biega za ciebie ten robot.",
-    "motion": "pull"
+    "motion": "pull",
+    "travel": 2.1450000000000102
   },
   {
-    "at": 68.05,
-    "id": "o13",
-    "x": 0.155,
-    "y": 0.2,
-    "w": 0.22,
-    "h": 0.43,
-    "caption": "Puls i ciepła skóra. Wszystko pod zegarek.",
-    "motion": "cut"
-  },
-  {
+    "at": 73.233,
     "id": "o05",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Cortical Mesh",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 73.11
+    "travel": 2.144999999999996
   },
   {
+    "at": 81.803,
     "id": "c017",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Memory Kiln",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 76.98
+    "travel": 2.144999999999996
   },
   {
+    "at": 90.363,
     "id": "c056",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Dune Skimmer",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 81.85
+    "travel": 2.135000000000005
   },
   {
-    "id": "c010",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Sock Oracle",
-    "motion": "float",
-    "portrait": true,
-    "at": 86.78
-  },
-  {
-    "id": "c080",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Compliment Mill",
-    "motion": "float",
-    "portrait": true,
-    "at": 90.91
-  },
-  {
+    "at": 98.908,
     "id": "c031",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Petal Eye",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 95.71
+    "travel": 2.1299999999999955
   },
   {
-    "at": 100.65,
+    "at": 107.438,
     "id": "o03",
     "x": 0.385,
     "y": 0.47,
     "w": 0.24,
     "h": 0.52,
-    "caption": "Do statku wracamy już z bliska.",
+    "caption": "Do statku wracamy ju\u017c z bliska.",
     "motion": "cut",
-    "chapter": "Podróż"
+    "chapter": "Podr\u00f3\u017c",
+    "travel": 2.134999999999991
   },
   {
-    "at": 106.38,
+    "at": 109.573,
     "id": "o03",
     "x": 0.57,
     "y": 0.39,
     "w": 0.24,
     "h": 0.52,
-    "caption": "Przewody, radiatory, pierścienie.",
-    "motion": "pan"
+    "caption": "Przewody, radiatory, pier\u015bcienie.",
+    "motion": "pan",
+    "travel": 2.135000000000005
   },
   {
-    "at": 111.71,
+    "at": 113.833,
     "id": "o03",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "Z daleka znów zostaje spokojna plama koloru.",
-    "motion": "cut"
+    "caption": "Z daleka zn\u00f3w zostaje spokojna plama koloru.",
+    "motion": "cut",
+    "travel": 2.1400000000000006
   },
   {
+    "at": 115.973,
     "id": "o03",
     "x": 0.57,
     "y": 0.39,
     "w": 0.23,
     "h": 0.48,
-    "caption": "Podejdźmy do dyszy.",
+    "caption": "Podejd\u017amy do dyszy.",
     "motion": "push",
     "orbit": "start",
-    "at": 116.38
+    "travel": 2.125
   },
   {
+    "at": 118.098,
     "id": "o03",
     "x": 0.57,
     "y": 0.39,
     "w": 0.23,
     "h": 0.48,
-    "caption": "Teraz widać głębokość pierścieni.",
+    "caption": "Teraz wida\u0107 g\u0142\u0119boko\u015b\u0107 pier\u015bcieni.",
     "motion": "float",
-    "at": 121.85
+    "travel": 2.135000000000005
   },
   {
+    "at": 122.363,
     "id": "o03",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "I znowu: cała maszyna.",
+    "caption": "I znowu: ca\u0142a maszyna.",
     "motion": "pull",
     "orbit": "end",
-    "at": 126.65
+    "travel": 2.135000000000005
   },
   {
+    "at": 124.498,
     "id": "c018",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Lunar Porch",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 131.05
+    "travel": 2.1299999999999955
   },
   {
+    "at": 133.023,
     "id": "o07",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Air Refinery",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 135.18
+    "travel": 2.134999999999991
   },
   {
+    "at": 141.548,
     "id": "o06",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Bounder",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 139.58
+    "travel": 2.125
   },
   {
+    "at": 150.058,
     "id": "c030",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Advice Filter",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 144.91
+    "travel": 2.125
   },
   {
-    "id": "c070",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Queue Garden",
-    "motion": "float",
-    "portrait": true,
-    "at": 149.51
-  },
-  {
-    "id": "c044",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Coral Cradle",
-    "motion": "float",
-    "portrait": true,
-    "at": 153.78
-  },
-  {
-    "at": 158.58,
+    "at": 158.563,
     "id": "o10",
     "x": 0.5,
     "y": 0.58,
     "w": 0.37,
     "h": 0.65,
-    "caption": "Kolacja jak każda inna.",
+    "caption": "Kolacja jak ka\u017cda inna.",
     "motion": "cut",
-    "chapter": "Kolacja"
+    "chapter": "Kolacja",
+    "travel": 2.125
   },
   {
-    "at": 164.58,
+    "at": 160.688,
     "id": "o10",
     "x": 0.5,
     "y": 0.31,
     "w": 0.18,
     "h": 0.32,
-    "caption": "Tylko lampa nasłuchuje nieprawdy.",
-    "motion": "rise"
+    "caption": "Tylko lampa nas\u0142uchuje nieprawdy.",
+    "motion": "rise",
+    "travel": 2.125
   },
   {
-    "at": 169.58,
+    "at": 164.943,
     "id": "o10",
     "x": 0.64,
     "y": 0.7,
     "w": 0.17,
     "h": 0.33,
-    "caption": "Pies nigdy jej nie uruchomił.",
-    "motion": "cut"
+    "caption": "Pies nigdy jej nie uruchomi\u0142.",
+    "motion": "cut",
+    "travel": 2.125
   },
   {
+    "at": 167.068,
     "id": "c002",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Tidal Loom",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 174.51
+    "travel": 2.125
   },
   {
+    "at": 175.568,
     "id": "o14",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Presence Rig",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 178.91
+    "travel": 2.119999999999976
   },
   {
+    "at": 184.063,
     "id": "c099",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Sleep Cocoon",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 183.11
+    "travel": 2.125
   },
   {
+    "at": 192.563,
     "id": "c042",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Wind Kite",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 188.45
+    "travel": 2.1325000000000216
   },
   {
-    "id": "c060",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Meeting Buoy",
-    "motion": "float",
-    "portrait": true,
-    "at": 192.58
-  },
-  {
-    "id": "c006",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Manta Foil",
-    "motion": "float",
-    "portrait": true,
-    "at": 197.38
-  },
-  {
-    "at": 202.18,
+    "at": 201.109667,
     "id": "o04",
     "x": 0.44,
     "y": 0.45,
     "w": 0.18,
     "h": 0.4,
-    "caption": "Twój trawnik: o 4% bardziej zielony.",
+    "caption": "Tw\u00f3j trawnik: o 4% bardziej zielony.",
     "motion": "cut",
-    "chapter": "Sąsiedzi"
+    "chapter": "S\u0105siedzi",
+    "travel": 2.1466660000000104
   },
   {
-    "at": 207.98,
+    "at": 203.256333,
     "id": "o04",
     "x": 0.535,
     "y": 0.36,
     "w": 0.22,
     "h": 0.55,
-    "caption": "Punkt odniesienia? Sąsiad za płotem.",
-    "motion": "cut"
+    "caption": "Punkt odniesienia? S\u0105siad za p\u0142otem.",
+    "motion": "cut",
+    "travel": 2.1466669999999795
   },
   {
-    "at": 213.31,
+    "at": 207.551,
     "id": "o04",
     "x": 0.556,
     "y": 0.565,
     "w": 0.15,
     "h": 0.32,
-    "caption": "Jego krasnal też ma kamerę.",
-    "motion": "cut"
+    "caption": "Jego krasnal te\u017c ma kamer\u0119.",
+    "motion": "cut",
+    "travel": 2.1520000000000152
   },
   {
+    "at": 209.703,
     "id": "c065",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Seam Surgeon",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 218.45
+    "travel": 2.1450000000000102
   },
   {
+    "at": 218.283,
     "id": "o12",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Volumetric Stage",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 222.45
+    "travel": 2.1450000000000102
   },
   {
+    "at": 226.858,
     "id": "o08",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Aroma Organ",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 227.38
+    "travel": 2.1299999999999955
   },
   {
+    "at": 235.378,
     "id": "c038",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Quiet Stair",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 232.31
+    "travel": 2.130000000000024
   },
   {
+    "at": 243.908,
     "id": "c101",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Velvet Hammer",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 236.58
+    "travel": 2.1350000000000193
   },
   {
-    "id": "c103",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Bubble Bailiff",
-    "motion": "float",
-    "portrait": true,
-    "at": 241.38
-  },
-  {
-    "at": 246.18,
+    "at": 252.443,
     "id": "c001",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "A tu można zwolnić.",
+    "caption": "A tu mo\u017cna zwolni\u0107.",
     "motion": "cut",
-    "chapter": "Oddech"
+    "chapter": "Oddech",
+    "travel": 2.125
   },
   {
-    "at": 251.91,
+    "at": 254.568,
     "id": "c001",
     "x": 0.51,
     "y": 0.46,
     "w": 0.44,
     "h": 0.82,
-    "caption": "Ten żagiel popycha światło.",
-    "motion": "float"
+    "caption": "Ten \u017cagiel popycha \u015bwiat\u0142o.",
+    "motion": "float",
+    "travel": 2.1349999999999625
   },
   {
-    "at": 256.85,
+    "at": 258.828,
     "id": "c001",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "Wybierz swoje akwarium. Zostań na chwilę.",
-    "motion": "cut"
+    "caption": "Wybierz swoje akwarium. Zosta\u0144 na chwil\u0119.",
+    "motion": "cut",
+    "travel": 2.132000000000005
   },
   {
+    "at": 260.96,
     "id": "c104",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Key Concord",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 262.05
+    "travel": 2.1380000000000337
   },
   {
+    "at": 269.488,
     "id": "c105",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Metric Embassy",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 266.45
+    "travel": 2.1299999999999955
   },
   {
-    "id": "c106",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Muon Customs",
-    "motion": "float",
-    "portrait": true,
-    "at": 270.71
-  },
-  {
+    "at": 278.033,
     "id": "c107",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Resonance Tailor",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 276.58
+    "travel": 2.134999999999991
   },
   {
-    "id": "c108",
-    "x": 0.5,
-    "y": 0.5,
-    "w": 1,
-    "h": 1,
-    "caption": "Suture Loom",
-    "motion": "float",
-    "portrait": true,
-    "at": 280.31
-  },
-  {
+    "at": 286.573,
     "id": "c110",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
     "caption": "Spin Table",
-    "motion": "float",
+    "motion": "cut",
     "portrait": true,
-    "at": 284.98
+    "travel": 2.133000000000038
   },
   {
+    "at": 295.129436,
     "id": "c001",
     "x": 0.5,
     "y": 0.5,
     "w": 1,
     "h": 1,
-    "caption": "Przyszłość ma miejsce na dobrą zabawę.",
-    "chapter": "Finał",
-    "motion": "float",
-    "at": 289.91
+    "caption": "Przysz\u0142o\u015b\u0107 ma miejsce na dobr\u0105 zabaw\u0119.",
+    "chapter": "Fina\u0142",
+    "motion": "float"
   }
 ]

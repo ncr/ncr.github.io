@@ -1,5 +1,6 @@
 // Offline preparation. No geometry sorting, stroke search or spring integration in playback.
 import fs from 'node:fs';import {createHash} from 'node:crypto';import path from 'node:path';import * as THREE from '../site/node_modules/three/build/three.module.js';
+import {inkTime} from '../site/src/scripts/musical-motion.js';
 import {createOperator} from '../site/src/scripts/camera-operator.js';
 const root=path.resolve(import.meta.dirname,'..'),folder=path.join(root,'site/public/gallery/destiny/film-data');fs.mkdirSync(folder,{recursive:true});
 const read=p=>JSON.parse(fs.readFileSync(path.join(root,p))),score=read('site/src/data/drawing-score.json'),beats=read('site/src/data/bass-beats.json').beats,introFrames={},filmAssets={};
@@ -26,14 +27,14 @@ for(const id of new Set(score.map(s=>s.id))){
  const append=(v,itemSize)=>{const a=new Float32Array(v),d={offset,count:a.length,itemSize};chunks.push(Buffer.from(a.buffer));offset+=a.length;return d;};
  for(const [k,a]of Object.entries(attrs))meta.attributes[k]=append(a,k==='position'||k==='inkColor'?3:1);
  for(const plan of score.filter(s=>s.id===id)){
-  const duration=plan.end-plan.start,leadIndex=plan.leadName?heroes.findIndex(s=>s.path.name===plan.leadName):plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1,beats);
+  const duration=plan.end-plan.start+(plan.tail||0),leadIndex=plan.leadName?heroes.findIndex(s=>s.path.name===plan.leadName):plan.seed%heroes.length,hero=heroes[leadIndex],operator=createOperator(t=>sample(hero,(t-plan.leadStart)/(plan.leadEnd-plan.leadStart)),plan,1,beats);
   if(plan.intro){const q=sample(hero,.18),reg=data.registration;introFrames[plan.start]={x:(reg.center[0]+q.x*reg.unit)/2560,y:(reg.center[1]-q.y*reg.unit)/1080,w:plan.framing.w*.23,h:plan.framing.h*.23};}
   const camera=[],cameraFPS=90,penFPS=60,rows=Math.ceil(duration*penFPS)+2;
   for(let i=0;i<=Math.ceil(duration*cameraFPS)+1;i++)camera.push(...operator(i/cameraFPS));
-  const penRows=lanes.length,choirWindows=choir.map((_,i)=>[plan.leadStart+(i-2)*.065,plan.leadEnd]);
+  const penRows=lanes.length,choirWindows=choir.map((_,i)=>[plan.beats?plan.beats[0]+(plan.beats[1]-plan.beats[0])*(i%3)*.5:plan.leadStart+(i-2)*.065,plan.leadEnd]);
   const texture=new Float32Array(rows*penRows*4);
   for(let lane=0;lane<penRows;lane++)for(let i=0;i<rows;i++){
-   const t=i/penFPS,progress=clamp(t/plan.leadEnd),phase=s=>lane>=20?(t-choirWindows[lane-20][0])/(choirWindows[lane-20][1]-choirWindows[lane-20][0]):s===hero?(t-plan.leadStart)/(plan.leadEnd-plan.leadStart):(progress-s.start)/(s.end-s.start),s=pens[lane]?.find(s=>phase(s)>=0&&phase(s)<1);
+   const t=inkTime(plan,i/penFPS),progress=clamp(t/plan.leadEnd),phase=s=>lane>=20?(t-choirWindows[lane-20][0])/(choirWindows[lane-20][1]-choirWindows[lane-20][0]):s===hero?(t-plan.leadStart)/(plan.leadEnd-plan.leadStart):(progress-s.start)/(s.end-s.start),s=pens[lane]?.find(s=>phase(s)>=0&&phase(s)<1);
    if(s){const q=sample(s,phase(s));texture.set([q.x,q.y,q.z,s.uid],(lane*rows+i)*4);}
   }
   meta.plans[plan.start]={camera:append(camera,7),pens:append(texture,4),cameraFPS,penFPS,penWidth:rows,leadIndex,...(choir.length?{penRows,choirWindows,choirNames:choir.map(p=>p.name),mutedHero:choir.includes(hero.path)?14+leadIndex:-1}: {})};

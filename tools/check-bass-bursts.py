@@ -23,18 +23,18 @@ try:
    page.wait_for_function('document.querySelector(".fusion-flight")?.dataset.drawing==="o01"');page.wait_for_timeout(80)
    return page.locator('.fusion-flight').screenshot()
   deltas=[]
-  # Attack near 24.353s, then a genuine gap long enough for all sparks to expire.
-  for t in [24.46,24.82]:
+  # Attack near 31.338s, then a genuine gap long enough for all sparks to expire.
+  for t in [31.45,31.81]:
    quiet=frame(t,False);lit=frame(t,True)
    a=np.asarray(Image.open(io.BytesIO(quiet))).astype(float);b=np.asarray(Image.open(io.BytesIO(lit))).astype(float)
    changed=int(np.count_nonzero(np.max(np.abs(a-b),axis=2)>5));deltas.append(changed)
    Path(f'/tmp/destiny-blog-review/bass-burst-{t}.png').write_bytes(lit)
   assert deltas[0]>30 and deltas[1]==0,deltas
   assert frame(14,False)==frame(14,True),'Intro must keep bass particles in reserve'
-  assert frame(24.46,True)==frame(24.46,True),'Burst must be deterministic at a fixed soundtrack time'
-  seek(22.3);start=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'));seek(23.7);end=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'));assert end<start*.98
+  assert frame(31.45,True)==frame(31.45,True),'Burst must be deterministic at a fixed soundtrack time'
+  seek(24.1);start=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'));seek(29.9);end=float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'));assert end<start*.98
   page.screenshot(path='/tmp/destiny-blog-review/slow-overview.png')
-  page.emulate_media(reduced_motion='reduce');seek(22.3);a=page.locator('.viewer-canvas').get_attribute('data-paper-scale');seek(23.7);assert page.locator('.viewer-canvas').get_attribute('data-paper-scale')==a
+  page.emulate_media(reduced_motion='reduce');seek(24.1);a=page.locator('.viewer-canvas').get_attribute('data-paper-scale');seek(29.9);assert page.locator('.viewer-canvas').get_attribute('data-paper-scale')==a
   assert not errors,errors;browser.close();print('PASS: attack/gap changed pixels',deltas,'; overview scale',start,'→',end,'; reduced motion stays static')
 finally:
  if server:server.shutdown()

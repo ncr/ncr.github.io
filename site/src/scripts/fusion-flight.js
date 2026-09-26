@@ -1,9 +1,12 @@
 import * as THREE from 'three';
 import timing from '../data/flight-timing.json';
 import drawingScore from '../data/drawing-score.json';
+import musicGrid from '../data/music-grid.json';
+import {inkTime,pullAt,smoother,beatAt} from './musical-motion.js';
 import filmAssets from '../data/film-assets.json';
 import {bassAttacksAt} from './bass-particles.js';
 
+const orbitPlan={beats:timing.beats.map(t=>t-timing.orbit)};
 const clamp=t=>THREE.MathUtils.clamp(t,0,1);
 const smooth=t=>{t=clamp(t);return t*t*(3-2*t);};
 const landingUniforms=`uniform float landing;uniform vec2 paperOrigin;uniform vec2 paperX;uniform vec2 paperY;`;
@@ -74,7 +77,7 @@ export function createFlight(host,onReady=()=>{}){
  const paperMaterial=new THREE.ShaderMaterial({uniforms:{paper:{value:new THREE.Vector3(.1,.05,.05)}},vertexShader:`varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform vec3 paper;varying vec2 v;void main(){float grain=fract(sin(dot(v,vec2(127.1,311.7)))*43758.5453);float light=exp(-length((v-.5)*2.)*2.);gl_FragColor=vec4(paper*(.66+light*.5)+(grain-.5)*.008,1.);}`});
  const board=new THREE.Mesh(new THREE.PlaneGeometry(3500,2500),paperMaterial);board.position.z=-25;scene.add(board);
  // Only the three introductory close-up cuts use this GPU-only dissolve.
- // Render the outgoing pose once into a texture: no screenshot/readback or second live scene.
+ // Both baked poses keep moving during the long intro dissolve; no CPU readback.
  const cutScene=new THREE.Scene(),cutCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
  const cutMaterial=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,uniforms:{before:{value:null},after:{value:null},blend:{value:1}},vertexShader:`varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}`,fragmentShader:`uniform sampler2D before;uniform sampler2D after;uniform float blend;varying vec2 uv0;void main(){gl_FragColor=mix(texture2D(before,uv0),texture2D(after,uv0),blend);}`});
  cutScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),cutMaterial));renderer.compile(cutScene,cutCamera);
@@ -132,14 +135,14 @@ export function createFlight(host,onReady=()=>{}){
    let introBlend=false,blend=1;
    if(!internal){
     host.dataset.liveBlend='0';
-    if(passage?.intro&&passage.start>0&&time-passage.start<.85){
+    if(passage?.intro&&passage.start>0&&time-passage.start<musicGrid.introDissolve){
      const prior=drawingScore.find(p=>p.end===passage.start);
      if(prior){prepare(prior.id);if(cache.has(prior.id)&&cache.has(passage.id)){
       cutTargets(w,h);const key=passage.start+':'+cutSize;
-      if(cutKey!==key){renderer.setRenderTarget(cutBefore);render(prior.end-.001,prior,paperFrame,true);renderer.setRenderTarget(null);cutKey=key;}
-      introBlend=true;blend=smooth((time-passage.start)/.85);host.dataset.liveBlend='1';host.dataset.introBlend=blend.toFixed(4);if(fallbackBridge)fallbackBridge.hidden=true;
+      renderer.setRenderTarget(cutBefore);render(prior.end+(time-passage.start),prior,paperFrame,true);renderer.setRenderTarget(null);cutKey=key;
+      introBlend=true;blend=smoother((time-passage.start)/musicGrid.introDissolve);host.dataset.liveBlend='1';host.dataset.introBlend=blend.toFixed(4);if(fallbackBridge)fallbackBridge.hidden=true;
      }}
-    }else if(time>=23.85&&cutBefore){cutBefore.dispose();cutAfter.dispose();cutBefore=cutAfter=null;cutSize='';cutKey='';}
+    }else if(time>=musicGrid.entrance&&cutBefore){cutBefore.dispose();cutAfter.dispose();cutBefore=cutAfter=null;cutSize='';cutKey='';}
    }
    const now=performance.now(),dt=Math.min(.05,(now-previousFrame)/1000||.016);previousFrame=now;
    for(let i=0;i<16;i++){const target=energy.active?(energy.spectrum?.[i]??[energy.bass,energy.mids,energy.highs][Math.min(2,Math.floor(i/6))]):0;spectrum[i]+=(target-spectrum[i])*(1-Math.exp(-dt/(target>spectrum[i]?(i<6?.055:.025):(i<6?.18:.075))));}
@@ -151,31 +154,31 @@ export function createFlight(host,onReady=()=>{}){
    if(orbiting){
      prepareNozzle();if(!nozzleReady){hide();return false;}detail.children[0].material.uniforms.levels.value.set(energy.active?energy.bass:.6,energy.active?energy.mids:.6,energy.active?energy.highs:.6);
      renderer.setClearColor(0x100c10,1);element.style.filter='none';
-     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,u=clamp(elapsed/duration),angle=-.8+u*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smooth(elapsed/1.7)));
+     const elapsed=time-timing.orbit,duration=timing.end-timing.orbit,b=beatAt(orbitPlan,elapsed),u=clamp((b-4)/8),angle=-.8+(u*.65+smoother(u)*.35)*Math.PI*1.4,radius=Math.max(220,135/camera.aspect)*(1+.35*(1-smoother(b/4))+.3*smoother((b-12)/4));
      camera.position.set(Math.sin(angle)*radius,45+40*Math.sin(u*Math.PI),Math.cos(angle)*radius);camera.lookAt(0,0,0);
-     element.style.opacity=String(smooth(elapsed/.5)*(1-smooth((elapsed-duration+.8)/.8)));element.dataset.drawing='nozzle-orbit';
+     element.style.opacity=String(smoother(b/2)*(1-smoother((b-12)/4)));element.dataset.drawing='nozzle-orbit';
    }else{
      if(!passage){hide();return false;}
      current=passage.id;prepare(current);const sheet=cache.get(current);if(!sheet){hide();return false;}
      sheet.group.visible=true;
      const duration=passage.end-passage.start,elapsed=time-passage.start,u=clamp(elapsed/duration);
-     const drawDuration=passage.leadEnd,progress=clamp(elapsed/drawDuration);
+     const drawDuration=passage.leadEnd,musicalElapsed=inkTime(passage,elapsed),progress=clamp(musicalElapsed/drawDuration);
      const plan=sheet.plans[passage.start],leadIndex=plan.leadIndex;
-     const leadProgress=clamp((elapsed-passage.leadStart)/(passage.leadEnd-passage.leadStart));
+     const leadProgress=clamp((musicalElapsed-passage.leadStart)/(passage.leadEnd-passage.leadStart));
      sheet.material.uniforms.leadIndex.value=leadIndex;sheet.material.uniforms.leadProgress.value=leadProgress;sheet.material.uniforms.progress.value=progress;sheet.material.uniforms.pulse.value=energy.active?energy.bass:0;
      sheet.material.uniforms.audible.value=energy.active?1:0;
-     if(plan.choirWindows)for(let v=0;v<6;v++){const [start,end]=plan.choirWindows[v];sheet.material.uniforms.choirProgress.value[v]=clamp((elapsed-start)/(end-start));}
+     if(plan.choirWindows)for(let v=0;v<6;v++){const [start,end]=plan.choirWindows[v];sheet.material.uniforms.choirProgress.value[v]=clamp((musicalElapsed-start)/(end-start));}
      sheet.pm.uniforms.mutedHero.value=plan.mutedHero??-1;
-     bassAttacksAt(time,energy.active&&time>=20.443,beatFrame);
+     bassAttacksAt(time,energy.active&&time>=musicGrid.entrance,beatFrame);
      sheet.pm.uniforms.beatTimes.value.set(beatFrame[0]-passage.start,beatFrame[2]-passage.start);
      sheet.pm.uniforms.beatStrengths.value.set(beatFrame[1],beatFrame[3]);
      sheet.pm.uniforms.penTable.value=plan.texture;sheet.pm.uniforms.tableSize.value.set(plan.penWidth,plan.penRows||20);sheet.pm.uniforms.elapsed.value=elapsed;sheet.pm.uniforms.audible.value=energy.active?1:0;
      const paper=sheet.data.paper;paperMaterial.uniforms.paper.value.set(paper[0]/255,paper[1]/255,paper[2]/255);renderer.setClearColor(new THREE.Color(paper[0]/255,paper[1]/255,paper[2]/255),1);
      const [bw,bh]=sheet.data.size,fit=Math.max(bh/2,bw/(2*camera.aspect))/Math.tan(24*Math.PI/180)*1.22;
-     const at=clamp(elapsed/duration)*duration*plan.cameraFPS,i=Math.min(plan.camera.length/7-2,Math.floor(at)),uPose=at-i;
+     const at=Math.min(elapsed,duration+(passage.tail||0))*plan.cameraFPS,i=Math.min(plan.camera.length/7-2,Math.floor(at)),uPose=at-i;
      for(let j=0;j<7;j++)pose[j]=plan.camera[i*7+j]+(plan.camera[(i+1)*7+j]-plan.camera[i*7+j])*uPose;
      camera.position.set(pose[0],pose[1],pose[2]*fit);camera.up.set(Math.sin(pose[6]),Math.cos(pose[6]),0);camera.lookAt(pose[3],pose[4],pose[5]);
-     const pull=clamp((elapsed-passage.followEnd)/(passage.holdStart-passage.followEnd));
+     const pull=pullAt(passage,elapsed);
      // Register early in the retreat; both layers keep pulling back together while dissolving.
      const registration=sheet.data.registration;
      let landed=0,fade=0;
@@ -186,15 +189,16 @@ export function createFlight(host,onReady=()=>{}){
        sheet.placement.paperOrigin.value.set(2*(c*dx-sn*dy)/w,-2*(sn*dx+c*dy)/h);
        sheet.placement.paperX.value.set(2*c*unit/w,-2*sn*unit/h);
        sheet.placement.paperY.value.set(2*sn*unit/w,2*c*unit/h);
-       landed=smooth(pull/.46);
-       fade=smooth((pull-.45)/.47);
-     }else fade=smooth((pull-.45)/.47);
+       landed=smoother(pull/.5);
+       fade=smoother((pull-.5)/.5);
+     }else fade=smoother((pull-.5)/.5);
      sheet.placement.landing.value=landed;
-     element.style.opacity=String((passage.intro?1:smooth(elapsed/.32))*(1-fade));
+     element.style.opacity=String((passage.intro?1:smoother(elapsed/(passage.beats?.[1]||.32)))*(1-fade));
      // A subpixel focus dissolve softens tiny differences in ink/antialiasing only.
      element.style.filter=fade>0?`blur(${(.65*Math.sin(fade*Math.PI)).toFixed(3)}px)`:'none';
      element.dataset.landing=landed.toFixed(4);element.dataset.dissolve=fade.toFixed(4);
      element.dataset.phase=elapsed>=passage.holdStart?'hold':elapsed>=passage.followEnd?'pull':'follow';
+     element.dataset.beat=String(beatAt(passage,elapsed));element.dataset.phrase=String(passage.phrase??-1);
      element.dataset.range=(camera.position.z/fit).toFixed(4);element.dataset.leadProgress=leadProgress.toFixed(4);
      camera.updateMatrixWorld();const table=plan.texture.image.data,px=Math.min(plan.penWidth-1,Math.floor(elapsed*plan.penFPS)),off=((14+leadIndex)*plan.penWidth+px)*4;
      const penInFrame=new THREE.Vector3(table[off],table[off+1],table[off+2]).project(camera);element.dataset.followError=Math.hypot(penInFrame.x,penInFrame.y).toFixed(4);

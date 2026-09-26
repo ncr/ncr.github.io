@@ -26,7 +26,7 @@ try:
    page.locator('.tour-seek').fill(f'{t:.2f}'.rstrip('0').rstrip('.'));page.locator('.tour-seek').dispatch_event('input')
   for shot in score:
    pull=shot['holdStart']-shot['followEnd']
-   follow=shot['establish']+(shot['followEnd']-shot['establish'])*.7
+   follow=(shot['end']-shot['start'])*.6 if shot.get('mystery') else shot['establish']+(shot['followEnd']-shot['establish'])*.7
    seek(round(shot['start']+follow,2))
    page.wait_for_function('(id)=>{const c=document.querySelector(".fusion-flight");return c?.dataset.drawing===id&&getComputedStyle(c).display!=="none"}',arg=shot['id'])
    close=page.locator('.fusion-flight').evaluate('(e)=>({range:Number(e.dataset.range),lead:Number(e.dataset.leadProgress),error:Number(e.dataset.followError)})')
@@ -35,9 +35,9 @@ try:
     for at in [shot['start']+.03,shot['end']-.03]:
      seek(round(at,2));assert page.locator('.fusion-flight').evaluate('(e)=>Number(e.dataset.range)<.23&&Number(e.dataset.dissolve)===0&&Number(e.style.opacity)===1')
     continue
-   seek(round(shot['start']+shot['followEnd']+pull*.685,2))
+   seek(round(shot['start']+shot['followEnd']+pull*.75,2))
    state=page.locator('.fusion-flight').evaluate('(e)=>({landing:Number(e.dataset.landing),dissolve:Number(e.dataset.dissolve),opacity:Number(e.style.opacity)})')
-   assert state['landing']==1 and .45<state['dissolve']<.55,(shot,state)
+   assert state['landing']==1 and .42<state['dissolve']<.58,(shot,state)
    scale=page.locator('.viewer-canvas').get_attribute('data-paper-scale')
    seek(round(shot['start']+shot['followEnd']+pull*.83,2))
    assert float(page.locator('.viewer-canvas').get_attribute('data-paper-scale'))<float(scale)*.99,'Dissolve must still move outward'
@@ -56,7 +56,7 @@ try:
   assert first==page.locator('.fusion-flight').screenshot(),'Seeking to the same clock must reproduce the same drawing/particles'
   page.locator('.viewer-fx').click();assert not page.locator('.fusion-flight').is_visible()
   page.locator('.viewer-fx').click();assert page.locator('.fusion-flight').is_visible()
-  page.set_viewport_size({'width':390,'height':844});seek(54)
+  page.set_viewport_size({'width':390,'height':844});seek(67)
   page.wait_for_function('document.querySelector(".fusion-flight").dataset.drawing==="o13"')
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
   page.emulate_media(reduced_motion='reduce');page.wait_for_function('getComputedStyle(document.querySelector(".fusion-flight")).display==="none"')
