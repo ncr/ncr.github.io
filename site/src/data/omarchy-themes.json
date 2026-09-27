@@ -1,132 +1,168 @@
 [
   {
+    "name": "p-bloom",
+    "label": "p(bloom)",
+    "mode": "dark",
+    "bg": "#090d16",
+    "accent": "#4cc9ff"
+  },
+  {
+    "name": "classic",
+    "label": "classic",
+    "mode": "light",
+    "bg": "#ffffff",
+    "accent": "#0044cc"
+  },
+  {
     "name": "catppuccin",
+    "label": "catppuccin",
     "mode": "dark",
     "bg": "#1e1e2e",
     "accent": "#89b4fa"
   },
   {
     "name": "catppuccin-latte",
+    "label": "catppuccin-latte",
     "mode": "light",
     "bg": "#eff1f5",
     "accent": "#1e66f5"
   },
   {
     "name": "ethereal",
+    "label": "ethereal",
     "mode": "dark",
     "bg": "#060B1E",
     "accent": "#7d82d9"
   },
   {
     "name": "everforest",
+    "label": "everforest",
     "mode": "dark",
     "bg": "#2d353b",
     "accent": "#7fbbb3"
   },
   {
     "name": "flexoki-light",
+    "label": "flexoki-light",
     "mode": "light",
     "bg": "#FFFCF0",
     "accent": "#205EA6"
   },
   {
     "name": "gruvbox",
+    "label": "gruvbox",
     "mode": "dark",
     "bg": "#282828",
     "accent": "#7daea3"
   },
   {
     "name": "hackerman",
+    "label": "hackerman",
     "mode": "dark",
     "bg": "#0B0C16",
     "accent": "#82FB9C"
   },
   {
     "name": "kanagawa",
+    "label": "kanagawa",
     "mode": "dark",
     "bg": "#1f1f28",
     "accent": "#dcd7ba"
   },
   {
     "name": "last-horizon",
+    "label": "last-horizon",
     "mode": "dark",
     "bg": "#0c0b0c",
     "accent": "#b59790"
   },
   {
     "name": "lumon",
+    "label": "lumon",
     "mode": "dark",
     "bg": "#16242d",
     "accent": "#8bc9eb"
   },
   {
     "name": "lupine",
+    "label": "lupine",
     "mode": "light",
     "bg": "#fafafa",
     "accent": "#3264eb"
   },
   {
     "name": "matte-black",
+    "label": "matte-black",
     "mode": "dark",
     "bg": "#121212",
     "accent": "#e68e0d"
   },
   {
     "name": "miasma",
+    "label": "miasma",
     "mode": "dark",
     "bg": "#222222",
     "accent": "#78824b"
   },
   {
     "name": "nord",
+    "label": "nord",
     "mode": "dark",
     "bg": "#2e3440",
     "accent": "#81a1c1"
   },
   {
     "name": "osaka-jade",
+    "label": "osaka-jade",
     "mode": "dark",
     "bg": "#111c18",
     "accent": "#509475"
   },
   {
     "name": "retro-82",
+    "label": "retro-82",
     "mode": "dark",
     "bg": "#05182e",
     "accent": "#faa968"
   },
   {
     "name": "ristretto",
+    "label": "ristretto",
     "mode": "dark",
     "bg": "#2c2525",
     "accent": "#f38d70"
   },
   {
     "name": "rose-pine",
+    "label": "rose-pine",
     "mode": "light",
     "bg": "#faf4ed",
     "accent": "#56949f"
   },
   {
     "name": "solitude",
+    "label": "solitude",
     "mode": "dark",
     "bg": "#101315",
     "accent": "#798186"
   },
   {
     "name": "tokyo-night",
+    "label": "tokyo-night",
     "mode": "dark",
     "bg": "#1a1b26",
     "accent": "#7aa2f7"
   },
   {
     "name": "vantablack",
+    "label": "vantablack",
     "mode": "dark",
     "bg": "#000000",
     "accent": "#8d8d8d"
   },
   {
     "name": "white",
+    "label": "white",
     "mode": "light",
     "bg": "#ffffff",
     "accent": "#6e6e6e"
