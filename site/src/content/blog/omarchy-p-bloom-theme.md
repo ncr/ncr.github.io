@@ -1,7 +1,7 @@
 ---
 title: What a Great Time to Be Alive
 date: 2026-09-26
-description: A theme for Omarchy with 42 wallpapers of machines from a hopeful future, and a music video that took three tries.
+description: A theme for Omarchy with 42 wallpapers of machines from a hopeful future, and a music video.
 draft: true
 ---
 
@@ -35,11 +35,11 @@ a small mechanism or a caption worth reading.
 
 </div>
 
-The music video took three tries. Astra built the first one, a five-minute
-film where laser pens draw every machine to the beat, and it moved like a
-wooden puppet. Opus rebuilt it around the song without needing any
-hand-holding. Then three fresh Opus agents each made their own, and I picked
-the third.
+I started with Astra, first on the wallpapers and then on the music video.
+It was slow going: a lot of hand-holding, constant corrections and
+back-and-forth prompting, and the motion design was weak. When I switched to
+Opus, it caught on quickly and made everything far more beautiful without me
+correcting every step. The video finally matched my vision.
 
 One person and a few agents made a theme, 42 wallpapers and a music video in
 nine days. I don't know what the next nine years will bring, but I'm betting
