@@ -5,16 +5,31 @@ import { site } from '../site'
 const posts = (await getCollection('blog', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5)
+// Names and status tags as on /projects/ (anchors match the ids there).
+const projects = [
+  { id: 'trixbrix', name: 'Trixbrix', status: 'active' },
+  { id: 'automat', name: 'Automat', status: 'active' },
+  { id: 'omaphones', name: 'Omaphones', status: 'active' },
+  { id: 'rack-proxy', name: 'rack-proxy', status: 'old, maintained' },
+]
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
 ---
 <Base home description={site.intro}>
   <p class="section-label">latest</p>
-  <ul class="postlist">
+  <ul class="postlist entries">
     {posts.map(p => (
       <li>
         <span class="date">{fmt(p.data.date)}</span>
-        <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+        <a class="title" href={`/blog/${p.id}/`}>{p.data.title}</a>
+        {p.data.description && <p class="desc">{p.data.description}</p>}
       </li>
+    ))}
+  </ul>
+
+  <p class="section-label"><a class="undecorated" href="/projects/">projects</a></p>
+  <ul class="teaser">
+    {projects.map(p => (
+      <li><a href={`/projects/#${p.id}`}>{p.name}</a><span class={`status ${p.status === 'active' ? 'active' : ''}`}>{p.status}</span></li>
     ))}
   </ul>
 </Base>

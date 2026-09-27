@@ -13,18 +13,18 @@ const bars = commits.map((c, i) => ({
 <Base title="Projects" description="Things I build and maintain.">
   <p class="section-label">projects</p>
 
-  <div class="project">
-    <h2><a href="https://trixbrix.eu">Trixbrix</a><span class="status">active</span></h2>
+  <section class="project" id="trixbrix">
+    <h2><a href="https://trixbrix.eu">Trixbrix</a><span class="status active">active</span></h2>
     <p>
       LEGO-compatible train tracks and accessories. I've been building the company
       and its manufacturing for years: a farm of hundreds of 3D printers, injection molding,
       UV printing, our own electronics, a webshop — everything needed to turn raw
       materials into parcels.
     </p>
-  </div>
+  </section>
 
-  <div class="project">
-    <h2>Automat<span class="status">active</span></h2>
+  <section class="project" id="automat">
+    <h2>Automat<span class="status active">active</span></h2>
     <p>
       The internal software that runs Trixbrix. It started in December 2017 with one
       question: how do you plan printing when orders are made of products, products
@@ -55,26 +55,29 @@ const bars = commits.map((c, i) => ({
     <p class="chart-caption">
       3,913 commits, monthly, 2017 → today. Guess when AI agents showed up.
     </p>
-  </div>
+  </section>
 
-  <div class="project">
-    <h2><a href="https://github.com/ncr/omarchy-headphones">Omaphones</a><span class="status">active</span></h2>
+  <section class="project" id="omaphones">
+    <h2><a href="https://github.com/ncr/omarchy-headphones">Omaphones</a><span class="status active">active</span></h2>
     <p>
       Headphone controls in the Omarchy bar: per-earbud battery over Google Fast Pair,
       noise-cancelling modes over protocols I had to reverse engineer first.
     </p>
-  </div>
+    <div class="figure">
+      <img src="/omaphones-light.webp" data-light="/omaphones-light.webp" data-dark="/omaphones-dark.webp" alt="Omaphones plugin in the Omarchy bar: per-earbud battery and listening modes" width="1406" height="656" loading="lazy" />
+    </div>
+  </section>
 
-  <div class="project">
+  <section class="project" id="rack-proxy">
     <h2><a href="https://github.com/ncr/rack-proxy">rack-proxy</a><span class="status">old, maintained</span></h2>
     <p>
       A small Ruby library I wrote years ago that accidentally became plumbing for
-      much bigger projects. By far my most downloaded code:
+      much bigger projects. By far my most downloaded code:{' '}
       <a href="https://rubygems.org/gems/rack-proxy">176 million downloads</a> on RubyGems.
     </p>
-  </div>
+  </section>
 
-  <div class="project">
+  <section class="project" id="electronics">
     <h2>Electronics</h2>
     <ul>
       <li>an SD card changer that batch-writes stacks of cards, swapping them automatically</li>
@@ -86,5 +89,5 @@ const bars = commits.map((c, i) => ({
       <li>a smartwatch that does exactly one thing: show telemetry from my Onewheel</li>
     </ul>
     <p>This list keeps growing.</p>
-  </div>
+  </section>
 </Base>
