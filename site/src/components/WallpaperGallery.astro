@@ -100,7 +100,7 @@ const clipDuration = 108.23
     }
 
     // ── Music video ──
-    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}split-signal-av-${big?'1080':'720'}p60.mp4?v=6`; } }
+    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}split-signal-av-${big?'1080':'720'}p60.mp4?v=7`; } }
     function progress() { if(!seeking) seek.value = String(mv.currentTime); seek.setAttribute('aria-valuetext', `${Math.floor(mv.currentTime/60)}:${String(Math.floor(mv.currentTime%60)).padStart(2,'0')}`); }
     function loop() { progress(); tick = mv.paused ? 0 : requestAnimationFrame(loop); }
     function playState() {
@@ -176,7 +176,7 @@ const clipDuration = 108.23
     function teaserFrameTick() { if(dialog.open || document.hidden) { stopTeaser(); return; } launch.querySelector('.teaser-progress').style.transform = `scaleX(${teaserVideo.currentTime/teaserVideo.duration||0})`; teaserTick = requestAnimationFrame(teaserFrameTick); }
     function startTeaser() {
       if(reduced.matches || dialog.open || teaserTick) return;
-      if(!teaserVideo) { teaserVideo = document.createElement('video'); teaserVideo.muted = true; teaserVideo.playsInline = true; teaserVideo.loop = true; teaserVideo.src = `${video}split-signal-av-720p60.mp4?v=6#t=35.8`; teaserFrame.replaceChildren(teaserVideo); }
+      if(!teaserVideo) { teaserVideo = document.createElement('video'); teaserVideo.muted = true; teaserVideo.playsInline = true; teaserVideo.loop = true; teaserVideo.src = `${video}split-signal-av-720p60.mp4?v=7#t=35.8`; teaserFrame.replaceChildren(teaserVideo); }
       teaser.hidden = false; launch.classList.add('is-previewing'); teaserVideo.play().catch(() => {}); teaserTick = requestAnimationFrame(teaserFrameTick);
     }
     launch.addEventListener('pointerenter', e => { if(e.pointerType === 'mouse') startTeaser(); });
