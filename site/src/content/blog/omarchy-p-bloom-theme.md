@@ -37,7 +37,7 @@ turn the colour down or up.
 I started with Astra. It was slow, needed constant corrections, and the
 motion design was weak. Opus caught on quickly and matched my vision.
 
-One person and a few agents made all this in ten days. I'm betting on bloom.
+I'm betting on bloom.
 
 p(bloom) >> p(doom). What a great time to be alive!
 
