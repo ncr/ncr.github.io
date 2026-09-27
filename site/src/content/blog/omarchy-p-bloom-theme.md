@@ -32,6 +32,20 @@ Each wallpaper is composed for every common screen, from 1080p to
 Releases. The p(bloom) Wallpapers app picks yours, downloads it and lets you
 turn the colour down or up.
 
+<div class="detail-pair">
+
+<figure class="figure detail-comparison">
+<p><strong>One 5K image, scaled to 1080p</strong></p>
+<a href="/draft-assets/destiny/res-scaled.png"><img src="/draft-assets/destiny/res-scaled.png" alt="The Fusion Transport caption on a 1920 × 1080 screen when the 5K wallpaper is scaled down: the smallest text is about 5 pixels tall and hard to read." width="560" height="315" loading="lazy" /></a>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Composed for 1080p</strong></p>
+<a href="/draft-assets/destiny/res-composed.png"><img src="/draft-assets/destiny/res-composed.png" alt="The same caption on the same screen from the set composed for 1920 × 1080: the smallest text is 11 pixels and sharp." width="560" height="315" loading="lazy" /></a>
+</figure>
+
+</div>
+
 I started with Astra. It was slow, needed constant corrections, and the
 motion design was weak. Opus caught on quickly and matched my vision.
 
