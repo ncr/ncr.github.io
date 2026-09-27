@@ -1,11 +1,12 @@
 ---
 import { site } from '../site'
-import ThemeDots from '../components/ThemeDots.astro'
+import ThemePicker from '../components/ThemePicker.astro'
 interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string }
 const { title, description, home = false, lang = "en", robots } = Astro.props
 const pageTitle = title ? `${title} — ${site.name}` : site.name
 const cssv = import.meta.env.CSSV || Date.now().toString(36)
 const Name = home ? 'h1' : 'p'
+const path = Astro.url.pathname
 const links = [
   { href: '/writing/', label: 'writing' },
   { href: '/projects/', label: 'projects' },
@@ -29,6 +30,8 @@ const links = [
         if (m && m[1] !== 'auto') document.documentElement.dataset.theme = m[1]
       })()
     </script>
+    <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <link rel="stylesheet" href={`/styles.css?v=${cssv}`} />
     <link rel="stylesheet" href={`/themes.css?v=${cssv}`} />
     <link rel="icon" href={site.avatar} />
@@ -39,37 +42,44 @@ const links = [
       <header class="masthead">
         <div class="who">
           <a class="undecorated who-link" href="/">
-            <img class="avatar" src={site.avatar} alt="" width="48" height="48" />
+            <img class="avatar" src={site.avatar} alt="" width="36" height="36" />
             <Name class="name">{site.name}</Name>
           </a>
-          <ThemeDots />
-          <slot name="header-tools" />
         </div>
-        {home && <p class="intro">{site.intro}</p>}
-        <nav class="nav">
-          {links.map((l, i) => (
-            <>
-              {i > 0 && <span class="sep">{' / '}</span>}
-              <a href={l.href}>{l.label}</a>
-            </>
+        <nav class="nav" aria-label="Site">
+          {links.map(l => (
+            <a href={l.href} aria-current={path.startsWith(l.href) || (l.href === '/writing/' && path.startsWith('/blog/')) ? 'page' : undefined}>{l.label}</a>
           ))}
         </nav>
+        <div class="tools">
+          <slot name="header-tools" />
+          <ThemePicker />
+        </div>
         <slot name="header-player" />
       </header>
+      {home && <p class="intro">{site.intro}</p>}
       <main>
         <slot />
       </main>
       <footer class="footer">
-        <a href="/rss.xml">rss</a> · since 2026
+        <span>{site.name}</span>
+        <span><a href="/rss.xml">rss</a> · since 2026</span>
       </footer>
     </div>
     <script>
       const root = document.documentElement
-      const dock = document.querySelector('.theme-line')!
-      const buttons = dock.querySelectorAll<HTMLButtonElement>('button[data-value]')
-      const mark = (v: string) => buttons.forEach(b => b.classList.toggle('on', b.dataset.value === v))
-      const saved = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
-      mark(saved ? saved[1] : 'auto')
+      // No cookie (or the old value 'auto') = auto: follow the system (styles.css).
+      const AUTO = 'auto'
+      const picker = document.querySelector('.theme-picker')!
+      const toggle = picker.querySelector<HTMLButtonElement>('.theme-toggle')!
+      const menu = picker.querySelector<HTMLElement>('.theme-menu')!
+      const buttons = [...menu.querySelectorAll<HTMLButtonElement>('button[data-value]')]
+      const current = () => {
+        const m = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
+        return m ? m[1] : AUTO
+      }
+      const mark = (v: string) => buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.value === v)))
+      mark(current())
       // Images with data-light/data-dark follow the active theme's color-scheme.
       const themeImages = () => {
         const dark = getComputedStyle(root).colorScheme.includes('dark')
@@ -79,14 +89,55 @@ const links = [
         })
       }
       themeImages()
-      buttons.forEach(b => b.addEventListener('click', () => {
-        const v = b.dataset.value!
-        document.cookie = `site_theme=${v};max-age=31536000;path=/;samesite=lax`
-        if (v === 'auto') delete root.dataset.theme
-        else root.dataset.theme = v
+      // In auto, follow live system switches too.
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { themeImages(); themeColor() })
+      // Browser chrome (mobile address bar) follows the page background.
+      const themeColor = () => document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', getComputedStyle(document.body).backgroundColor))
+      themeColor()
+      const apply = (v: string) => {
+        if (v === AUTO) {
+          document.cookie = 'site_theme=;max-age=0;path=/;samesite=lax'
+          delete root.dataset.theme
+        } else {
+          document.cookie = `site_theme=${v};max-age=31536000;path=/;samesite=lax`
+          root.dataset.theme = v
+        }
         mark(v)
         themeImages()
-      }))
+        themeColor()
+      }
+      const open = (yes: boolean, focus = true) => {
+        menu.hidden = !yes
+        toggle.setAttribute('aria-expanded', String(yes))
+        if (yes && focus) (buttons.find(b => b.getAttribute('aria-pressed') === 'true') || buttons[0]).focus()
+        else if (!yes && focus) toggle.focus()
+      }
+      toggle.addEventListener('click', () => open(menu.hidden))
+      buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.value!)))
+      // Keyboard: arrows move through the palettes (two columns), Esc closes.
+      menu.addEventListener('keydown', e => {
+        const i = buttons.indexOf(document.activeElement as HTMLButtonElement)
+        if (e.key === 'Escape') { e.preventDefault(); open(false) }
+        else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); buttons[e.key === 'Home' ? 0 : buttons.length - 1].focus() }
+        else if (i >= 0 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+          e.preventDefault()
+          buttons[Math.min(buttons.length - 1, Math.max(0, i + (e.key === 'ArrowRight' ? 1 : -1)))].focus()
+        } else if (i >= 0 && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+          // Nearest button in the next row down/up, by position (rows differ in width).
+          e.preventDefault()
+          const r = buttons[i].getBoundingClientRect(), down = e.key === 'ArrowDown'
+          const rows = buttons.map(b => b.getBoundingClientRect()).map((q, j) => ({ j, q }))
+            .filter(({ q }) => down ? q.top >= r.bottom - 1 : q.bottom <= r.top + 1)
+          if (rows.length) {
+            const edge = down ? Math.min(...rows.map(x => x.q.top)) : Math.max(...rows.map(x => x.q.top))
+            const row = rows.filter(x => Math.abs(x.q.top - edge) < 2)
+            row.sort((a, b) => Math.abs(a.q.left - r.left) - Math.abs(b.q.left - r.left))
+            buttons[row[0].j].focus()
+          }
+        }
+      })
+      document.addEventListener('click', e => { if (!menu.hidden && !picker.contains(e.target as Node)) open(false, false) })
+      picker.addEventListener('focusout', e => { if (!menu.hidden && !picker.contains(e.relatedTarget as Node | null) && e.relatedTarget) open(false, false) })
     </script>
   </body>
 </html>

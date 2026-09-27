@@ -1,7 +1,14 @@
 // Reads Omarchy theme palettes from a local Omarchy install and emits:
-//   src/data/omarchy-themes.json  (names + modes, for the <select>)
+//   src/data/omarchy-themes.json  (names + modes + swatch colours, for the theme picker)
 //   public/themes.css             (one :root[data-theme=...] block per theme)
 // Run manually after an Omarchy update: node scripts/build-themes.mjs
+//
+// PINNED themes come first and are not read from the Omarchy install:
+//   p-bloom — default on dark systems (same values as :root in public/styles.css),
+//             from ~/dev/omarchy-destiny-theme/colors.toml. muted is
+//             dark_foreground (5.5:1 on the ground), code-bg lighter_background.
+//   classic — the original light look, default on light systems (also in the
+//             prefers-color-scheme: light block of public/styles.css).
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -16,8 +23,20 @@ const parse = toml => {
   return out
 }
 
-const themes = []
+const PINNED = [
+  {
+    name: 'p-bloom', label: 'p(bloom)', mode: 'dark',
+    tokens: { bg: '#090d16', fg: '#d9e8ff', muted: '#7389ad', link: '#4cc9ff', hairline: '#1f3a5f', 'code-bg': '#121a2a' },
+  },
+  {
+    name: 'classic', label: 'classic', mode: 'light',
+    tokens: { bg: '#ffffff', fg: '#1c1c1c', muted: '#6f6f6f', link: '#0044cc', hairline: '#e2e2e2', 'code-bg': '#f4f4f4' },
+  },
+]
+
+const themes = [...PINNED]
 for (const name of readdirSync(THEMES_DIR).sort()) {
+  if (PINNED.some(t => t.name === name)) continue
   const file = join(THEMES_DIR, name, 'colors.toml')
   if (!existsSync(file)) continue
   const c = parse(readFileSync(file, 'utf8'))
@@ -25,6 +44,7 @@ for (const name of readdirSync(THEMES_DIR).sort()) {
   const dark = c.mode !== 'light'
   themes.push({
     name,
+    label: name,
     mode: dark ? 'dark' : 'light',
     tokens: {
       bg: c.background,
@@ -46,5 +66,5 @@ const css = [
 ].join('\n\n') + '\n'
 
 writeFileSync('public/themes.css', css)
-writeFileSync('src/data/omarchy-themes.json', JSON.stringify(themes.map(t => ({ name: t.name, mode: t.mode, bg: t.tokens.bg, accent: t.tokens.link })), null, 2))
+writeFileSync('src/data/omarchy-themes.json', JSON.stringify(themes.map(t => ({ name: t.name, label: t.label, mode: t.mode, bg: t.tokens.bg, accent: t.tokens.link })), null, 2))
 console.log(`${themes.length} themes`)

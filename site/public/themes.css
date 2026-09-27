@@ -1,5 +1,25 @@
 /* Generated from Omarchy themes by scripts/build-themes.mjs — do not edit by hand. */
 
+:root[data-theme="p-bloom"] {
+  --bg: #090d16;
+  --fg: #d9e8ff;
+  --muted: #7389ad;
+  --link: #4cc9ff;
+  --hairline: #1f3a5f;
+  --code-bg: #121a2a;
+  color-scheme: dark;
+}
+
+:root[data-theme="classic"] {
+  --bg: #ffffff;
+  --fg: #1c1c1c;
+  --muted: #6f6f6f;
+  --link: #0044cc;
+  --hairline: #e2e2e2;
+  --code-bg: #f4f4f4;
+  color-scheme: light;
+}
+
 :root[data-theme="catppuccin"] {
   --bg: #1e1e2e;
   --fg: #cdd6f4;

@@ -7,11 +7,12 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10)
 ---
 <Base title="Writing">
   <p class="section-label">writing</p>
-  <ul class="postlist">
+  <ul class="postlist entries">
     {posts.map(p => (
       <li>
         <span class="date">{fmt(p.data.date)}</span>
-        <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+        <a class="title" href={`/blog/${p.id}/`}>{p.data.title}</a>
+        {p.data.description && <p class="desc">{p.data.description}</p>}
       </li>
     ))}
   </ul>
