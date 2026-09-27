@@ -30,7 +30,8 @@ const links = [
         if (m && m[1] !== 'auto') document.documentElement.dataset.theme = m[1]
       })()
     </script>
-    <meta name="theme-color" content="#090d16" />
+    <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <link rel="stylesheet" href={`/styles.css?v=${cssv}`} />
     <link rel="stylesheet" href={`/themes.css?v=${cssv}`} />
     <link rel="icon" href={site.avatar} />
@@ -67,14 +68,15 @@ const links = [
     </div>
     <script>
       const root = document.documentElement
-      const DEFAULT = 'p-bloom'
+      // No cookie (or the old value 'auto') = auto: follow the system (styles.css).
+      const AUTO = 'auto'
       const picker = document.querySelector('.theme-picker')!
       const toggle = picker.querySelector<HTMLButtonElement>('.theme-toggle')!
       const menu = picker.querySelector<HTMLElement>('.theme-menu')!
       const buttons = [...menu.querySelectorAll<HTMLButtonElement>('button[data-value]')]
       const current = () => {
         const m = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
-        return m && m[1] !== 'auto' ? m[1] : DEFAULT
+        return m ? m[1] : AUTO
       }
       const mark = (v: string) => buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.value === v)))
       mark(current())
@@ -87,11 +89,13 @@ const links = [
         })
       }
       themeImages()
+      // In auto, follow live system switches too.
+      matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { themeImages(); themeColor() })
       // Browser chrome (mobile address bar) follows the page background.
-      const themeColor = () => document.querySelector('meta[name="theme-color"]')!.setAttribute('content', getComputedStyle(document.body).backgroundColor)
+      const themeColor = () => document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', getComputedStyle(document.body).backgroundColor))
       themeColor()
       const apply = (v: string) => {
-        if (v === DEFAULT) {
+        if (v === AUTO) {
           document.cookie = 'site_theme=;max-age=0;path=/;samesite=lax'
           delete root.dataset.theme
         } else {
@@ -113,12 +117,23 @@ const links = [
       // Keyboard: arrows move through the palettes (two columns), Esc closes.
       menu.addEventListener('keydown', e => {
         const i = buttons.indexOf(document.activeElement as HTMLButtonElement)
-        const step = ({ ArrowRight: 1, ArrowLeft: -1, ArrowDown: 2, ArrowUp: -2 } as Record<string, number>)[e.key]
         if (e.key === 'Escape') { e.preventDefault(); open(false) }
         else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); buttons[e.key === 'Home' ? 0 : buttons.length - 1].focus() }
-        else if (step && i >= 0) {
+        else if (i >= 0 && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
           e.preventDefault()
-          buttons[Math.min(buttons.length - 1, Math.max(0, i + step))].focus()
+          buttons[Math.min(buttons.length - 1, Math.max(0, i + (e.key === 'ArrowRight' ? 1 : -1)))].focus()
+        } else if (i >= 0 && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+          // Nearest button in the next row down/up, by position (rows differ in width).
+          e.preventDefault()
+          const r = buttons[i].getBoundingClientRect(), down = e.key === 'ArrowDown'
+          const rows = buttons.map(b => b.getBoundingClientRect()).map((q, j) => ({ j, q }))
+            .filter(({ q }) => down ? q.top >= r.bottom - 1 : q.bottom <= r.top + 1)
+          if (rows.length) {
+            const edge = down ? Math.min(...rows.map(x => x.q.top)) : Math.max(...rows.map(x => x.q.top))
+            const row = rows.filter(x => Math.abs(x.q.top - edge) < 2)
+            row.sort((a, b) => Math.abs(a.q.left - r.left) - Math.abs(b.q.left - r.left))
+            buttons[row[0].j].focus()
+          }
         }
       })
       document.addEventListener('click', e => { if (!menu.hidden && !picker.contains(e.target as Node)) open(false, false) })

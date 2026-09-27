@@ -4,10 +4,11 @@
 // Run manually after an Omarchy update: node scripts/build-themes.mjs
 //
 // PINNED themes come first and are not read from the Omarchy install:
-//   p-bloom — the site default (same values as :root in public/styles.css),
+//   p-bloom — default on dark systems (same values as :root in public/styles.css),
 //             from ~/dev/omarchy-destiny-theme/colors.toml. muted is
 //             dark_foreground (5.5:1 on the ground), code-bg lighter_background.
-//   classic — the site's original light look (white, near-black, blue links).
+//   classic — the original light look, default on light systems (also in the
+//             prefers-color-scheme: light block of public/styles.css).
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
