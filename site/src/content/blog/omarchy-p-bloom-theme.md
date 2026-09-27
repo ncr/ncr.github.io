@@ -6,9 +6,12 @@ draft: true
 ---
 
 p(bloom) is a theme for [Omarchy](https://omarchy.org) with 42 wallpapers of
-machines from a hopeful future. They started on September 18 as circles and
-rectangles and ended as 3D models from Blender. They are full of detail, yet
-they stay quiet behind your windows.
+machines from a hopeful future. The look is inspired by Destiny. I've always
+loved its vision of future technology: machines that harness the Light.
+
+The wallpapers started on September 18 as circles and rectangles and ended
+as 3D models from Blender. They are full of detail, yet they stay quiet
+behind your windows.
 
 <div class="detail-pair detail-triptych">
 
