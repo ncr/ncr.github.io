@@ -37,10 +37,11 @@ turn the colour down or up.
 I started with Astra. It was slow, needed constant corrections, and the
 motion design was weak. Opus caught on quickly and matched my vision.
 
+The music is [Kevin Koontz](https://x.com/koozeex1)'s
+["We Can Fix Everything"](https://x.com/koozeex1/status/2096140707329368181),
+a song that sounds exactly like the future I want to live in. Thank you,
+Kevin.
+
 I'm betting on bloom.
 
 p(bloom) >> p(doom). What a great time to be alive!
-
-<hr />
-
-<p class="fan-note"><small>Music: <a href="https://x.com/koozeex1">Kevin Koontz</a>, <a href="https://x.com/koozeex1/status/2096140707329368181">"We Can Fix Everything"</a>.</small></p>
