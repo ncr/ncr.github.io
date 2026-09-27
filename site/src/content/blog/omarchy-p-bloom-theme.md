@@ -5,16 +5,10 @@ description: A theme for Omarchy with 42 wallpapers of machines from a hopeful f
 draft: true
 ---
 
-p(bloom) is a theme for [Omarchy](https://omarchy.org). It comes with 42
-wallpapers of machines from a hopeful future, and it started on September 18
-as circles and rectangles.
-
-Four days later the figures had joints and the machines had parts, but
-everything still looked flat. Then every machine got a real 3D model in
-Blender, and every sheet got its own camera and composition. Each wallpaper
-is full of detail, yet it doesn't shout. It sits quietly behind your windows,
-and when you have a minute, you can wander around it with your eyes and find
-a small mechanism or a caption worth reading.
+p(bloom) is a theme for [Omarchy](https://omarchy.org) with 42 wallpapers of
+machines from a hopeful future. They started on September 18 as circles and
+rectangles and ended as 3D models from Blender. They are full of detail, yet
+they stay quiet behind your windows.
 
 <div class="detail-pair detail-triptych">
 
@@ -35,27 +29,15 @@ a small mechanism or a caption worth reading.
 
 </div>
 
-A wallpaper full of small captions only works at its real size. Scale one
-5K image down to a laptop and the text turns to mush; crop it for an
-ultrawide and you lose the edges. So each wallpaper is composed again for
-every common screen, 18 sets from 1080p to 7680 × 2160, rendered once ahead
-of time and checked file by file. Rendering on your machine would need the
-whole Blender and Cairo toolchain and minutes of CPU, so the sets live in
-GitHub Releases instead, and the theme itself stays small and installs in
-seconds. The p(bloom) Wallpapers app lets you browse the collection, picks
-the set that fits each of your monitors, downloads it if it's missing, and
-lets you choose how strong the background colours are: muted, default or
-vivid.
+Each wallpaper is composed for every common screen, from 1080p to
+7680 × 2160, so the captions stay sharp. The sets are pre-rendered in GitHub
+Releases. The p(bloom) Wallpapers app picks yours, downloads it and lets you
+turn the colour down or up.
 
-I started with Astra, first on the wallpapers and then on the music video.
-It was slow going: a lot of hand-holding, constant corrections and
-back-and-forth prompting, and the motion design was weak. When I switched to
-Opus, it caught on quickly and made everything far more beautiful without me
-correcting every step. The video finally matched my vision.
+I started with Astra. It was slow, needed constant corrections, and the
+motion design was weak. Opus caught on quickly and matched my vision.
 
-One person and a few agents made a theme, 42 wallpapers and a music video in
-nine days. I don't know what the next nine years will bring, but I'm betting
-on bloom.
+One person and a few agents made all this in ten days. I'm betting on bloom.
 
 p(bloom) >> p(doom). What a great time to be alive!
 
