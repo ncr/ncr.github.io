@@ -13,21 +13,16 @@ The wallpapers started on September 18 as circles and rectangles and ended
 as 3D models from Blender. They are full of detail, yet they stay quiet
 behind your windows.
 
-<div class="detail-pair detail-triptych">
+<div class="detail-pair">
 
 <figure class="figure detail-comparison">
 <p><strong>Sep 18</strong></p>
-<a href="/draft-assets/destiny/proxy-before-study.svg"><img src="/draft-assets/destiny/proxy-before-study.svg" alt="Proxy, first concept: limbs made of simple blocks, joints marked with circles." width="900" height="1450" loading="lazy" /></a>
+<a href="/draft-assets/destiny/skyracer-sep18.webp"><img src="/draft-assets/destiny/skyracer-sep18.webp" alt="Sky Racer on September 18: a flat top-down drawing, six fans as circles around an oval cockpit." width="1440" height="810" loading="lazy" /></a>
 </figure>
 
 <figure class="figure detail-comparison">
-<p><strong>Sep 22</strong></p>
-<a href="/draft-assets/destiny/proxy-middle-study.svg"><img src="/draft-assets/destiny/proxy-middle-study.svg" alt="Proxy, midway: rounded covers and marked joints, the legs still in the old pose." width="900" height="1450" loading="lazy" /></a>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>Sep 25</strong></p>
-<a href="/draft-assets/destiny/proxy-after-study.svg"><img src="/draft-assets/destiny/proxy-after-study.svg" alt="Proxy, released: a new running phase with the rear leg clearly bent. Close-up mirrored to match the running direction." width="900" height="1450" loading="lazy" /></a>
+<p><strong>Now</strong></p>
+<a href="/draft-assets/destiny/skyracer-now.webp"><img src="/draft-assets/destiny/skyracer-now.webp" alt="Sky Racer now: a 3D model of the racing copter with ducted fans, labelled parts and a cockpit canopy." width="1440" height="810" loading="lazy" /></a>
 </figure>
 
 </div>
