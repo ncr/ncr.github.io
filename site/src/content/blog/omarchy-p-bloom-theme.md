@@ -49,4 +49,4 @@ p(bloom) >> p(doom). What a great time to be alive!
 
 <hr />
 
-<p class="fan-note"><small>The look is inspired by Bungie's Destiny. p(bloom) is not affiliated with or endorsed by Bungie and uses no art, logos or other material from the game. Music: <a href="https://x.com/koozeex1">Kevin Koontz</a>, <a href="https://x.com/koozeex1/status/2096140707329368181">"We Can Fix Everything"</a>.</small></p>
+<p class="fan-note"><small>Music: <a href="https://x.com/koozeex1">Kevin Koontz</a>, <a href="https://x.com/koozeex1/status/2096140707329368181">"We Can Fix Everything"</a>.</small></p>
