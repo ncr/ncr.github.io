@@ -35,6 +35,18 @@ a small mechanism or a caption worth reading.
 
 </div>
 
+A wallpaper full of small captions only works at its real size. Scale one
+5K image down to a laptop and the text turns to mush; crop it for an
+ultrawide and you lose the edges. So each wallpaper is composed again for
+every common screen, 18 sets from 1080p to 7680 × 2160, rendered once ahead
+of time and checked file by file. Rendering on your machine would need the
+whole Blender and Cairo toolchain and minutes of CPU, so the sets live in
+GitHub Releases instead, and the theme itself stays small and installs in
+seconds. The p(bloom) Wallpapers app lets you browse the collection, picks
+the set that fits each of your monitors, downloads it if it's missing, and
+lets you choose how strong the background colours are: muted, default or
+vivid.
+
 I started with Astra, first on the wallpapers and then on the music video.
 It was slow going: a lot of hand-holding, constant corrections and
 back-and-forth prompting, and the motion design was weak. When I switched to
