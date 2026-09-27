@@ -1,0 +1,30 @@
+---
+// One swatch button in the masthead; it opens a small panel of palettes.
+// The swatch itself is drawn from the active theme's --bg / --link, so it
+// never needs updating. p(bloom) is the default (no cookie); the rest are
+// the generated themes in themes.css, "classic" being the original light look.
+import themes from '../data/omarchy-themes.json'
+const pinned = themes.filter(t => t.name === 'p-bloom' || t.name === 'classic')
+const rest = themes.filter(t => !pinned.includes(t))
+---
+<div class="theme-picker">
+  <button type="button" class="theme-toggle" aria-expanded="false" aria-controls="theme-menu" title="Theme">
+    <span class="swatch" aria-hidden="true"></span>
+    <span class="sr-only">Choose a colour theme</span>
+  </button>
+  <div class="theme-menu" id="theme-menu" role="group" aria-label="Colour theme" hidden>
+    <p class="section-label">theme</p>
+    {[pinned, rest].map(list => (
+      <ul class={list === pinned ? 'pinned' : undefined}>
+        {list.map(t => (
+          <li>
+            <button type="button" data-value={t.name} aria-pressed="false">
+              <span class="swatch" aria-hidden="true" style={`--sw-bg:${t.bg};--sw-accent:${t.accent}`}></span>
+              {t.label}
+            </button>
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
