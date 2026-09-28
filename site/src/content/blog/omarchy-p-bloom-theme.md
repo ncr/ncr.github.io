@@ -12,7 +12,7 @@ draft: true
 ## Why I made it
 
 p(bloom) is a theme for [Omarchy](https://omarchy.org) with 42 wallpapers of
-machines from a hopeful future. The look is inspired by Destiny. I've always
+machines from a hopeful future. The look is inspired by Bungie's Destiny. I've always
 loved its vision of future technology: machines that harness the Light. I
 wanted my desktop to feel like that, and to be full of inventions I would
 love to see built.
