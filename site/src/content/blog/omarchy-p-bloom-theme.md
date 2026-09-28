@@ -5,32 +5,38 @@ description: A theme for Omarchy with 42 wallpapers of machines from a hopeful f
 draft: true
 ---
 
+1. [Why I made it](#why-i-made-it)
+2. [What's inside](#whats-inside)
+3. [How it grew](#how-it-grew)
+
+## Why I made it
+
 p(bloom) is a theme for [Omarchy](https://omarchy.org) with 42 wallpapers of
 machines from a hopeful future. The look is inspired by Destiny. I've always
-loved its vision of future technology: machines that harness the Light.
+loved its vision of future technology: machines that harness the Light. I
+wanted my desktop to feel like that, and to be full of inventions I would
+love to see built.
 
-The wallpapers started on September 18 as circles and rectangles and ended
-as 3D models from Blender. They are full of detail, yet they stay quiet
-behind your windows.
+Making it was pure joy. Every finished piece showed me three new things to
+try, and the horizon only kept getting wider.
 
-<div class="detail-pair">
+The music is [Kevin Koontz](https://x.com/koozeex1)'s
+["We Can Fix Everything"](https://x.com/koozeex1/status/2096140707329368181),
+a song that sounds exactly like the future I want to live in. Thank you,
+Kevin.
 
-<figure class="figure detail-comparison">
-<p><strong>Sep 18</strong></p>
-<a href="/draft-assets/destiny/skyracer-sep18.webp"><img src="/draft-assets/destiny/skyracer-sep18.webp" alt="Sky Racer on September 18: a flat top-down drawing, six fans as circles around an oval cockpit." width="1440" height="810" loading="lazy" /></a>
-</figure>
+I'm betting on bloom.
 
-<figure class="figure detail-comparison">
-<p><strong>Now</strong></p>
-<a href="/draft-assets/destiny/skyracer-now.webp"><img src="/draft-assets/destiny/skyracer-now.webp" alt="Sky Racer now: a 3D model of the racing copter with ducted fans, labelled parts and a cockpit canopy." width="1440" height="810" loading="lazy" /></a>
-</figure>
+## What's inside
 
-</div>
+**42 blueprint wallpapers.** Every machine is a 3D model, drawn as a
+blueprint with notes and diagrams. The wallpapers are full of detail, yet
+they stay quiet behind your windows, and when you have a minute you can
+wander around one and find something new.
 
-Each wallpaper is composed for every common screen, from 1080p to
-7680 × 2160, so the captions stay sharp. The sets are pre-rendered in GitHub
-Releases. The p(bloom) Wallpapers app picks yours, downloads it and lets you
-turn the colour down or up.
+**Made for your screen.** Each wallpaper is composed again for every common
+screen, from 1080p to 7680 × 2160. Nothing is stretched, nothing is cropped,
+and every caption stays sharp.
 
 <figure class="compare-figure">
 <p class="compare-title"><strong>Resolution</strong></p>
@@ -56,17 +62,46 @@ turn the colour down or up.
 <figcaption>A 21:9 ultrawide screen. Drag the line.</figcaption>
 </figure>
 
+**p(bloom) Wallpapers.** The companion app lets you browse the collection,
+picks the set that fits each of your monitors, downloads it and lets you turn
+the colour down or up. The sets are pre-rendered and live in GitHub Releases,
+so the theme itself installs in seconds.
+
+**The theme.** Deep-space navy, ice-white text and Signal, Bloom and Sunrise
+accents for everything Omarchy themes.
+
+```bash
+omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
+```
+
+## How it grew
+
+The first wallpapers were circles and rectangles.
+
+<div class="detail-pair">
+
+<figure class="figure detail-comparison">
+<p><strong>First version</strong></p>
+<a href="/draft-assets/destiny/skyracer-sep18.webp"><img src="/draft-assets/destiny/skyracer-sep18.webp" alt="Sky Racer, first version: a flat top-down drawing, six fans as circles around an oval cockpit." width="1440" height="810" loading="lazy" /></a>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>Now</strong></p>
+<a href="/draft-assets/destiny/skyracer-now.webp"><img src="/draft-assets/destiny/skyracer-now.webp" alt="Sky Racer now: a 3D model of the racing copter with ducted fans, labelled parts and a cockpit canopy." width="1440" height="810" loading="lazy" /></a>
+</figure>
+
+</div>
+
+Then the figures got joints and the machines got parts. Then every machine
+became a 3D model in Blender, with its own camera and composition.
+
+Some of the first machines were jokes. I replaced them with sincere ones:
+inventions that are useful, plausible and good to look at.
+
+The colours went from thirteen close shades to ten grounds you can tell apart
+at a glance.
+
 I started with Astra. It was slow, needed constant corrections, and the
 motion design was weak. Opus caught on quickly and matched my vision.
-
-The music is [Kevin Koontz](https://x.com/koozeex1)'s
-["We Can Fix Everything"](https://x.com/koozeex1/status/2096140707329368181),
-a song that sounds exactly like the future I want to live in. Thank you,
-Kevin.
-
-Making this was pure joy. Every finished piece showed me three new things to
-try, and the horizon only kept getting wider.
-
-I'm betting on bloom.
 
 p(bloom) >> p(doom). What a great time to be alive!
