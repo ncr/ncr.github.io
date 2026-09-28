@@ -22,8 +22,8 @@ try, and the horizon only kept getting wider.
 
 The music video above is set to
 ["We Can Fix Everything"](https://x.com/koozeex1/status/2096140707329368181)
-by [Kevin Koontz](https://x.com/koozeex1), a song that sounds exactly like
-the future I want to live in. Thank you, Kevin.
+by [Kevin Koontz](https://x.com/koozeex1), a song about Omarchy, which is
+itself a piece of the future I like. Thank you, Kevin.
 
 I'm betting on bloom.
 
