@@ -1,5 +1,5 @@
 ---
-title: What a Great Time to Be Alive
+title: Imagine the Possibilities
 date: 2026-09-26
 description: A theme for Omarchy with 42 wallpapers of machines from a hopeful future, and a music video.
 draft: true
@@ -63,6 +63,9 @@ The music is [Kevin Koontz](https://x.com/koozeex1)'s
 ["We Can Fix Everything"](https://x.com/koozeex1/status/2096140707329368181),
 a song that sounds exactly like the future I want to live in. Thank you,
 Kevin.
+
+Making this was pure joy. Every finished piece showed me three new things to
+try, and the horizon only kept getting wider.
 
 I'm betting on bloom.
 
