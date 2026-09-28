@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 const posts = (await getCollection('blog', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+import { readingLabel } from '../reading'
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
 ---
 <Base title="Writing">
@@ -10,7 +11,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10)
   <ul class="postlist entries">
     {posts.map(p => (
       <li>
-        <span class="date">{fmt(p.data.date)}</span>
+        <span class="date">{fmt(p.data.date)} · {readingLabel(p.body)}</span>
         <a class="title" href={`/blog/${p.id}/`}>{p.data.title}</a>
         {p.data.description && <p class="desc">{p.data.description}</p>}
       </li>

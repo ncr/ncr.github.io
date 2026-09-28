@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro'
 import { getCollection, render } from 'astro:content'
+import { readingLabel } from '../../reading'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', p => import.meta.env.DEV || !p.data.draft)
@@ -13,7 +14,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10)
 <Base title={post.data.title} description={post.data.description}>
   <article class="post">
     <header>
-      <div class="date">{fmt(post.data.date)}</div>
+      <div class="date">{fmt(post.data.date)} · {readingLabel(post.body)}</div>
       <h1>{post.data.title}</h1>
     </header>
     <div class="content">

@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import WallpaperGallery from '../../components/WallpaperGallery.astro'
 import { getEntry, render } from 'astro:content'
+import { readingLabel } from '../../reading'
 // Explicit opt-in for this one draft; other drafts keep their existing visibility.
 const post = await getEntry('blog', 'omarchy-p-bloom-theme')
 if (!post || !post.data.draft) throw new Error('Expected the p(bloom) draft')
@@ -10,7 +11,7 @@ const { Content } = await render(post)
 <Base title={post.data.title} description={post.data.description} lang="en" robots="noindex, nofollow, noarchive">
   <article class="post">
     <header>
-      <p class="date">DRAFT · September 26, 2026 · unlisted preview</p>
+      <p class="date">DRAFT · September 26, 2026 · {readingLabel(post.body)} · unlisted preview</p>
       <h1>{post.data.title}</h1>
     </header>
     <WallpaperGallery />

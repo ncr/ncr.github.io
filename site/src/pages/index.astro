@@ -12,6 +12,7 @@ const projects = [
   { id: 'omaphones', name: 'Omaphones', status: 'active' },
   { id: 'rack-proxy', name: 'rack-proxy', status: 'old, maintained' },
 ]
+import { readingLabel } from '../reading'
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
 ---
 <Base home description={site.intro}>
@@ -19,7 +20,7 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10)
   <ul class="postlist entries">
     {posts.map(p => (
       <li>
-        <span class="date">{fmt(p.data.date)}</span>
+        <span class="date">{fmt(p.data.date)} · {readingLabel(p.body)}</span>
         <a class="title" href={`/blog/${p.id}/`}>{p.data.title}</a>
         {p.data.description && <p class="desc">{p.data.description}</p>}
       </li>
