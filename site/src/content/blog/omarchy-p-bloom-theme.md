@@ -62,6 +62,11 @@ and every caption stays sharp.
 <figcaption>A 21:9 ultrawide screen. Drag the line.</figcaption>
 </figure>
 
+**Room for a see-through bar.** The top edge of every wallpaper is plain
+paper, with no lines or labels. Double-click Omarchy's bar to make it
+transparent and it stays perfectly readable. I always wanted to use that
+setting, but on most wallpapers the details behind the bar made it useless.
+
 **p(bloom) Wallpapers.** The companion app lets you browse the collection,
 picks the set that fits each of your monitors, downloads it and lets you turn
 the colour down or up. The sets are pre-rendered and live in GitHub Releases,
