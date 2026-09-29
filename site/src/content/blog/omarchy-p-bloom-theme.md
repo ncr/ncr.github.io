@@ -23,6 +23,8 @@ try, and the horizon only kept getting wider.
 I made the song for the music video in Suno, and I haven't had this much fun
 in a long time. It feels like imagining straight into music: I can steer the
 song however I want, from the broad strokes down to the smallest details.
+The song comes in two versions, electronic and rock, because I grew up on
+rock and metal as much as on electronic music, and I still love both.
 
 I'm betting on bloom.
 
