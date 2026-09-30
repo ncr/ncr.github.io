@@ -32,7 +32,7 @@ const video = '/gallery/destiny/video/'
     const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take button')];
     let seeking = false, raf = 0, take = 'electronic', idle = 0, sync = 0;
     const cur = () => V[take], other = () => V[take === 'rock' ? 'electronic' : 'rock'];
-    const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=2`; };
+    const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=3`; };
     const src = () => { for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
     const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
     const tick = () => { const v = cur(); if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
