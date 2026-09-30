@@ -27,11 +27,10 @@ const links = [
       // Before first paint: apply the theme saved in the cookie.
       ;(() => {
         const m = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
-        if (m && m[1] !== 'auto') document.documentElement.dataset.theme = m[1]
+        if (m && m[1] !== 'auto' && m[1] !== 'p-bloom') document.documentElement.dataset.theme = m[1]
       })()
     </script>
-    <meta name="theme-color" content="#090d16" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#090d16" />
     <link rel="stylesheet" href={`/styles.css?v=${cssv}`} />
     <link rel="stylesheet" href={`/themes.css?v=${cssv}`} />
     <link rel="icon" href={site.avatar} />
@@ -68,15 +67,15 @@ const links = [
     </div>
     <script>
       const root = document.documentElement
-      // No cookie (or the old value 'auto') = auto: follow the system (styles.css).
-      const AUTO = 'auto'
+      // No cookie (or the old value 'auto') = the default, p(bloom).
+      const DEFAULT = 'p-bloom'
       const picker = document.querySelector('.theme-picker')!
       const toggle = picker.querySelector<HTMLButtonElement>('.theme-toggle')!
       const menu = picker.querySelector<HTMLElement>('.theme-menu')!
       const buttons = [...menu.querySelectorAll<HTMLButtonElement>('button[data-value]')]
       const current = () => {
         const m = document.cookie.match(/(?:^|; )site_theme=([^;]+)/)
-        return m ? m[1] : AUTO
+        return m && m[1] !== 'auto' ? m[1] : DEFAULT
       }
       const mark = (v: string) => buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.value === v)))
       mark(current())
@@ -95,7 +94,7 @@ const links = [
       const themeColor = () => document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', getComputedStyle(document.body).backgroundColor))
       themeColor()
       const apply = (v: string) => {
-        if (v === AUTO) {
+        if (v === DEFAULT) {
           document.cookie = 'site_theme=;max-age=0;path=/;samesite=lax'
           delete root.dataset.theme
         } else {

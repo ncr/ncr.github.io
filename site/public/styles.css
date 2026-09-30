@@ -27,7 +27,7 @@
   src: url('/fonts/ia-writer-mono-s-700.woff2') format('woff2');
 }
 
-/* p(bloom) — the default on dark systems: deep-space navy, ice-white text, Signal blue links.
+/* p(bloom) — the default everywhere: deep-space navy, ice-white text, Signal blue links.
    fg 15.7:1, link 10.3:1, muted 5.5:1 on the ground. */
 :root {
   --bg: #090d16;
@@ -48,19 +48,6 @@
   --tiny: 0.75rem;
 }
 
-/* Auto (no theme chosen): a light system gets "classic", the original
-   light look. Same values as :root[data-theme="classic"] in themes.css. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    --bg: #ffffff;
-    --fg: #1c1c1c;
-    --muted: #6f6f6f;
-    --link: #0044cc;
-    --hairline: #e2e2e2;
-    --code-bg: #f4f4f4;
-    color-scheme: light;
-  }
-}
 
 * { box-sizing: border-box; }
 
@@ -360,26 +347,26 @@ ul.teaser .status { transform: none; }
 /* --- theme picker: one swatch button, a small panel of palettes --- */
 .theme-picker { position: relative; }
 .theme-toggle {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  margin: -0.25rem -0.25rem -0.25rem 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
   border: 0;
-  border-radius: 50%;
   background: none;
-  color: inherit;
+  color: var(--soft);
+  font: inherit;
   cursor: pointer;
 }
-.theme-toggle .swatch { width: 1.125rem; height: 1.125rem; transition: transform 120ms ease; }
-.theme-toggle:hover .swatch, .theme-toggle[aria-expanded="true"] .swatch { transform: scale(1.15); }
+.theme-toggle:hover, .theme-toggle[aria-expanded="true"] { color: var(--link); }
+/* a palette chip: the theme's background with a stripe of its accent along the bottom */
 .swatch {
   display: inline-block;
   flex: none;
-  border-radius: 50%;
-  border: 1px solid var(--muted);
-  background: linear-gradient(135deg, var(--sw-bg, var(--bg)) 50%, var(--sw-accent, var(--link)) 50%);
+  width: 1.25rem;
+  height: 0.875rem;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--fg) 28%, transparent);
+  background: linear-gradient(to top, var(--sw-accent, var(--link)) 0 32%, var(--sw-bg, var(--bg)) 32%);
 }
 .theme-menu {
   position: absolute;
@@ -422,12 +409,10 @@ ul.teaser .status { transform: none; }
   text-align: left;
   cursor: pointer;
 }
-.theme-menu button .swatch { width: 0.875rem; height: 0.875rem; border-color: color-mix(in srgb, var(--fg) 30%, transparent); }
 .theme-menu button:hover, .theme-menu button:focus-visible { background: var(--code-bg); color: var(--fg); }
 .theme-menu button:focus-visible { outline-offset: -2px; }
 .theme-menu button[aria-pressed="true"] { color: var(--fg); font-weight: 700; }
 .theme-menu button[aria-pressed="true"]::after { content: '•'; margin-left: auto; color: var(--link); }
-.theme-menu li.auto { grid-column: 1 / -1; }
 .theme-menu ul.pinned { padding-bottom: 0.4rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--hairline); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }

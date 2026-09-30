@@ -5,36 +5,26 @@ const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 const video = '/gallery/destiny/video/'
 const clipDuration = 119.88
 ---
-<section class="wallpaper-entry" aria-label="Music video and wallpaper gallery">
-  <button class="gallery-launch" type="button" aria-haspopup="dialog" aria-controls="wallpaper-viewer">
-    <img src={cover.thumb} width="5120" height="2880" alt="" />
-    <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 40 40" width="50" height="50"><path d="M14 9.5 31 20 14 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></span>
-    <span class="gallery-invite"><span><strong>Step into the future</strong><small>Music video · 42 wallpapers</small></span></span>
-  </button>
-  <noscript><p><a href={`${video}prepare-to-walk-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={cover.src}>Full-size wallpaper</a> · <a href="https://github.com/ncr/omarchy-p-bloom-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
+<section class="wallpaper-entry" aria-label="42 wallpapers">
+  <p class="wall-label">42 wallpapers · click one to view it full size</p>
+  <div class="wall-thumbs">
+    {wallpapers.map((w, i) => <button type="button" data-open={i} aria-label={`${i + 1}. ${w.name}`}><img src={w.thumb} alt="" width="1600" height="900" loading="lazy" /></button>)}
+  </div>
+  <noscript><p><a href="https://github.com/ncr/omarchy-p-bloom-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
 </section>
-<dialog id="wallpaper-viewer" aria-label="Music video and 42 wallpapers" data-cover={wallpapers.indexOf(cover)}>
+<dialog id="wallpaper-viewer" aria-label="42 wallpapers" data-cover={wallpapers.indexOf(cover)}>
   <div class="gallery-shell">
     <header class="viewer-top">
       <div class="viewer-label" aria-live="polite" aria-atomic="true"><span class="viewer-count"></span><h2 class="viewer-title"></h2></div>
       <button type="button" class="viewer-close icon-button" aria-label="Close" title="Close (Esc)">✕</button>
     </header>
     <div class="viewer-canvas" tabindex="0" aria-label="Wallpaper. Arrow keys change the image, Z toggles zoom.">
-      <video class="mv-video" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video: the theme and its 42 wallpapers"></video>
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
     <p class="viewer-error" role="status" hidden>Could not load the full image. <button type="button" class="viewer-retry">Try again</button></p>
     <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Previous wallpaper" title="Previous (←)">‹</button>
     <button type="button" class="viewer-next edge-nav icon-button" aria-label="Next wallpaper" title="Next (→)">›</button>
-    <section class="mv-player" aria-label="Music video" hidden>
-      <div class="mv-controls">
-        <button type="button" class="mv-play" aria-label="Play">▶</button>
-        <input class="mv-seek" type="range" min="0" max={clipDuration} step="0.01" value="0" aria-label="Video position" />
-      </div>
-      <p class="mv-credit">Music: “Prepare to Walk”, my own song, made with Suno</p>
-    </section>
     <footer class="viewer-bottom">
-      <button type="button" class="tour-return">▷ <span>Play the music video</span></button>
       <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>Open gallery</span><span class="gallery-total">42</span></button>
       <div class="viewer-tools">
         <button type="button" class="viewer-zoom" aria-pressed="false" title="Zoom (Z)">＋ <span>Detail</span></button>
@@ -58,12 +48,11 @@ const clipDuration = 119.88
   (() => {
     const dialog = document.querySelector('#wallpaper-viewer');
     const q = s => dialog.querySelector(s);
-    const launch = document.querySelector('.gallery-launch');
+    const opens = document.querySelectorAll('.wall-thumbs [data-open]'); let opener = null;
     const canvas = q('.viewer-canvas'), frame = q('.viewer-frame');
     const photo = q('.viewer-image'), preview = q('.viewer-preview');
     const grid = q('#viewer-grid'), gridToggle = q('.viewer-grid-toggle');
     const zoomButton = q('.viewer-zoom'), fullscreenButton = q('.viewer-fullscreen');
-    const player = q('.mv-player'), mv = q('.mv-video'), play = q('.mv-play'), seek = q('.mv-seek');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let index = Number(dialog.dataset.cover), zoom = false, previousOverflow = '', touchStart = null, drag = null, request = 0, ownsFullscreen = false;
     let watching = false, effects = true, seeking = false, tick = 0;
@@ -99,43 +88,12 @@ const clipDuration = 119.88
       ambient();
     }
 
-    // ── Music video ──
-    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}prepare-to-walk-av-${big?'1080':'720'}p60.mp4?v=1`; } }
-    function progress() { if(!seeking) seek.value = String(mv.currentTime); seek.setAttribute('aria-valuetext', `${Math.floor(mv.currentTime/60)}:${String(Math.floor(mv.currentTime%60)).padStart(2,'0')}`); }
-    function loop() { progress(); tick = mv.paused ? 0 : requestAnimationFrame(loop); }
-    function playState() {
-      const paused = mv.paused;
-      play.textContent = paused ? (mv.ended ? '↻' : '▶') : 'Ⅱ';
-      play.setAttribute('aria-label', paused ? 'Play' : 'Pause');
-      cancelAnimationFrame(tick); tick = paused ? 0 : requestAnimationFrame(loop); progress();
-    }
-    for (const e of ['play','pause','ended','seeked','loadedmetadata']) mv.addEventListener(e, playState);
-    mv.addEventListener('loadedmetadata', () => { if(isFinite(mv.duration)) seek.max = String(mv.duration); });
-    function togglePlay() { source(); if(mv.paused) mv.play().catch(() => {}); else mv.pause(); }
-    function startVideo(autoplay = true) {
-      grid.hidden = true; dialog.classList.remove('grid-open'); gridToggle.setAttribute('aria-expanded','false');
-      setZoom(false); watching = true; dialog.classList.add('is-touring'); player.hidden = false; q('.tour-return').hidden = true;
-      q('.viewer-title').textContent = 'Split Signal · music video'; q('.viewer-count').textContent = '';
-      source(); ambient();
-      if(autoplay && !reduced.matches) mv.play().catch(() => {});
-      playState();
-    }
-    function leaveVideo() {
-      if(!watching) return;
-      mv.pause(); watching = false; dialog.classList.remove('is-touring'); player.hidden = true; q('.tour-return').hidden = false;
-      const w = wallpapers[index]; q('.viewer-title').textContent = w.name; q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
-      if(!photo.getAttribute('src')) show(index); else ambient();
-    }
-    play.onclick = togglePlay;
-    seek.addEventListener('input', () => { seeking = true; source(); mv.currentTime = Number(seek.value); });
-    seek.addEventListener('change', () => { seeking = false; });
-    seek.addEventListener('pointerup', () => { seeking = false; });
-    q('.tour-return').onclick = () => startVideo();
+    function leaveVideo() {}
 
     // ── Dialog ──
-    launch.addEventListener('click', () => { previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; dialog.showModal(); startVideo(); q('.viewer-close').focus(); });
+    opens.forEach(b => b.addEventListener('click', () => { opener = b; previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; dialog.showModal(); show(Number(b.dataset.open)); canvas.focus({preventScroll:true}); }));
     async function close() { if(ownsFullscreen && document.fullscreenElement) await document.exitFullscreen().catch(() => {}); ownsFullscreen = false; dialog.close(); }
-    dialog.addEventListener('close', () => { mv.pause(); document.body.style.overflow = previousOverflow; ambient(); launch.focus({preventScroll:true}); });
+    dialog.addEventListener('close', () => { document.body.style.overflow = previousOverflow; ambient(); opener?.focus({preventScroll:true}); });
     dialog.addEventListener('cancel', e => { e.preventDefault(); if(!grid.hidden) setGrid(false); else if(zoom) setZoom(false); else close(); });
     q('.viewer-close').onclick = close;
     q('.viewer-prev').onclick = () => show(index-1); q('.viewer-next').onclick = () => show(index+1);
@@ -151,16 +109,10 @@ const clipDuration = 119.88
     dialog.addEventListener('keydown', e => {
       if(!grid.hidden || (e.target.matches('input') && e.key !== ' ')) return;
       if(e.key.toLowerCase() === 'f') { e.preventDefault(); fullscreen(); return; }
-      if(watching) {
-        if(e.code === 'Space' && !e.target.matches('button')) { e.preventDefault(); togglePlay(); }
-        if(e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); source(); mv.currentTime = Math.max(0, mv.currentTime + (e.key === 'ArrowRight' ? 5 : -5)); }
-        return;
-      }
       if(e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(index + (e.key === 'ArrowRight' ? 1 : -1)); }
       if(e.key.toLowerCase() === 'z') { e.preventDefault(); setZoom(!zoom); }
       if(e.key === 'Home') { e.preventDefault(); show(0); } if(e.key === 'End') { e.preventDefault(); show(wallpapers.length-1); }
     });
-    canvas.addEventListener('click', () => { if(watching) togglePlay(); });
     canvas.addEventListener('dblclick', () => { if(!watching) setZoom(!zoom); });
     canvas.addEventListener('touchstart', e => { if(e.touches.length===1 && !zoom && !watching) touchStart = {x:e.touches[0].clientX, y:e.touches[0].clientY}; else touchStart = null; }, {passive:true});
     canvas.addEventListener('touchend', e => { if(!touchStart || zoom) return; const dx = e.changedTouches[0].clientX - touchStart.x, dy = e.changedTouches[0].clientY - touchStart.y; if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.4) show(index + (dx < 0 ? 1 : -1)); touchStart = null; }, {passive:true});
@@ -195,4 +147,7 @@ const clipDuration = 119.88
 .mv-credit{max-width:1000px;margin:8px auto 0;padding-left:58px;font-size:12px;color:#8f9cb0}
 .mv-credit a{color:#c9d8ec;text-decoration:none;border-bottom:1px solid #c9d8ec40}.mv-credit a:hover{border-color:#c9d8ec}
 @media(max-width:700px){.mv-player{padding:10px 14px 2px}.mv-controls{gap:10px}.mv-play{width:40px;height:40px}.mv-credit{padding-left:0;font-size:11px}.mv-credit span{display:none}}
+.wallpaper-entry{margin:3.4rem 0 1rem}.wall-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 .8rem}
+.wall-thumbs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.wall-thumbs button{padding:0;border:1px solid var(--hairline);border-radius:5px;overflow:hidden;background:#04060b;cursor:zoom-in;aspect-ratio:16/9}.wall-thumbs img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s ease,opacity .2s}.wall-thumbs button:hover img{transform:scale(1.06)}.wall-thumbs button:hover{border-color:var(--link)}
+@media(max-width:600px){.wall-thumbs{grid-template-columns:repeat(3,1fr)}}
 </style>

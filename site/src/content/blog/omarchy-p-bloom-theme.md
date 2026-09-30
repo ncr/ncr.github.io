@@ -1,5 +1,5 @@
 ---
-title: Imagine the Possibilities
+title: I Didn't Draw a Single Line
 date: 2026-09-26
 description: A theme for Omarchy with 42 wallpapers of machines from a hopeful future, and a music video.
 draft: true
@@ -30,6 +30,18 @@ rock and metal as much as on electronic music, and I still love both.
 
 I'm betting on bloom.
 
+**Install it.** One line in a terminal:
+
+```bash
+omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
+```
+
+For the sets made for your screens, run the companion app's installer once:
+
+```bash
+python3 ~/.config/omarchy/themes/p-bloom/companion/install.py
+```
+
 ## What's inside
 
 **42 blueprint wallpapers.** Every machine is a 3D model, drawn as a
@@ -49,10 +61,6 @@ everything Omarchy themes.
 <div class="destiny-palette" aria-label="The p(bloom) palette">
 <span style="--swatch:#4cc9ff">Signal<small>#4cc9ff</small></span><span style="--swatch:#b97aff">Bloom<small>#b97aff</small></span><span style="--swatch:#ff8a3d">Sunrise<small>#ff8a3d</small></span><span style="--swatch:#f5c945">Pollen<small>#f5c945</small></span><span style="--swatch:#3ddc97">Sprout<small>#3ddc97</small></span><span style="--swatch:#4fe3d0">Lagoon<small>#4fe3d0</small></span><span style="--swatch:#ff5468">Flare<small>#ff5468</small></span><span style="--swatch:#5b8dff">Horizon<small>#5b8dff</small></span><span style="--swatch:#c19a5b">Brass<small>#c19a5b</small></span>
 </div>
-
-```bash
-omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
-```
 
 **Made for your screen.** Each wallpaper is composed again for every common
 screen, from 1080p to 7680 × 2160. A higher resolution gets finer lines and
