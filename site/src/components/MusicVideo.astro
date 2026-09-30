@@ -111,17 +111,22 @@ const video = '/gallery/destiny/video/'
       wake(); setTimeout(wake, 700);
     };
     addEventListener('resize', () => { if (root.classList.contains('is-wide')) { const b = wideBox(); root.style.transition = frame.style.transition = 'none'; size(b.w, b.h); requestAnimationFrame(() => { root.style.transition = frame.style.transition = ''; }); } });
-    wide.onclick = () => setWide(!root.classList.contains('is-wide'));
+    // from fullscreen, "wide" leaves fullscreen and lands in wide mode
+    const wideClick = async () => {
+      if (document.fullscreenElement) { await document.exitFullscreen().catch(() => {}); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); if (!root.classList.contains('is-wide')) setWide(true); return; }
+      setWide(!root.classList.contains('is-wide'));
+    };
+    wide.onclick = wideClick;
     // fullscreen: the frame with its controls
     const setFull = () => { (document.fullscreenElement ? document.exitFullscreen() : (frame.requestFullscreen || frame.webkitRequestFullscreen)?.call(frame))?.catch?.(() => {}); };
     full.onclick = setFull; Object.values(V).forEach(x => x.ondblclick = setFull);
     if (!document.fullscreenEnabled && !frame.webkitRequestFullscreen) full.hidden = true;
-    document.addEventListener('fullscreenchange', () => root.classList.toggle('is-full', document.fullscreenElement === frame));
+    document.addEventListener('fullscreenchange', () => { const f = document.fullscreenElement === frame; root.classList.toggle('is-full', f); wide.setAttribute('aria-pressed', String(!f && root.classList.contains('is-wide'))); });
     frame.addEventListener('keydown', e => {
       if (e.target.matches('input')) return;
       if (e.code === 'Space' && !e.target.matches('button')) { e.preventDefault(); toggle(); }
       else if (e.key.toLowerCase() === 'f') { e.preventDefault(); setFull(); }
-      else if (e.key.toLowerCase() === 'w') { e.preventDefault(); setWide(!root.classList.contains('is-wide')); }
+      else if (e.key.toLowerCase() === 'w') { e.preventDefault(); wideClick(); }
       else if (e.key === 'Escape' && root.classList.contains('is-wide')) setWide(false);
     });
   })();
