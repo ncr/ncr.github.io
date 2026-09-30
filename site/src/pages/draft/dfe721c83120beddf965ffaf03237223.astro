@@ -67,6 +67,12 @@ const words = post.data.title.split(' '), last = words.pop()
   .pb .content > ol:first-child + h2 { border-top: 0; padding-top: 0; margin-top: 3rem; }
   .pb .gallery-invite strong { font-family: var(--narrow); font-weight: 700; text-transform: uppercase; letter-spacing: .01em; font-size: 1.7rem; line-height: 1; }
   .pb .gallery-invite small { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; }
+  /* lead-ins pop in Signal; the name is set as in the video: light, in Pollen, never in caps */
+  .pb { --lead: #4cc9ff; } :root[data-theme="classic"] .pb { --lead: #0a6fa8; }
+  .pb .content p > strong:first-child, .pb .content li > strong:first-child { color: var(--lead); }
+  .pb .pbn { font-family: var(--read); font-weight: 300; text-transform: none; letter-spacing: 0; color: var(--pollen); }
+  .pb strong .pbn { font-weight: 400; }
+  .pb .pdn { color: var(--muted); }
   @media (max-width: 600px) { .pb { font-size: 1.0625rem; } .pb .content h2 { font-size: 2.1rem; margin-top: 3.6rem; } }
 
   .destiny-palette { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:24px 0; }
@@ -102,6 +108,10 @@ const words = post.data.title.split(' '), last = words.pop()
   @media (max-width: 800px) { .compare-figure { width: 100%; left: 0; transform: none; } .compare-label { font-size: 11px; top: 8px; } .compare-label-left { left: 8px; } .compare-label-right { right: 8px; } }
 </style>
 <script>
+  // "p(bloom)" set as in the video (light, Pollen), "p(doom)" faded; code blocks are left alone
+  { const w = document.createTreeWalker(document.querySelector('.pb .content'), NodeFilter.SHOW_TEXT, { acceptNode: n => n.parentElement.closest('pre, code, a, .pbn, .pdn') ? NodeFilter.FILTER_REJECT : /p\((bloom|doom)\)/.test(n.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP });
+    const nodes = []; while (w.nextNode()) nodes.push(w.currentNode);
+    for (const n of nodes) { const f = document.createDocumentFragment(); n.data.split(/(p\((?:bloom|doom)\))/).forEach(part => { if (/^p\((bloom|doom)\)$/.test(part)) { const e = document.createElement('span'); e.className = part === 'p(bloom)' ? 'pbn' : 'pdn'; e.textContent = part; f.append(e); } else if (part) f.append(part); }); n.replaceWith(f); } }
   // a copy button on shell commands
   for (const pre of document.querySelectorAll('.pb pre')) {
     const code = pre.querySelector('code'); if (!code || !/bash|sh|shell/.test(pre.dataset.language || code.className)) continue;
