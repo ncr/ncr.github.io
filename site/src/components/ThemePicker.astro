@@ -1,14 +1,17 @@
 ---
 // A "theme" link in the masthead opens a small panel of palettes. p(bloom) is
 // the default (no cookie); any other choice is stored in the site_theme cookie.
-// Each palette is shown as a small chip: its background with a stripe of its accent.
+// Each palette is shown as three dots: its background, its text colour and its accent (read from themes.css).
 import themes from '../data/omarchy-themes.json'
+import { readFileSync } from 'node:fs'
+const css = readFileSync(`${process.cwd()}/public/themes.css`, 'utf8')
+const fg = name => css.match(new RegExp(`data-theme="${name}"\\]\\s*\\{[^}]*?--fg:\\s*(#[0-9a-fA-F]{3,8})`))?.[1] || '#888'
 const pinned = themes.filter(t => t.name === 'p-bloom' || t.name === 'classic')
 const rest = themes.filter(t => !pinned.includes(t))
 ---
 <div class="theme-picker">
   <button type="button" class="theme-toggle" aria-expanded="false" aria-controls="theme-menu" title="Theme">
-    <span class="swatch" aria-hidden="true"></span>theme<span class="sr-only">: choose a colour theme</span>
+    <span class="swatch" aria-hidden="true"><i></i><i></i><i></i></span>theme<span class="sr-only">: choose a colour theme</span>
   </button>
   <div class="theme-menu" id="theme-menu" role="group" aria-label="Colour theme" hidden>
     <p class="section-label">theme</p>
@@ -17,7 +20,7 @@ const rest = themes.filter(t => !pinned.includes(t))
         {list.map(t => (
           <li>
             <button type="button" data-value={t.name} aria-pressed="false">
-              <span class="swatch" aria-hidden="true" style={`--sw-bg:${t.bg};--sw-accent:${t.accent}`}></span>
+              <span class="swatch" aria-hidden="true" style={`--sw-bg:${t.bg};--sw-fg:${fg(t.name)};--sw-accent:${t.accent}`}><i></i><i></i><i></i></span>
               {t.label}
             </button>
           </li>

@@ -49,7 +49,9 @@ const video = '/gallery/destiny/video/'
     };
     const toggle = () => { src(); const v = cur(); if (v.paused) v.play().catch(() => {}); else v.pause(); };
     // controls: visible while paused or when the pointer moves, hidden after 2.5 s of rest while playing
-    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!cur().paused) idle = setTimeout(() => root.classList.add('is-idle'), 2500); };
+    const bar = root.querySelector('.mvi-bar'); let onBar = false;
+    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!cur().paused && !onBar) idle = setTimeout(() => root.classList.add('is-idle'), 2500); };
+    bar.addEventListener('pointerenter', () => { onBar = true; wake(); }); bar.addEventListener('pointerleave', () => { onBar = false; wake(); });
     for (const x of Object.values(V)) {
       for (const e of ['play', 'pause', 'ended', 'seeked', 'loadedmetadata']) x.addEventListener(e, ev => { state(ev); if (ev.target === cur()) follow2(); });
       x.addEventListener('loadedmetadata', () => { if (x === cur() && isFinite(x.duration)) seek.max = String(x.duration); });
@@ -134,7 +136,7 @@ const video = '/gallery/destiny/video/'
   /* the controls sit on the picture, over a soft gradient; hidden until the video has started */
   .mvi-bar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 34px 14px 12px; background: linear-gradient(transparent, #04060bd9 70%); color: #eef4ff; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
   .mvi.has-started .mvi-bar { opacity: 1; transform: none; pointer-events: auto; }
-  .mvi.has-started.is-idle .mvi-bar { opacity: 0; transform: translateY(6px); pointer-events: none; }
+  .mvi.has-started.is-idle .mvi-bar { opacity: 0; transform: translateY(6px); }
   .mvi.is-idle .mvi-video { cursor: none; }
   .mvi-btn { width: 34px; height: 34px; flex: none; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer; }
   .mvi-btn svg { width: 20px; height: 20px; fill: currentColor; }
