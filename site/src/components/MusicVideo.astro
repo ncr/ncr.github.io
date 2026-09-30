@@ -1,5 +1,6 @@
 ---
-// The music video, inline and simple: a still cover with a play button; once playing, only play/pause and a bar.
+// The music video, inline and simple: a still cover with a play button; once playing, only play/pause and a bar,
+// plus the choice of take (electronic or rock), which keeps the position when switched.
 // Double-click the picture for fullscreen. The file size follows the screen (720p or 1080p).
 const video = '/gallery/destiny/video/'
 ---
@@ -12,6 +13,9 @@ const video = '/gallery/destiny/video/'
     <button type="button" class="mvi-play" aria-label="Play">▶</button>
     <input class="mvi-seek" type="range" min="0" max="119.88" step="0.01" value="0" aria-label="Video position" />
     <span class="mvi-time">0:00</span>
+    <div class="mvi-take" role="group" aria-label="Version of the song">
+      <button type="button" data-take="electronic" aria-pressed="true">Electronic</button><button type="button" data-take="rock" aria-pressed="false">Rock</button>
+    </div>
   </div>
   <figcaption>Prepare to Walk · music: my own song, made with Suno</figcaption>
   <noscript><p><a href={`${video}prepare-to-walk-av-1080p60.mp4`}>Music video (MP4)</a></p></noscript>
@@ -20,8 +24,19 @@ const video = '/gallery/destiny/video/'
   (() => {
     const root = document.querySelector('.mvi'), v = root.querySelector('.mvi-video'), badge = root.querySelector('.mvi-badge');
     const play = root.querySelector('.mvi-play'), seek = root.querySelector('.mvi-seek'), time = root.querySelector('.mvi-time');
-    let seeking = false, raf = 0;
-    const src = () => { if (!v.getAttribute('src')) { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; v.src = `${video}prepare-to-walk-av-${big ? '1080' : '720'}p60.mp4?v=1`; } };
+    let seeking = false, raf = 0, take = 'electronic';
+    const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=2`; };
+    const src = () => { if (!v.getAttribute('src')) v.src = file(take); };
+    const takes = [...root.querySelectorAll('.mvi-take button')];
+    takes.forEach(b => b.onclick = () => {
+      if (b.dataset.take === take) return;
+      take = b.dataset.take; takes.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      v.poster = `${video}prepare-to-walk${take === 'rock' ? '-rock' : ''}-poster.webp`;
+      if (!v.getAttribute('src')) return;
+      const at = v.currentTime, playing = !v.paused;
+      v.addEventListener('loadedmetadata', () => { v.currentTime = Math.min(at, v.duration - .5); if (playing) v.play().catch(() => {}); }, { once: true });
+      v.preload = 'auto'; v.src = file(take); v.load();
+    });
     const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
     const tick = () => { if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); raf = v.paused ? 0 : requestAnimationFrame(tick); };
     const state = () => { const p = v.paused; play.textContent = p ? (v.ended ? '↻' : '▶') : 'Ⅱ'; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); };
@@ -48,4 +63,9 @@ const video = '/gallery/destiny/video/'
   .mvi-seek { flex: 1; min-width: 0; margin: 0; accent-color: var(--link); cursor: pointer; }
   .mvi-time { font-family: var(--mono); font-size: .72rem; color: var(--muted); min-width: 2.6rem; text-align: right; font-variant-numeric: tabular-nums; }
   .mvi figcaption { margin-top: 8px; }
+  .mvi-take { display: flex; flex: none; border: 1px solid var(--hairline); border-radius: 999px; padding: 2px; }
+  .mvi-take button { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; padding: 5px 10px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
+  .mvi-take button[aria-pressed="true"] { background: var(--code-bg); color: var(--fg); }
+  .mvi-take button:hover { color: var(--link); }
+  @media (max-width: 520px) { .mvi-bar { flex-wrap: wrap; } .mvi-take { order: 4; margin-left: 48px; } }
 </style>
