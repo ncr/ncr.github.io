@@ -7,9 +7,9 @@ const video = '/gallery/destiny/video/'
 <figure class="mvi" aria-label="Prepare to Walk, the p(bloom) music video">
   <div class="mvi-frame">
     <video class="mvi-video" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video: the theme and its 42 wallpapers"></video>
-    <button type="button" class="mvi-badge" aria-label="Play the music video"><svg viewBox="0 0 40 40" width="46" height="46" aria-hidden="true"><path d="M14 9.5 31 20 14 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></button>
+    <button type="button" class="mvi-badge" aria-label="Play the music video"><svg viewBox="0 0 40 40" width="46" height="46" aria-hidden="true"><path d="M15.2 9.5 32 20 15.2 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></button>
     <div class="mvi-bar">
-      <button type="button" class="mvi-btn mvi-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+      <button type="button" class="mvi-btn mvi-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8.6 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
       <input class="mvi-seek" type="range" min="0" max="119.88" step="0.01" value="0" aria-label="Video position" />
       <span class="mvi-time">0:00</span>
       <div class="mvi-take" role="group" aria-label="Version of the song">
@@ -52,7 +52,7 @@ const video = '/gallery/destiny/video/'
     });
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
-    const setWide = on => { root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on)); if (on) root.scrollIntoView({ block: 'center', behavior: 'smooth' }); };
+    const setWide = on => { root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on)); if (on) setTimeout(() => root.scrollIntoView({ block: 'center', behavior: 'smooth' }), 120); };
     wide.onclick = () => setWide(!root.classList.contains('is-wide'));
     // fullscreen: the frame with its controls
     const setFull = () => { (document.fullscreenElement ? document.exitFullscreen() : (frame.requestFullscreen || frame.webkitRequestFullscreen)?.call(frame))?.catch?.(() => {}); };
@@ -69,13 +69,14 @@ const video = '/gallery/destiny/video/'
   })();
 </script>
 <style>
-  .mvi { margin: 1.4rem 0 2.6rem; }
-  .mvi.is-wide { width: min(calc(100vw - 64px), calc((100svh - 48px) * 16 / 9)); margin-left: 50%; transform: translateX(-50%); }
+  .mvi { margin: 1.4rem 0 2.6rem 50%; width: 100%; transform: translateX(-50%); transition: width .5s cubic-bezier(.2,.75,.2,1); }
+  .mvi.is-wide { width: min(calc(100vw - 64px), calc((100svh - 48px) * 16 / 9)); }
+  @media (prefers-reduced-motion: reduce) { .mvi { transition: none; } }
   .mvi-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
   .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
   .mvi-frame:fullscreen .mvi-video { object-fit: contain; }
-  .mvi-badge { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; display: grid; place-items: center; padding: 0 0 0 4px; border-radius: 50%; background: #070a11b3; border: 1.5px solid #ffffffd0; color: #fff; cursor: pointer; backdrop-filter: blur(6px); transition: transform .15s ease, opacity .2s ease; z-index: 2; }
+  .mvi-badge { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; display: grid; place-items: center; padding: 0; border-radius: 50%; background: #070a11b3; border: 1.5px solid #ffffffd0; color: #fff; cursor: pointer; backdrop-filter: blur(6px); transition: transform .15s ease, opacity .2s ease; z-index: 2; }
   .mvi-badge:hover { transform: scale(1.06); }
   .mvi.has-started .mvi-badge { opacity: 0; pointer-events: none; }
   /* the controls sit on the picture, over a soft gradient; hidden until the video has started */

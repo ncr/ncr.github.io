@@ -22,8 +22,8 @@ const clipDuration = 119.88
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
     <p class="viewer-error" role="status" hidden>Could not load the full image. <button type="button" class="viewer-retry">Try again</button></p>
-    <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Previous wallpaper" title="Previous (←)">‹</button>
-    <button type="button" class="viewer-next edge-nav icon-button" aria-label="Next wallpaper" title="Next (→)">›</button>
+    <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Previous wallpaper" title="Previous (←)"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button type="button" class="viewer-next edge-nav icon-button" aria-label="Next wallpaper" title="Next (→)"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <footer class="viewer-bottom">
       <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>All wallpapers</span><span class="gallery-total">42</span></button>
       <div class="viewer-tools">
@@ -57,6 +57,8 @@ const clipDuration = 119.88
     function ambient(){}
     function setZoom(value) {
       zoom = value; canvas.classList.toggle('is-zoomed', zoom);
+      if (zoom) { const cw = canvas.clientWidth, ch = canvas.clientHeight, ar = (photo.naturalWidth / photo.naturalHeight) || 16 / 9, w = Math.min(cw, ch * ar), h = w / ar, k = Math.max(2.4, cw / w, ch / h); frame.style.width = `${w * k}px`; frame.style.height = `${h * k}px`; }
+      else { frame.style.width = ''; frame.style.height = ''; }
       zoomButton.setAttribute('aria-pressed', String(zoom));
       zoomButton.innerHTML = zoom ? '− <span>Whole</span>' : '＋ <span>Detail</span>';
       requestAnimationFrame(() => { canvas.scrollLeft = zoom ? (canvas.scrollWidth - canvas.clientWidth) / 2 : 0; canvas.scrollTop = zoom ? (canvas.scrollHeight - canvas.clientHeight) / 2 : 0; });
@@ -86,8 +88,51 @@ const clipDuration = 119.88
     function leaveVideo() {}
 
     // ── Dialog ──
-    opens.forEach(b => b.addEventListener('click', () => { opener = b; previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; dialog.showModal(); show(Number(b.dataset.open)); canvas.focus({preventScroll:true}); }));
-    async function close() { if(ownsFullscreen && document.fullscreenElement) await document.exitFullscreen().catch(() => {}); ownsFullscreen = false; dialog.close(); }
+    // the picture's place in the viewer (contained in the canvas)
+    function target() { const c = canvas.getBoundingClientRect(), ar = 16 / 9, w = Math.min(c.width, c.height * ar), h = w / ar; return { left: c.left + (c.width - w) / 2, top: c.top + (c.height - h) / 2, width: w, height: h }; }
+    // a copy of the thumbnail flies between the page and the viewer while the viewer's chrome fades
+    async function fly(src, from, to, dur) {
+      const img = document.createElement('img'); img.src = src; img.className = 'viewer-fly'; // styled inline: the component's scoped CSS doesn't reach elements made here
+      Object.assign(img.style, { position: 'fixed', zIndex: '10', margin: '0', objectFit: 'cover', transformOrigin: '0 0', borderRadius: '0', pointerEvents: 'none', left: `${to.left}px`, top: `${to.top}px`, width: `${to.width}px`, height: `${to.height}px` });
+      dialog.append(img); await img.decode().catch(() => {});
+      const t = r => `translate(${r.left - to.left}px, ${r.top - to.top}px) scale(${r.width / to.width}, ${r.height / to.height})`;
+      return img.animate([{ transform: t(from) }, { transform: 'none' }], { duration: dur, easing: 'cubic-bezier(.2,.75,.2,1)' }).finished.then(() => img).catch(() => img);
+    }
+    const still = () => reduced.matches;
+    const chrome = () => dialog.querySelectorAll('.viewer-top, .viewer-bottom, .edge-nav');
+    opens.forEach(b => b.addEventListener('click', async () => {
+      opener = b; previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden';
+      const from = b.querySelector('img').getBoundingClientRect();
+      dialog.showModal(); show(Number(b.dataset.open)); canvas.focus({preventScroll:true});
+      if (still()) return;
+      frame.style.opacity = '0';
+      dialog.animate([{ backgroundColor: 'rgba(7,9,14,0)' }, { backgroundColor: 'rgba(7,9,14,1)' }], { duration: 380, easing: 'ease-out' });
+      chrome().forEach(e => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 380, delay: 120, easing: 'ease-out', fill: 'backwards' }));
+      const img = await fly(b.querySelector('img').currentSrc || b.querySelector('img').src, from, target(), 440);
+      frame.style.opacity = ''; img.remove();
+    }));
+    let closing = false;
+    async function close() {
+      if (closing) return;
+      if(ownsFullscreen && document.fullscreenElement) await document.exitFullscreen().catch(() => {}); ownsFullscreen = false;
+      const thumb = document.querySelector(`.wall-thumbs [data-open="${index}"] img`);
+      if (thumb && !still() && !zoom && grid.hidden) {
+        thumb.scrollIntoView({ block: 'nearest' });
+        const to = thumb.getBoundingClientRect();
+        if (to.bottom > 0 && to.top < innerHeight) {
+          closing = true; frame.style.opacity = '0';
+          chrome().forEach(e => e.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' }));
+          dialog.animate([{ backgroundColor: 'rgba(7,9,14,1)' }, { backgroundColor: 'rgba(7,9,14,0)' }], { duration: 380, easing: 'ease-in', fill: 'forwards' });
+          const from = target(), img = document.createElement('img'); img.src = thumb.currentSrc || thumb.src; img.className = 'viewer-fly'; // styled inline: the component's scoped CSS doesn't reach elements made here
+          Object.assign(img.style, { position: 'fixed', zIndex: '10', margin: '0', objectFit: 'cover', transformOrigin: '0 0', borderRadius: '0', pointerEvents: 'none', left: `${to.left}px`, top: `${to.top}px`, width: `${to.width}px`, height: `${to.height}px` }); dialog.append(img); await img.decode().catch(() => {});
+          const t = r => `translate(${r.left - to.left}px, ${r.top - to.top}px) scale(${r.width / to.width}, ${r.height / to.height})`;
+          await img.animate([{ transform: t(from) }, { transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.4,0,.2,1)' }).finished.catch(() => {});
+          img.remove(); dialog.getAnimations().forEach(a => a.cancel()); dialog.querySelectorAll('*').forEach(e => e.getAnimations().forEach(a => a.cancel()));
+          frame.style.opacity = ''; closing = false;
+        }
+      }
+      dialog.close();
+    }
     dialog.addEventListener('close', () => { document.body.style.overflow = previousOverflow; const t = document.querySelector(`.wall-thumbs [data-open="${index}"]`) || opener; t?.focus({preventScroll:true, focusVisible:false}); t?.scrollIntoView({block:'nearest'}); });
     dialog.addEventListener('cancel', e => { e.preventDefault(); if(!grid.hidden) setGrid(false); else if(zoom) setZoom(false); else close(); });
     q('.viewer-close').onclick = close;
@@ -154,4 +199,10 @@ const clipDuration = 119.88
 #wallpaper-viewer .wallpaper-grid span{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
 .wall-thumbs button:focus:not(:focus-visible){outline:none}
 #wallpaper-viewer .viewer-bottom button,#wallpaper-viewer .viewer-bottom a{text-transform:inherit;letter-spacing:inherit;display:inline-flex;align-items:center;gap:6px;line-height:1}
+/* no focus frame around the picture; keyboard focus stays visible on the buttons */
+#wallpaper-viewer .viewer-canvas:focus,#wallpaper-viewer .viewer-canvas:focus-visible{outline:none}
+.viewer-fly{position:fixed;z-index:10;margin:0;object-fit:cover;transform-origin:0 0;border-radius:4px;pointer-events:none;will-change:transform}
+#wallpaper-viewer .edge-nav{display:grid;place-items:center;padding:0;font-size:0!important;color:#eef4ff}
+#wallpaper-viewer .edge-nav svg{display:block}
+#wallpaper-viewer .edge-nav:hover{border-color:#4cc9ff!important;color:#4cc9ff}
 </style>
