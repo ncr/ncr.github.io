@@ -39,8 +39,8 @@ wander around one and find something new. Each sheet also lists what still
 has to be invented before the machine can be built.
 
 <figure class="inside-figure">
-<a href="/draft-assets/destiny/caption-first-light.webp"><img src="/draft-assets/destiny/caption-first-light.webp" alt="The caption of First Light, a school-owned robotic telescope: its function, the four technologies it needs, the last one still needed, and a projected first service in 2031." width="1180" height="540" loading="lazy" /></a>
-<figcaption>First Light: three technologies we already have, one we still need, and a year.</figcaption>
+<img src="/draft-assets/destiny/caption-tether-climber.webp" alt="The caption of Tether Climber, a space elevator cargo car: it climbs a 100 000 km ribbon to geostationary orbit; it needs a carbon nanotube ribbon, megawatt lasers, photovoltaic cells tuned to one wavelength and orbit control; projected first service 2075." width="1180" height="560" loading="lazy" />
+<figcaption>Tether Climber, a space elevator car: what it needs, and when it might first run.</figcaption>
 </figure>
 
 **The theme.** Deep-space navy, ice-white text and nine named colours for
@@ -55,8 +55,11 @@ omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
 ```
 
 **Made for your screen.** Each wallpaper is composed again for every common
-screen, from 1080p to 7680 × 2160. Nothing is stretched, nothing is cropped,
-and every caption stays sharp.
+screen, from 1080p to 7680 × 2160. A higher resolution gets finer lines and
+captions instead of a stretched picture. A different shape gets its own
+layout: on a 21:9 ultrawide, a 16:9 picture would lose its top and bottom,
+and with them the title and the notes. Here the machine, the notes and the
+caption are arranged again for that screen, so nothing is cut off.
 
 <figure class="compare-figure">
 <p class="compare-title"><strong>Resolution</strong></p>
@@ -82,11 +85,12 @@ and every caption stays sharp.
 <figcaption>A 21:9 ultrawide screen. Drag the line.</figcaption>
 </figure>
 
-**p(bloom) Wallpapers.** The companion app picks the set that fits each of
-your monitors, downloads it and keeps it matched when you plug in another
-screen. The sets are pre-rendered and live in GitHub Releases, so the theme
-itself installs in seconds. If you want to choose yourself, it has one small
-settings screen:
+**p(bloom) Wallpapers.** The theme includes one set, 16:9 at 5K, about
+25 MB. With 18 screen shapes and sizes in three strengths, all the sets
+together would take about 570 MB on your disk, so the rest live in GitHub
+Releases. The companion app picks the set that fits your monitors, downloads
+only that one, and switches when you plug in another screen. If you want to
+choose yourself, it has one small settings screen:
 
 ```
 P(BLOOM) / WALLPAPER SETTINGS
@@ -119,10 +123,11 @@ setting, but on most wallpapers the details behind the bar made it useless.
 <figcaption>My own bar, over Spin Table. Drag the line.</figcaption>
 </figure>
 
-**Next: a wallpaper for each screen.** Omarchy shows the same wallpaper on
-every screen. The sets are already composed for each shape, so the next step
-is a different sheet on each monitor. I'd like to send that to Omarchy as a
-pull request.
+**Next: a wallpaper for each screen.** Omarchy shows one wallpaper on all
+screens, so a laptop next to an ultrawide gets one picture for two shapes
+and two resolutions. The sets for both already exist. What's missing is a
+wallpaper per screen, each in its own resolution, and I'd like to send that
+to Omarchy as a pull request.
 
 ## Pencils down
 
@@ -146,7 +151,8 @@ Deciding what is worth keeping, and what is still wrong, stays my job. Taste
 isn't knowing what's beautiful. It's noticing, for the 340th time, that
 something isn't yet.
 
-So yes, I made it, the way a director makes a film. Every line was drawn by
-an agent. Every decision was mine.
+So yes, I made it, the way a director makes a film.
 
-p(bloom) >> p(doom).
+<p class="closer">Every line was drawn by an agent.<br />Every decision was <em>mine.</em></p>
+
+<p class="signoff">p(bloom) >> p(doom)</p>

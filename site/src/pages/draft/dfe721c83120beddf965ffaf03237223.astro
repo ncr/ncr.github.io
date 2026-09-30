@@ -7,12 +7,14 @@ import { readingLabel } from '../../reading'
 const post = await getEntry('blog', 'omarchy-p-bloom-theme')
 if (!post || !post.data.draft) throw new Error('Expected the p(bloom) draft')
 const { Content } = await render(post)
+// the title as in the video: condensed caps, the last word set light in Pollen
+const words = post.data.title.split(' '), last = words.pop()
 ---
 <Base title={post.data.title} description={post.data.description} lang="en" robots="noindex, nofollow, noarchive">
-  <article class="post">
+  <article class="post pb">
     <header>
       <p class="date">DRAFT · September 26, 2026 · {readingLabel(post.body)} · unlisted preview</p>
-      <h1>{post.data.title}</h1>
+      <h1>{words.join(' ')} <span class="accent">{last}</span></h1>
     </header>
     <WallpaperGallery />
     <div class="content"><Content /></div>
@@ -20,6 +22,52 @@ const { Content } = await render(post)
 </Base>
 
 <style is:global>
+  /* p(bloom) post typography: the video's voice — condensed caps (Archivo Narrow), a light geometric sans for
+     reading and accents (Jost), the site's mono for small labels. Scoped to .pb so the rest of the site is untouched. */
+  @font-face { font-family: 'Archivo Narrow'; font-weight: 600 700; font-display: swap; src: url('/fonts/archivo-narrow-700.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: 'Archivo Narrow'; font-weight: 600 700; font-display: swap; src: url('/fonts/archivo-narrow-700-ext.woff2') format('woff2'); unicode-range: U+0100-024F, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'Jost'; font-weight: 300 500; font-display: swap; src: url('/fonts/jost-400.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: 'Jost'; font-weight: 300 500; font-display: swap; src: url('/fonts/jost-400-ext.woff2') format('woff2'); unicode-range: U+0100-024F, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'Jost'; font-style: italic; font-weight: 400; font-display: swap; src: url('/fonts/jost-400-italic.woff2') format('woff2'); }
+  .pb { --pollen: #f5c945; --signal: #4cc9ff; --narrow: 'Archivo Narrow', 'Arial Narrow', sans-serif; --read: 'Jost', system-ui, sans-serif;
+        font-family: var(--read); font-size: 1.125rem; line-height: 1.7; font-weight: 400; }
+  :root[data-theme="classic"] .pb { --pollen: #b8860b; }
+  .pb header { margin-bottom: 2.6rem; }
+  .pb header .date { font-family: var(--mono); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .pb h1 { font-family: var(--narrow); font-weight: 700; text-transform: uppercase; font-size: clamp(3rem, 10vw, 5.4rem); line-height: .9; letter-spacing: -.012em; margin: .6rem 0 0; text-wrap: balance; }
+  .pb h1 .accent { font-family: var(--read); font-weight: 300; text-transform: none; letter-spacing: -.01em; color: var(--pollen); }
+  .pb .content { counter-reset: sec; }
+  .pb .content p { margin: 0 0 1.15em; }
+  .pb .content a { color: var(--link); text-decoration-color: var(--underline); text-underline-offset: .18em; }
+  /* the table of contents: numbered like the video's chapters */
+  .pb .content > ol:first-child { list-style: none; counter-reset: toc; padding: .9rem 0; margin: 0 0 2rem; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); display: flex; flex-wrap: wrap; gap: .4rem 2rem; }
+  .pb .content > ol:first-child li { counter-increment: toc; margin: 0; font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+  .pb .content > ol:first-child li::before { content: counter(toc, decimal-leading-zero) '  '; color: var(--pollen); white-space: pre; }
+  .pb .content > ol:first-child a { color: var(--fg); text-decoration: none; }
+  .pb .content > ol:first-child a:hover { color: var(--link); }
+  /* chapters: a big numeral, then the title in condensed caps */
+  .pb .content h2 { counter-increment: sec; font-family: var(--narrow); font-weight: 700; text-transform: uppercase; font-size: 2.7rem; line-height: .95; letter-spacing: -.005em; margin: 4.8rem 0 1.5rem; padding-top: 1.4rem; border-top: 1px solid var(--hairline); }
+  .pb .content h2::before { content: counter(sec, decimal-leading-zero); display: block; font-size: 1.6em; line-height: .9; color: var(--pollen); margin-bottom: .35rem; }
+  /* lead-ins of the feature paragraphs and list items, set like the video's captions */
+  .pb .content p > strong:first-child, .pb .content li > strong:first-child { font-family: var(--narrow); font-weight: 700; text-transform: uppercase; letter-spacing: .015em; font-size: 1.08em; }
+  .pb .content ul { list-style: none; padding: 0; margin: 1.4rem 0 1.6rem; border-top: 1px solid var(--hairline); }
+  .pb .content ul li { margin: 0; padding: .6rem 0; border-bottom: 1px solid var(--hairline); }
+  .pb .content blockquote { font-style: italic; }
+  .pb pre { position: relative; font-family: var(--mono); font-size: .82rem; line-height: 1.55; border-radius: 10px; border: 1px solid var(--hairline); padding: 1rem 1.1rem; margin: 1.4rem 0 2rem; }
+  .pb pre.has-copy { padding-right: 5.2rem; }
+  .pb .copy { position: absolute; top: 8px; right: 8px; font-family: var(--mono); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--fg); background: var(--bg); border: 1px solid var(--hairline); border-radius: 6px; padding: 5px 9px; cursor: pointer; }
+  .pb .copy:hover { border-color: var(--link); color: var(--link); } .pb .copy.done { color: var(--pollen); border-color: var(--pollen); }
+  .pb figcaption, .pb .compare-title { font-family: var(--mono); font-size: .7rem !important; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .pb .compare-title strong { font-weight: 400; color: var(--fg); }
+  .pb .destiny-palette span { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+  /* the answer to the post's question gets the strongest type, the sign-off the lightest */
+  .pb .content .closer { font-family: var(--narrow); font-weight: 700; text-transform: uppercase; font-size: clamp(1.9rem, 5vw, 2.7rem); line-height: 1; margin: 2.8rem 0 1.4rem; text-wrap: balance; }
+  .pb .content .closer em { font-family: var(--read); font-weight: 300; font-style: normal; text-transform: none; color: var(--pollen); }
+  .pb .content .signoff { font-family: var(--read); font-weight: 300; font-size: 1.5rem; color: var(--muted); margin: 0 0 1rem; }
+  .pb .content > ol:first-child + h2 { border-top: 0; padding-top: 0; margin-top: 3rem; }
+  .pb .gallery-invite strong { font-family: var(--narrow); font-weight: 700; text-transform: uppercase; letter-spacing: .01em; font-size: 1.7rem; line-height: 1; }
+  .pb .gallery-invite small { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; }
+  @media (max-width: 600px) { .pb { font-size: 1.0625rem; } .pb .content h2 { font-size: 2.1rem; margin-top: 3.6rem; } }
 
   .destiny-palette { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:24px 0; }
   .destiny-palette small { display:block; color:var(--muted); font-size:11px; }
@@ -54,6 +102,13 @@ const { Content } = await render(post)
   @media (max-width: 800px) { .compare-figure { width: 100%; left: 0; transform: none; } .compare-label { font-size: 11px; top: 8px; } .compare-label-left { left: 8px; } .compare-label-right { right: 8px; } }
 </style>
 <script>
+  // a copy button on shell commands
+  for (const pre of document.querySelectorAll('.pb pre')) {
+    const code = pre.querySelector('code'); if (!code || !/bash|sh|shell/.test(pre.dataset.language || code.className)) continue;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'copy'; b.textContent = 'Copy';
+    b.addEventListener('click', async () => { try { await navigator.clipboard.writeText(code.innerText.trim()); b.textContent = 'Copied'; b.classList.add('done'); } catch { b.textContent = 'Select it'; } setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('done'); }, 1600); });
+    pre.appendChild(b); pre.classList.add('has-copy');
+  }
   for (const c of document.querySelectorAll('.compare')) {
     const r = c.querySelector('.compare-range');
     const set = v => c.style.setProperty('--pos', v + '%');
