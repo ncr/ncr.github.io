@@ -49,8 +49,12 @@ const video = '/gallery/destiny/video/'
     };
     const toggle = () => { src(); const v = cur(); if (v.paused) v.play().catch(() => {}); else v.pause(); };
     // controls: visible while paused or when the pointer moves, hidden after 2.5 s of rest while playing
-    const bar = root.querySelector('.mvi-bar'); let onBar = false;
-    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!cur().paused && !onBar) idle = setTimeout(() => root.classList.add('is-idle'), 2500); };
+    // the bar hides after 2.5 s at rest, but never while the pointer is over it — checked against the last known
+    // pointer position, because a resize (wide) moves the bar under a still pointer without any pointer event
+    const bar = root.querySelector('.mvi-bar'); let onBar = false, px = -1, py = -1;
+    addEventListener('pointermove', e => { px = e.clientX; py = e.clientY; }, { passive: true });
+    const overBar = () => { const r = bar.getBoundingClientRect(); return px >= r.left && px <= r.right && py >= r.top && py <= r.bottom; };
+    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!cur().paused && !onBar) idle = setTimeout(() => { if (overBar()) wake(); else root.classList.add('is-idle'); }, 2500); };
     bar.addEventListener('pointerenter', () => { onBar = true; wake(); }); bar.addEventListener('pointerleave', () => { onBar = false; wake(); });
     for (const x of Object.values(V)) {
       for (const e of ['play', 'pause', 'ended', 'seeked', 'loadedmetadata']) x.addEventListener(e, ev => { state(ev); if (ev.target === cur()) follow2(); });
@@ -104,6 +108,7 @@ const video = '/gallery/destiny/video/'
       };
       follow = requestAnimationFrame(step);
       if (!on) setTimeout(() => { if (!root.classList.contains('is-wide')) { root.style.width = ''; frame.style.height = ''; } }, 700);
+      wake(); setTimeout(wake, 700);
     };
     addEventListener('resize', () => { if (root.classList.contains('is-wide')) { const b = wideBox(); root.style.transition = frame.style.transition = 'none'; size(b.w, b.h); requestAnimationFrame(() => { root.style.transition = frame.style.transition = ''; }); } });
     wide.onclick = () => setWide(!root.classList.contains('is-wide'));
