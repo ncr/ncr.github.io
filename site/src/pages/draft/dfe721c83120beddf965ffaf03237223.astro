@@ -41,12 +41,13 @@ const words = post.data.title.split(' '), last = words.pop()
   .pb .content { counter-reset: sec; }
   .pb .content p { margin: 0 0 1.15em; }
   .pb .content a { color: var(--link); text-decoration-color: var(--underline); text-underline-offset: .18em; }
-  /* the table of contents: numbered like the video's chapters */
-  .pb .content > ol:first-child { list-style: none; counter-reset: toc; padding: .9rem 0; margin: 0 0 2rem; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); display: flex; flex-wrap: wrap; gap: .4rem 2rem; }
-  .pb .content > ol:first-child li { counter-increment: toc; margin: 0; font-family: var(--mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
-  .pb .content > ol:first-child li::before { content: counter(toc, decimal-leading-zero) '  '; color: var(--pollen); white-space: pre; }
-  .pb .content > ol:first-child a { color: var(--fg); text-decoration: none; }
-  .pb .content > ol:first-child a:hover { color: var(--link); }
+  /* the table of contents: three chapter cards, set like the chapter openings (numeral in Pollen, title in caps) */
+  .pb .content > ol:first-child { list-style: none; counter-reset: toc; padding: 0; margin: 0 0 2.6rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pb .content > ol:first-child li { counter-increment: toc; margin: 0; }
+  .pb .content > ol:first-child a { display: block; height: 100%; padding: .9rem 1rem 1rem; border: 1px solid var(--hairline); border-radius: 10px; text-decoration: none; color: var(--fg); font-family: var(--narrow); font-weight: 700; text-transform: uppercase; font-size: 1.35rem; line-height: 1; letter-spacing: .005em; transition: border-color .15s ease, background .15s ease; }
+  .pb .content > ol:first-child a::before { content: counter(toc, decimal-leading-zero); display: block; font-size: 2.2rem; line-height: .9; color: var(--pollen); margin-bottom: .45rem; }
+  .pb .content > ol:first-child a:hover { border-color: var(--link); background: color-mix(in srgb, var(--link) 7%, transparent); }
+  @media (max-width: 600px) { .pb .content > ol:first-child { grid-template-columns: 1fr; } .pb .content > ol:first-child a { display: flex; align-items: baseline; gap: .8rem; } .pb .content > ol:first-child a::before { margin: 0; font-size: 1.6rem; } }
   /* chapters: a big numeral, then the title in condensed caps */
   .pb .content h2 { counter-increment: sec; font-family: var(--narrow); font-weight: 700; text-transform: uppercase; font-size: 2.7rem; line-height: .95; letter-spacing: -.005em; margin: 4.8rem 0 1.5rem; padding-top: 1.4rem; border-top: 1px solid var(--hairline); }
   .pb .content h2::before { content: counter(sec, decimal-leading-zero); display: block; font-size: 1.6em; line-height: .9; color: var(--pollen); margin-bottom: .35rem; }
