@@ -84,13 +84,9 @@ const video = '/gallery/destiny/video/'
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
     // the width animates between two pixel values (the column and the wide size), so the height follows smoothly
-    // wide: the same space on all four sides. When a 16:9 frame can have equal margins, it gets exactly that
-    // (w = (innerWidth - innerHeight)·16/7); on windows as wide as 16:9 or wider, and on tall ones, the frame is the
-    // window minus 40 px on each side and the picture fits inside it
-    const wideBox = () => { const w = (innerWidth - innerHeight) * 16 / 7, col = root.parentElement.getBoundingClientRect().width;
-      return w >= col && w <= innerWidth - 80 ? { w, h: w * 9 / 16 } : { w: innerWidth - 80, h: innerHeight - 80 }; };
-    // centred on the text column with a computed margin (no transform: a transform on a resizing box left Chromium
-    // hit-testing the old position until the next scroll)
+    // wide: a 16:9 frame, centred (left = right, top = bottom), as large as the window allows with at least 40 px
+    // of margin on the tighter pair of sides
+    const wideBox = () => { const col = root.parentElement.getBoundingClientRect().width, w = Math.max(col, Math.min(innerWidth - 80, (innerHeight - 80) * 16 / 9)); return { w, h: w * 9 / 16 }; };
     const size = (w, h) => { const col = root.parentElement.getBoundingClientRect().width; root.style.width = `${w}px`; root.style.marginLeft = `${(col - w) / 2}px`; frame.style.height = `${h}px`; };
     const setWide = on => {
       const r0 = frame.getBoundingClientRect(), col = root.parentElement.getBoundingClientRect().width;
@@ -138,8 +134,7 @@ const video = '/gallery/destiny/video/'
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
   .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; opacity: 0; pointer-events: none; }
   .mvi-video.is-on { opacity: 1; pointer-events: auto; }
-  .mvi-frame:fullscreen .mvi-video, .mvi.is-wide .mvi-video { object-fit: contain; }
-  .mvi.is-wide .mvi-frame { aspect-ratio: auto; }
+  .mvi-frame:fullscreen .mvi-video { object-fit: contain; }
   .mvi-badge { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; display: grid; place-items: center; padding: 0; border-radius: 50%; background: #070a11b3; border: 1.5px solid #ffffffd0; color: #fff; cursor: pointer; backdrop-filter: blur(6px); transition: transform .15s ease, opacity .2s ease; z-index: 2; }
   .mvi-badge:hover { transform: scale(1.06); }
   .mvi.has-started .mvi-badge { opacity: 0; pointer-events: none; }
