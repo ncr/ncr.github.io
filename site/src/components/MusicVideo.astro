@@ -6,7 +6,8 @@ const video = '/gallery/destiny/video/'
 ---
 <figure class="mvi" aria-label="Prepare to Walk, the p(bloom) music video">
   <div class="mvi-frame">
-    <video class="mvi-video" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video: the theme and its 42 wallpapers"></video>
+    <video class="mvi-video is-on" data-take="electronic" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video (electronic): the theme and its 42 wallpapers"></video>
+    <video class="mvi-video" data-take="rock" playsinline muted preload="none" poster={`${video}prepare-to-walk-rock-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video (rock)" aria-hidden="true"></video>
     <button type="button" class="mvi-badge" aria-label="Play the music video"><svg viewBox="0 0 40 40" width="46" height="46" aria-hidden="true"><path d="M15.2 9.5 32 20 15.2 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></button>
     <div class="mvi-bar">
       <button type="button" class="mvi-btn mvi-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8.6 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
@@ -23,33 +24,57 @@ const video = '/gallery/destiny/video/'
 </figure>
 <script define:vars={{ video }}>
   (() => {
-    const root = document.querySelector('.mvi'), frame = root.querySelector('.mvi-frame'), v = root.querySelector('.mvi-video');
+    // Two takes, two videos. Once playback starts both play together: the chosen one visible and audible, the other
+    // hidden and muted, kept on the same time. Switching swaps visibility and sound only, so it is instant.
+    const root = document.querySelector('.mvi'), frame = root.querySelector('.mvi-frame');
+    const V = Object.fromEntries([...root.querySelectorAll('.mvi-video')].map(x => [x.dataset.take, x]));
     const badge = root.querySelector('.mvi-badge'), play = root.querySelector('.mvi-play'), seek = root.querySelector('.mvi-seek'), time = root.querySelector('.mvi-time');
     const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take button')];
-    let seeking = false, raf = 0, take = 'electronic', idle = 0;
+    let seeking = false, raf = 0, take = 'electronic', idle = 0, sync = 0;
+    const cur = () => V[take], other = () => V[take === 'rock' ? 'electronic' : 'rock'];
     const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=2`; };
-    const src = () => { if (!v.getAttribute('src')) v.src = file(take); };
+    const src = () => { for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
     const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-    const tick = () => { if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
-    const state = () => { const p = v.paused; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); wake(); };
-    const toggle = () => { src(); if (v.paused) v.play().catch(() => {}); else v.pause(); };
+    const tick = () => { const v = cur(); if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
+    const state = e => { if (e && e.target !== cur()) return; const v = cur(), p = v.paused; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); wake(); };
+    // the hidden take follows the chosen one: same play state, time kept within ~40 ms by nudging its rate (no seeks)
+    const follow2 = () => {
+      const a = cur(), b = other(); if (!b.getAttribute('src')) return;
+      if (a.paused || a.ended) { if (!b.paused) b.pause(); if (Math.abs(b.currentTime - a.currentTime) > .05 && a.currentTime < (b.duration || 1e9)) b.currentTime = a.currentTime; b.playbackRate = 1; return; }
+      if (a.currentTime >= (b.duration || 1e9) - .05) return;
+      const d = a.currentTime - b.currentTime;
+      if (Math.abs(d) > .6) { b.currentTime = a.currentTime; b.playbackRate = 1; }
+      else b.playbackRate = Math.abs(d) < .04 ? 1 : 1 + Math.max(-.12, Math.min(.12, d * .8));
+      if (b.paused) b.play().catch(() => {});
+    };
+    const toggle = () => { src(); const v = cur(); if (v.paused) v.play().catch(() => {}); else v.pause(); };
     // controls: visible while paused or when the pointer moves, hidden after 2.5 s of rest while playing
-    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!v.paused) idle = setTimeout(() => root.classList.add('is-idle'), 2500); };
-    for (const e of ['play', 'pause', 'ended', 'seeked', 'loadedmetadata']) v.addEventListener(e, state);
-    v.addEventListener('loadedmetadata', () => { if (isFinite(v.duration)) seek.max = String(v.duration); });
-    badge.onclick = toggle; play.onclick = toggle; v.onclick = toggle;
+    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!cur().paused) idle = setTimeout(() => root.classList.add('is-idle'), 2500); };
+    for (const x of Object.values(V)) {
+      for (const e of ['play', 'pause', 'ended', 'seeked', 'loadedmetadata']) x.addEventListener(e, ev => { state(ev); if (ev.target === cur()) follow2(); });
+      x.addEventListener('loadedmetadata', () => { if (x === cur() && isFinite(x.duration)) seek.max = String(x.duration); });
+      x.onclick = toggle;
+    }
+    setInterval(() => { if (!cur().paused) follow2(); }, 250);
+    badge.onclick = toggle; play.onclick = toggle;
     frame.addEventListener('pointermove', wake); frame.addEventListener('pointerdown', wake); frame.addEventListener('focusin', wake);
-    seek.addEventListener('input', () => { seeking = true; src(); v.currentTime = Number(seek.value); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); });
+    seek.addEventListener('input', () => { seeking = true; src(); const t = Number(seek.value); for (const x of Object.values(V)) x.currentTime = Math.min(t, (x.duration || 1e9) - .05); time.textContent = fmt(t); seek.style.setProperty('--p', `${(t / (Number(seek.max) || 1)) * 100}%`); });
     seek.addEventListener('change', () => { seeking = false; }); seek.addEventListener('pointerup', () => { seeking = false; });
     takes.forEach(b => b.onclick = () => {
       if (b.dataset.take === take) return;
+      const a = cur(), playing = !a.paused, at = a.currentTime;
       take = b.dataset.take; takes.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-      v.poster = `${video}prepare-to-walk${take === 'rock' ? '-rock' : ''}-poster.webp`;
-      if (!v.getAttribute('src')) return;
-      const at = v.currentTime, playing = !v.paused;
-      v.addEventListener('loadedmetadata', () => { v.currentTime = Math.min(at, v.duration - .5); if (playing) v.play().catch(() => {}); }, { once: true });
-      v.preload = 'auto'; v.src = file(take); v.load();
+      const n = cur();
+      if (Math.abs(n.currentTime - at) > .15 && n.getAttribute('src')) n.currentTime = Math.min(at, (n.duration || 1e9) - .05);
+      n.muted = false; a.muted = true; n.playbackRate = 1;
+      n.classList.add('is-on'); a.classList.remove('is-on'); n.removeAttribute('aria-hidden'); a.setAttribute('aria-hidden', 'true');
+      if (playing && n.paused) n.play().catch(() => {});
+      if (isFinite(n.duration)) seek.max = String(n.duration);
+      state(); follow2();
+      try { localStorage.setItem('pbloom-take', take); } catch {}
     });
+    // the last chosen take is remembered in this browser
+    try { const saved = localStorage.getItem('pbloom-take'); if (saved === 'rock') takes.find(x => x.dataset.take === 'rock')?.click(); } catch {}
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
     // the width animates between two pixel values (the column and the wide size), so the height follows smoothly
@@ -82,7 +107,7 @@ const video = '/gallery/destiny/video/'
     wide.onclick = () => setWide(!root.classList.contains('is-wide'));
     // fullscreen: the frame with its controls
     const setFull = () => { (document.fullscreenElement ? document.exitFullscreen() : (frame.requestFullscreen || frame.webkitRequestFullscreen)?.call(frame))?.catch?.(() => {}); };
-    full.onclick = setFull; v.ondblclick = setFull;
+    full.onclick = setFull; Object.values(V).forEach(x => x.ondblclick = setFull);
     if (!document.fullscreenEnabled && !frame.webkitRequestFullscreen) full.hidden = true;
     document.addEventListener('fullscreenchange', () => root.classList.toggle('is-full', document.fullscreenElement === frame));
     frame.addEventListener('keydown', e => {
@@ -99,7 +124,8 @@ const video = '/gallery/destiny/video/'
   @media (prefers-reduced-motion: reduce) { .mvi { transition: none; } }
   .mvi-frame { position: relative; aspect-ratio: 16 / 9; transition: height .55s cubic-bezier(.3,.7,.2,1); border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
-  .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
+  .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; opacity: 0; pointer-events: none; }
+  .mvi-video.is-on { opacity: 1; pointer-events: auto; }
   .mvi-frame:fullscreen .mvi-video, .mvi.is-wide .mvi-video { object-fit: contain; }
   .mvi.is-wide .mvi-frame { aspect-ratio: auto; }
   .mvi-badge { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; display: grid; place-items: center; padding: 0; border-radius: 50%; background: #070a11b3; border: 1.5px solid #ffffffd0; color: #fff; cursor: pointer; backdrop-filter: blur(6px); transition: transform .15s ease, opacity .2s ease; z-index: 2; }
