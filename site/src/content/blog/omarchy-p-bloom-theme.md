@@ -99,62 +99,6 @@ ends up on screen. Here I made about 340 of those decisions:
 Each one is a note I wrote down: “too static”, “that's not how I write”,
 “this dome could never close”.
 
-<div class="detail-pair">
-
-<figure class="figure detail-comparison">
-<p><strong>Wallpapers, before</strong></p>
-<a href="/draft-assets/destiny/skyracer-sep18.webp"><img src="/draft-assets/destiny/skyracer-sep18.webp" alt="Sky Racer, first version: a flat top-down drawing, six fans as circles around an oval cockpit." width="1440" height="810" loading="lazy" /></a>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>After</strong></p>
-<a href="/draft-assets/destiny/skyracer-now.webp"><img src="/draft-assets/destiny/skyracer-now.webp" alt="Sky Racer now: a 3D model of the racing copter with ducted fans, labelled parts and a cockpit canopy." width="1440" height="810" loading="lazy" /></a>
-</figure>
-
-</div>
-
-<div class="detail-pair">
-
-<figure class="figure detail-comparison">
-<p><strong>Music, before</strong></p>
-<blockquote><p>Blogs are writing think-pieces, sponsors write the checks.</p></blockquote>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>After</strong></p>
-<blockquote><p>Free and open. No flex. What did you expect?</p></blockquote>
-</figure>
-
-</div>
-
-<div class="detail-pair">
-
-<figure class="figure detail-comparison">
-<p><strong>Video, before</strong></p>
-<a href="/draft-assets/destiny/video-bloom-before.webp"><img src="/draft-assets/destiny/video-bloom-before.webp" alt="The chorus build in an early cut: the word bloom set sideways over a wallpaper." width="1440" height="810" loading="lazy" /></a>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>After</strong></p>
-<a href="/draft-assets/destiny/video-bloom-after.webp"><img src="/draft-assets/destiny/video-bloom-after.webp" alt="The final cut: the band drops out and the shout p(bloom)! stands alone on dark." width="1440" height="810" loading="lazy" /></a>
-</figure>
-
-</div>
-
-<div class="detail-pair">
-
-<figure class="figure detail-comparison">
-<p><strong>This post, before</strong></p>
-<blockquote><p>On Saturday evening three AI agents made three music videos for my new Omarchy theme. The fastest finished in 9 minutes, the slowest in 49.</p></blockquote>
-</figure>
-
-<figure class="figure detail-comparison">
-<p><strong>After</strong></p>
-<blockquote><p>Making it was pure joy. Every finished piece showed me three new things to try, and the horizon only kept getting wider.</p></blockquote>
-</figure>
-
-</div>
-
 This is where taste comes in. Agents can make almost anything, and fast.
 Deciding what is worth keeping, and what is still wrong, stays my job. Taste
 isn't knowing what's beautiful. It's noticing, for the 340th time, that
