@@ -21,7 +21,11 @@ const { Content } = await render(post)
 
 <style is:global>
 
-  .destiny-palette { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:24px 0; }
+  .destiny-palette { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:24px 0; }
+  .destiny-palette small { display:block; color:var(--muted); font-size:11px; }
+  .inside-figure { margin:1.6rem 0 2.2rem; }
+  .inside-figure img { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--hairline); }
+  .inside-figure figcaption { margin-top:10px; color:var(--muted); font-size:.85rem; }
   .destiny-palette span { border-top:12px solid var(--swatch); padding-top:8px; font-size:12px; }
   .destiny-monitor { width:min(1240px,calc(100vw - 40px)); position:relative; left:50%; transform:translateX(-50%); margin:32px 0; }
   .destiny-monitor img { width:100%; height:auto; border-radius:8px; }
@@ -34,7 +38,7 @@ const { Content } = await render(post)
   .detail-pair img { width: 100%; }
   .detail-triptych { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   @media (max-width: 800px) { .detail-pair { grid-template-columns: 1fr; width: 100%; gap: 28px; } }
-  .compare-figure { width: min(1240px, calc(100vw - 40px)); position: relative; left: 50%; transform: translateX(-50%); margin: 2.2rem 0; }
+  .compare-figure { width: 100%; margin: 2.2rem 0; }
   .compare-title { margin: 0 0 12px; }
   .compare { position: relative; width: 100%; overflow: hidden; border-radius: 10px; border: 1px solid var(--hairline); user-select: none; touch-action: pan-y; background: #090d16; }
   .compare img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; margin: 0; max-width: none; }
@@ -43,6 +47,7 @@ const { Content } = await render(post)
   .compare-handle::after { content: "‹ ›"; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; border-radius: 50%; background: #070a11d9; border: 1.5px solid #fff; color: #fff; font: 600 16px/1 system-ui, sans-serif; letter-spacing: 2px; }
   .compare-label { position: absolute; top: 12px; padding: 4px 10px; border-radius: 6px; background: #070a11cc; color: #e8f0ff; font: 500 12px/1.3 system-ui, sans-serif; pointer-events: none; }
   .compare-label-left { left: 12px; } .compare-label-right { right: 12px; }
+  .compare-bottom .compare-label { top: auto; bottom: 10px; }
   .compare-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; }
   .compare-range:focus-visible + .compare-handle, .compare:has(.compare-range:focus-visible) .compare-handle::after { outline: 2px solid var(--link); outline-offset: 3px; }
   .compare-figure figcaption { margin-top: 10px; color: var(--muted); font-size: .85rem; }

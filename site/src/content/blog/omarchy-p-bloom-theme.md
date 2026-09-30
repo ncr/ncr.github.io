@@ -35,7 +35,24 @@ I'm betting on bloom.
 **42 blueprint wallpapers.** Every machine is a 3D model, drawn as a
 blueprint with notes and diagrams. The wallpapers are full of detail, yet
 they stay quiet behind your windows, and when you have a minute you can
-wander around one and find something new.
+wander around one and find something new. Each sheet also lists what still
+has to be invented before the machine can be built.
+
+<figure class="inside-figure">
+<a href="/draft-assets/destiny/caption-first-light.webp"><img src="/draft-assets/destiny/caption-first-light.webp" alt="The caption of First Light, a school-owned robotic telescope: its function, the four technologies it needs, the last one still needed, and a projected first service in 2031." width="1180" height="540" loading="lazy" /></a>
+<figcaption>First Light: three technologies we already have, one we still need, and a year.</figcaption>
+</figure>
+
+**The theme.** Deep-space navy, ice-white text and nine named colours for
+everything Omarchy themes.
+
+<div class="destiny-palette" aria-label="The p(bloom) palette">
+<span style="--swatch:#4cc9ff">Signal<small>#4cc9ff</small></span><span style="--swatch:#b97aff">Bloom<small>#b97aff</small></span><span style="--swatch:#ff8a3d">Sunrise<small>#ff8a3d</small></span><span style="--swatch:#f5c945">Pollen<small>#f5c945</small></span><span style="--swatch:#3ddc97">Sprout<small>#3ddc97</small></span><span style="--swatch:#4fe3d0">Lagoon<small>#4fe3d0</small></span><span style="--swatch:#ff5468">Flare<small>#ff5468</small></span><span style="--swatch:#5b8dff">Horizon<small>#5b8dff</small></span><span style="--swatch:#c19a5b">Brass<small>#c19a5b</small></span>
+</div>
+
+```bash
+omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
+```
 
 **Made for your screen.** Each wallpaper is composed again for every common
 screen, from 1080p to 7680 × 2160. Nothing is stretched, nothing is cropped,
@@ -50,7 +67,7 @@ and every caption stays sharp.
 <span class="compare-handle" aria-hidden="true"></span>
 <input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Move the divider: 1080p image, stretched on the left, Native 5K on the right" />
 </div>
-<figcaption>Part of a 5K screen, close to real size. Drag the line.</figcaption>
+<figcaption>Part of a 5K screen. Drag the line.</figcaption>
 </figure>
 
 <figure class="compare-figure">
@@ -65,22 +82,47 @@ and every caption stays sharp.
 <figcaption>A 21:9 ultrawide screen. Drag the line.</figcaption>
 </figure>
 
+**p(bloom) Wallpapers.** The companion app picks the set that fits each of
+your monitors, downloads it and keeps it matched when you plug in another
+screen. The sets are pre-rendered and live in GitHub Releases, so the theme
+itself installs in seconds. If you want to choose yourself, it has one small
+settings screen:
+
+```
+P(BLOOM) / WALLPAPER SETTINGS
+
+BACKGROUND
+  Muted       Default     [ Vivid ]
+How strong the background colour is.
+
+RESOLUTION
+▶ Automatic · Optimal set
+  5120 × 2880 / 24.9 MB
+  1920 × 1080 / 5.9 MB · download
+
+←→ Background   ↑↓ Resolution   ENTER Save   ESC Cancel
+```
+
 **Room for a see-through bar.** The top edge of every wallpaper is plain
 paper, with no lines or labels. Double-click Omarchy's bar to make it
 transparent and it stays perfectly readable. I always wanted to use that
 setting, but on most wallpapers the details behind the bar made it useless.
 
-**p(bloom) Wallpapers.** The companion app lets you browse the collection,
-picks the set that fits each of your monitors, downloads it and lets you turn
-the colour down or up. The sets are pre-rendered and live in GitHub Releases,
-so the theme itself installs in seconds.
+<figure class="compare-figure">
+<div class="compare compare-bottom" style="--pos:50%;aspect-ratio:1060/200">
+<img class="compare-after" src="/draft-assets/destiny/bar-clear.webp" alt="Omarchy's bar made see-through over Spin Table: the clock and the icons sit on plain paper." width="2120" height="400" loading="lazy" />
+<img class="compare-before" src="/draft-assets/destiny/bar-solid.webp" alt="Omarchy's bar with its dark background over the top of Spin Table." width="2120" height="400" loading="lazy" />
+<span class="compare-label compare-label-left">With background</span><span class="compare-label compare-label-right">See-through</span>
+<span class="compare-handle" aria-hidden="true"></span>
+<input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Move the divider: the bar with its background on the left, see-through on the right" />
+</div>
+<figcaption>My own bar, over Spin Table. Drag the line.</figcaption>
+</figure>
 
-**The theme.** Deep-space navy, ice-white text and Signal, Bloom and Sunrise
-accents for everything Omarchy themes.
-
-```bash
-omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
-```
+**Next: a wallpaper for each screen.** Omarchy shows the same wallpaper on
+every screen. The sets are already composed for each shape, so the next step
+is a different sheet on each monitor. I'd like to send that to Omarchy as a
+pull request.
 
 ## Pencils down
 
