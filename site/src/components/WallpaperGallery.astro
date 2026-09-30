@@ -3,7 +3,7 @@ import gallery from '../data/destiny-gallery.json'
 const wallpapers = gallery
 const cover = wallpapers.find(w => w.id === 'o01') || wallpapers[0]
 const video = '/gallery/destiny/video/'
-const clipDuration = 108.23
+const clipDuration = 119.88
 ---
 <section class="wallpaper-entry" aria-label="Music video and wallpaper gallery">
   <button class="gallery-launch" type="button" aria-haspopup="dialog" aria-controls="wallpaper-viewer">
@@ -11,7 +11,7 @@ const clipDuration = 108.23
     <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 40 40" width="50" height="50"><path d="M14 9.5 31 20 14 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></span>
     <span class="gallery-invite"><span><strong>Step into the future</strong><small>Music video · 42 wallpapers</small></span></span>
   </button>
-  <noscript><p><a href={`${video}split-signal-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={cover.src}>Full-size wallpaper</a> · <a href="https://github.com/ncr/omarchy-p-bloom-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
+  <noscript><p><a href={`${video}prepare-to-walk-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={cover.src}>Full-size wallpaper</a> · <a href="https://github.com/ncr/omarchy-p-bloom-theme/tree/main/backgrounds">All wallpapers</a></p></noscript>
 </section>
 <dialog id="wallpaper-viewer" aria-label="Music video and 42 wallpapers" data-cover={wallpapers.indexOf(cover)}>
   <div class="gallery-shell">
@@ -20,7 +20,7 @@ const clipDuration = 108.23
       <button type="button" class="viewer-close icon-button" aria-label="Close" title="Close (Esc)">✕</button>
     </header>
     <div class="viewer-canvas" tabindex="0" aria-label="Wallpaper. Arrow keys change the image, Z toggles zoom.">
-      <video class="mv-video" playsinline preload="none" poster={`${video}split-signal-poster.webp`} aria-label="Split Signal music video: the p(bloom) theme and 42 wallpapers"></video>
+      <video class="mv-video" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video: the theme and its 42 wallpapers"></video>
       <div class="viewer-frame"><img class="viewer-preview" alt="" /><img class="viewer-image" alt="" /></div>
     </div>
     <p class="viewer-error" role="status" hidden>Could not load the full image. <button type="button" class="viewer-retry">Try again</button></p>
@@ -31,7 +31,7 @@ const clipDuration = 108.23
         <button type="button" class="mv-play" aria-label="Play">▶</button>
         <input class="mv-seek" type="range" min="0" max={clipDuration} step="0.01" value="0" aria-label="Video position" />
       </div>
-      <p class="mv-credit">Music: <a href="https://x.com/koozeex1" target="_blank" rel="noopener">Kevin Koontz (@koozeex1)</a> — <a href="https://x.com/koozeex1/status/2096140707329368181" target="_blank" rel="noopener">„We Can Fix Everything”</a> <span>(The Ultimate Machine)</span></p>
+      <p class="mv-credit">Music: “Prepare to Walk”, my own song, made with Suno</p>
     </section>
     <footer class="viewer-bottom">
       <button type="button" class="tour-return">▷ <span>Play the music video</span></button>
@@ -100,7 +100,7 @@ const clipDuration = 108.23
     }
 
     // ── Music video ──
-    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}split-signal-av-${big?'1080':'720'}p60.mp4?v=7`; } }
+    function source() { if(!mv.getAttribute('src')) { const big = innerWidth*devicePixelRatio > 1400 && !navigator.connection?.saveData; mv.src = `${video}prepare-to-walk-av-${big?'1080':'720'}p60.mp4?v=1`; } }
     function progress() { if(!seeking) seek.value = String(mv.currentTime); seek.setAttribute('aria-valuetext', `${Math.floor(mv.currentTime/60)}:${String(Math.floor(mv.currentTime%60)).padStart(2,'0')}`); }
     function loop() { progress(); tick = mv.paused ? 0 : requestAnimationFrame(loop); }
     function playState() {
