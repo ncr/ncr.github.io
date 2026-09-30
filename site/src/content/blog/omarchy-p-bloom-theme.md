@@ -7,7 +7,7 @@ draft: true
 
 1. [Why I made it](#why-i-made-it)
 2. [What's inside](#whats-inside)
-3. [How it grew](#how-it-grew)
+3. [Pencils down](#pencils-down)
 
 ## Why I made it
 
@@ -82,38 +82,85 @@ accents for everything Omarchy themes.
 omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
 ```
 
-## How it grew
+## Pencils down
 
-The first wallpapers were circles and rectangles.
+Who made p(bloom), me or the AI? I didn't draw a single line, write any code
+or play a note. Agents did all of that, and they did it well.
+
+But making something is more than producing it. It is deciding what it should
+be. Nobody asks whether the camera made the film; the director decides what
+ends up on screen. Here I made about 340 of those decisions:
+
+- **Wallpapers:** 149 machines drafted, 42 kept, about 115 decisions.
+- **Music:** 48 songs generated, 2 kept, about 30 decisions.
+- **Video:** 52 cuts, 2 kept, about 120 decisions.
+- **This post:** 34 drafts, 1 published, about 40 decisions.
+
+Each one is a note I wrote down: “too static”, “that's not how I write”,
+“this dome could never close”.
 
 <div class="detail-pair">
 
 <figure class="figure detail-comparison">
-<p><strong>First version</strong></p>
+<p><strong>Wallpapers, before</strong></p>
 <a href="/draft-assets/destiny/skyracer-sep18.webp"><img src="/draft-assets/destiny/skyracer-sep18.webp" alt="Sky Racer, first version: a flat top-down drawing, six fans as circles around an oval cockpit." width="1440" height="810" loading="lazy" /></a>
 </figure>
 
 <figure class="figure detail-comparison">
-<p><strong>Now</strong></p>
+<p><strong>After</strong></p>
 <a href="/draft-assets/destiny/skyracer-now.webp"><img src="/draft-assets/destiny/skyracer-now.webp" alt="Sky Racer now: a 3D model of the racing copter with ducted fans, labelled parts and a cockpit canopy." width="1440" height="810" loading="lazy" /></a>
 </figure>
 
 </div>
 
-Then the figures got joints and the machines got parts. Then every machine
-became a 3D model in Blender, with its own camera and composition.
+<div class="detail-pair">
 
-Some of the first machines were jokes. I replaced them with sincere ones:
-inventions that are useful, plausible and good to look at.
+<figure class="figure detail-comparison">
+<p><strong>Music, before</strong></p>
+<blockquote><p>Blogs are writing think-pieces, sponsors write the checks.</p></blockquote>
+</figure>
 
-The colours went from thirteen close shades to ten grounds you can tell apart
-at a glance.
+<figure class="figure detail-comparison">
+<p><strong>After</strong></p>
+<blockquote><p>Free and open. No flex. What did you expect?</p></blockquote>
+</figure>
 
-I started with Astra. It was slow, needed constant corrections, and the
-motion design was weak. Opus caught on quickly and matched my vision.
+</div>
 
-They say taste is the moat. Mine came to about 340 notes: over a hundred on
-the wallpapers, about 120 on the video, forty on this post and thirty on
-the song.
+<div class="detail-pair">
 
-p(bloom) >> p(doom). What a great time to be alive!
+<figure class="figure detail-comparison">
+<p><strong>Video, before</strong></p>
+<a href="/draft-assets/destiny/video-bloom-before.webp"><img src="/draft-assets/destiny/video-bloom-before.webp" alt="The chorus build in an early cut: the word bloom set sideways over a wallpaper." width="1440" height="810" loading="lazy" /></a>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>After</strong></p>
+<a href="/draft-assets/destiny/video-bloom-after.webp"><img src="/draft-assets/destiny/video-bloom-after.webp" alt="The final cut: the band drops out and the shout p(bloom)! stands alone on dark." width="1440" height="810" loading="lazy" /></a>
+</figure>
+
+</div>
+
+<div class="detail-pair">
+
+<figure class="figure detail-comparison">
+<p><strong>This post, before</strong></p>
+<blockquote><p>On Saturday evening three AI agents made three music videos for my new Omarchy theme. The fastest finished in 9 minutes, the slowest in 49.</p></blockquote>
+</figure>
+
+<figure class="figure detail-comparison">
+<p><strong>After</strong></p>
+<blockquote><p>Making it was pure joy. Every finished piece showed me three new things to try, and the horizon only kept getting wider.</p></blockquote>
+</figure>
+
+</div>
+
+This is where taste comes in. Agents can make almost anything, and fast.
+Deciding what is worth keeping, and what is still wrong, stays my job. Taste
+isn't knowing what's beautiful. It's noticing, for the 340th time, that
+something isn't yet.
+
+So yes, I made it, the way a director makes a film. Every line was drawn by
+an agent. Every decision was mine.
+
+p(bloom) >> p(doom).
