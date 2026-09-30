@@ -6,7 +6,7 @@ const video = '/gallery/destiny/video/'
 const clipDuration = 119.88
 ---
 <section class="wallpaper-entry" aria-label="42 wallpapers">
-  <p class="wall-label">42 wallpapers · click one to view it full size</p>
+  <p class="wall-label">42 wallpapers</p>
   <div class="wall-thumbs">
     {wallpapers.map((w, i) => <button type="button" data-open={i} aria-label={`${i + 1}. ${w.name}`}><img src={w.thumb} alt="" width="1600" height="900" loading="lazy" /></button>)}
   </div>
@@ -25,10 +25,9 @@ const clipDuration = 119.88
     <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Previous wallpaper" title="Previous (←)">‹</button>
     <button type="button" class="viewer-next edge-nav icon-button" aria-label="Next wallpaper" title="Next (→)">›</button>
     <footer class="viewer-bottom">
-      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>Open gallery</span><span class="gallery-total">42</span></button>
+      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>All wallpapers</span><span class="gallery-total">42</span></button>
       <div class="viewer-tools">
         <button type="button" class="viewer-zoom" aria-pressed="false" title="Zoom (Z)">＋ <span>Detail</span></button>
-        <button type="button" class="viewer-fx" aria-pressed="true" aria-label="Wallpaper animation" title="Turn wallpaper animation on or off">◇ <span>Animation</span></button>
         <button type="button" class="viewer-fullscreen" aria-label="Fullscreen" aria-pressed="false" title="Fullscreen (F)">⛶ <span>Fullscreen</span></button>
         <a class="viewer-download" aria-label="Download wallpaper" download title="Download the 5120 × 2880 original">↓ <span>Download</span></a>
       </div>
@@ -41,9 +40,6 @@ const clipDuration = 119.88
     </section>
   </div>
 </dialog>
-<script>
-  import "../scripts/ambient-controller.js";
-</script>
 <script define:vars={{ wallpapers, video }}>
   (() => {
     const dialog = document.querySelector('#wallpaper-viewer');
@@ -58,7 +54,7 @@ const clipDuration = 119.88
     let watching = false, effects = true, seeking = false, tick = 0;
 
     // Free browsing tells the ambient ink loops when they may run.
-    function ambient(){ canvas.dataset.filmActive = watching ? '1' : '0'; window.dispatchEvent(new CustomEvent('destiny-camera',{detail:{active:dialog.open&&!watching,enabled:effects}})); }
+    function ambient(){}
     function setZoom(value) {
       zoom = value; canvas.classList.toggle('is-zoomed', zoom);
       zoomButton.setAttribute('aria-pressed', String(zoom));
@@ -76,7 +72,6 @@ const clipDuration = 119.88
       leaveVideo();
       index = (next + wallpapers.length) % wallpapers.length;
       const w = wallpapers[index], ticket = ++request;
-      window.dispatchEvent(new CustomEvent('destiny-wallpaper',{detail:w}));
       setZoom(false); q('.viewer-error').hidden = true;
       q('.viewer-count').textContent = `${String(index+1).padStart(2,'0')} / ${wallpapers.length}`;
       q('.viewer-title').textContent = w.name;
@@ -93,7 +88,7 @@ const clipDuration = 119.88
     // ── Dialog ──
     opens.forEach(b => b.addEventListener('click', () => { opener = b; previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; dialog.showModal(); show(Number(b.dataset.open)); canvas.focus({preventScroll:true}); }));
     async function close() { if(ownsFullscreen && document.fullscreenElement) await document.exitFullscreen().catch(() => {}); ownsFullscreen = false; dialog.close(); }
-    dialog.addEventListener('close', () => { document.body.style.overflow = previousOverflow; ambient(); opener?.focus({preventScroll:true}); });
+    dialog.addEventListener('close', () => { document.body.style.overflow = previousOverflow; const t = document.querySelector(`.wall-thumbs [data-open="${index}"]`) || opener; t?.focus({preventScroll:true, focusVisible:false}); t?.scrollIntoView({block:'nearest'}); });
     dialog.addEventListener('cancel', e => { e.preventDefault(); if(!grid.hidden) setGrid(false); else if(zoom) setZoom(false); else close(); });
     q('.viewer-close').onclick = close;
     q('.viewer-prev').onclick = () => show(index-1); q('.viewer-next').onclick = () => show(index+1);
@@ -101,7 +96,6 @@ const clipDuration = 119.88
     gridToggle.onclick = () => setGrid(grid.hidden); q('.grid-close').onclick = () => setGrid(false);
     grid.querySelectorAll('[data-index]').forEach(b => b.onclick = () => { show(Number(b.dataset.index)); setGrid(false); });
     zoomButton.onclick = () => setZoom(!zoom);
-    q('.viewer-fx').onclick = () => { effects = !effects; q('.viewer-fx').setAttribute('aria-pressed', String(effects)); ambient(); };
     async function fullscreen() { try { if(document.fullscreenElement) await document.exitFullscreen(); else { await document.documentElement.requestFullscreen(); ownsFullscreen = true; } } catch (error) { console.warn('Fullscreen unavailable:', error); } }
     if(!document.fullscreenEnabled) fullscreenButton.hidden = true;
     fullscreenButton.onclick = fullscreen;
@@ -150,4 +144,14 @@ const clipDuration = 119.88
 .wallpaper-entry{margin:3.4rem 0 1rem}.wall-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 .8rem}
 .wall-thumbs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.wall-thumbs button{padding:0;border:1px solid var(--hairline);border-radius:5px;overflow:hidden;background:#04060b;cursor:zoom-in;aspect-ratio:16/9}.wall-thumbs img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s ease,opacity .2s}.wall-thumbs button:hover img{transform:scale(1.06)}.wall-thumbs button:hover{border-color:var(--link)}
 @media(max-width:600px){.wall-thumbs{grid-template-columns:repeat(3,1fr)}}
+/* the viewer in the post's type: condensed caps for the title, mono for counts and controls, no light pills */
+#wallpaper-viewer{font-family:'Jost',system-ui,sans-serif}
+#wallpaper-viewer .viewer-title{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:18px;color:#eef4ff}
+#wallpaper-viewer .viewer-count,#wallpaper-viewer .viewer-bottom,#wallpaper-viewer .grid-heading p{font-family:'iA Writer Mono S',ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+#wallpaper-viewer .viewer-grid-toggle{background:none;color:#eef4ff;font-weight:400;border:1px solid #ffffff35}
+#wallpaper-viewer .viewer-grid-toggle:hover{background:#ffffff14;color:#eef4ff;border-color:#4cc9ff}
+#wallpaper-viewer .gallery-total{background:#ffffff1f;color:#eef4ff}
+#wallpaper-viewer .wallpaper-grid span{font-family:'Archivo Narrow','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+.wall-thumbs button:focus:not(:focus-visible){outline:none}
+#wallpaper-viewer .viewer-bottom button,#wallpaper-viewer .viewer-bottom a{text-transform:inherit;letter-spacing:inherit;display:inline-flex;align-items:center;gap:6px;line-height:1}
 </style>

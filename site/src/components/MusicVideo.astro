@@ -19,7 +19,6 @@ const video = '/gallery/destiny/video/'
       <button type="button" class="mvi-btn mvi-full" aria-label="Fullscreen" title="Fullscreen (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
-  <figcaption>Prepare to Walk · music: my own song, made with Suno</figcaption>
   <noscript><p><a href={`${video}prepare-to-walk-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={`${video}prepare-to-walk-rock-av-1080p60.mp4`}>rock version</a></p></noscript>
 </figure>
 <script define:vars={{ video }}>
@@ -51,7 +50,8 @@ const video = '/gallery/destiny/video/'
       v.addEventListener('loadedmetadata', () => { v.currentTime = Math.min(at, v.duration - .5); if (playing) v.play().catch(() => {}); }, { once: true });
       v.preload = 'auto'; v.src = file(take); v.load();
     });
-    // wide: the player breaks out of the text column to the whole browser width (never taller than the window)
+    // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
+    // (never taller than the window)
     const setWide = on => { root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on)); if (on) root.scrollIntoView({ block: 'center', behavior: 'smooth' }); };
     wide.onclick = () => setWide(!root.classList.contains('is-wide'));
     // fullscreen: the frame with its controls
@@ -70,9 +70,8 @@ const video = '/gallery/destiny/video/'
 </script>
 <style>
   .mvi { margin: 1.4rem 0 2.6rem; }
-  .mvi.is-wide { width: min(100vw, calc(100svh * 16 / 9)); margin-left: 50%; transform: translateX(-50%); }
+  .mvi.is-wide { width: min(calc(100vw - 64px), calc((100svh - 48px) * 16 / 9)); margin-left: 50%; transform: translateX(-50%); }
   .mvi-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
-  .mvi.is-wide .mvi-frame { border-radius: 0; border-left: 0; border-right: 0; }
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
   .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
   .mvi-frame:fullscreen .mvi-video { object-fit: contain; }
@@ -98,7 +97,5 @@ const video = '/gallery/destiny/video/'
   .mvi-take button { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 5px 9px; border: 0; border-radius: 999px; background: none; color: #c9d6ea; cursor: pointer; }
   .mvi-take button[aria-pressed="true"] { background: #ffffff2b; color: #fff; }
   .mvi-take button:hover { color: #4cc9ff; }
-  .mvi figcaption { margin-top: 8px; }
-  .mvi.is-wide figcaption { max-width: var(--measure); margin: 8px auto 0; padding: 0 1rem; }
   @media (max-width: 560px) { .mvi-bar { gap: 4px; padding: 26px 8px 8px; } .mvi-time { display: none; } .mvi-wide { display: none; } .mvi-take button { padding: 4px 7px; font-size: .56rem; } }
 </style>
