@@ -112,8 +112,8 @@ at a glance.
 I started with Astra. It was slow, needed constant corrections, and the
 motion design was weak. Opus caught on quickly and matched my vision.
 
-They say taste is the moat. Mine came to about 250 notes: over a hundred on
-the wallpapers, about fifty on the video, forty on this post and thirty on
+They say taste is the moat. Mine came to about 340 notes: over a hundred on
+the wallpapers, about 120 on the video, forty on this post and thirty on
 the song.
 
 p(bloom) >> p(doom). What a great time to be alive!
