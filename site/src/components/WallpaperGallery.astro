@@ -25,11 +25,10 @@ const clipDuration = 119.88
     <button type="button" class="viewer-prev edge-nav icon-button" aria-label="Previous wallpaper" title="Previous (←)"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button type="button" class="viewer-next edge-nav icon-button" aria-label="Next wallpaper" title="Next (→)"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <footer class="viewer-bottom">
-      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid">▦ <span>All wallpapers</span><span class="gallery-total">42</span></button>
+      <button type="button" class="viewer-grid-toggle" aria-expanded="false" aria-controls="viewer-grid"><svg class="vb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span>All wallpapers</span><span class="gallery-total">42</span></button>
       <div class="viewer-tools">
-        <button type="button" class="viewer-zoom" aria-pressed="false" title="Zoom (Z)">＋ <span>Detail</span></button>
-        <button type="button" class="viewer-fullscreen" aria-label="Fullscreen" aria-pressed="false" title="Fullscreen (F)">⛶ <span>Fullscreen</span></button>
-        <a class="viewer-download" aria-label="Download wallpaper" download title="Download the 5120 × 2880 original">↓ <span>Download</span></a>
+        <button type="button" class="viewer-zoom" aria-pressed="false" title="Zoom (Z)"><svg class="vb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zM15.5 15.5 20 20M10.5 7.5v6M7.5 10.5h6"/></svg><span>Detail</span></button>
+        <a class="viewer-download" aria-label="Download wallpaper" download title="Download the 5120 × 2880 original"><svg class="vb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg><span>Download</span></a>
       </div>
     </footer>
     <section id="viewer-grid" aria-label="Choose a wallpaper" hidden>
@@ -48,7 +47,7 @@ const clipDuration = 119.88
     const canvas = q('.viewer-canvas'), frame = q('.viewer-frame');
     const photo = q('.viewer-image'), preview = q('.viewer-preview');
     const grid = q('#viewer-grid'), gridToggle = q('.viewer-grid-toggle');
-    const zoomButton = q('.viewer-zoom'), fullscreenButton = q('.viewer-fullscreen');
+    const zoomButton = q('.viewer-zoom');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let index = Number(dialog.dataset.cover), zoom = false, previousOverflow = '', touchStart = null, drag = null, request = 0, ownsFullscreen = false;
     let watching = false, effects = true, seeking = false, tick = 0;
@@ -60,7 +59,7 @@ const clipDuration = 119.88
       if (zoom) { const cw = canvas.clientWidth, ch = canvas.clientHeight, ar = (photo.naturalWidth / photo.naturalHeight) || 16 / 9, w = Math.min(cw, ch * ar), h = w / ar, k = Math.max(2.4, cw / w, ch / h); frame.style.width = `${w * k}px`; frame.style.height = `${h * k}px`; }
       else { frame.style.width = ''; frame.style.height = ''; }
       zoomButton.setAttribute('aria-pressed', String(zoom));
-      zoomButton.innerHTML = zoom ? '− <span>Whole</span>' : '＋ <span>Detail</span>';
+      zoomButton.innerHTML = zoom ? '<svg class="vb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zM15.5 15.5 20 20M7.5 10.5h6"/></svg><span>Whole</span>' : '<svg class="vb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zM15.5 15.5 20 20M10.5 7.5v6M7.5 10.5h6"/></svg><span>Detail</span>';
       requestAnimationFrame(() => { canvas.scrollLeft = zoom ? (canvas.scrollWidth - canvas.clientWidth) / 2 : 0; canvas.scrollTop = zoom ? (canvas.scrollHeight - canvas.clientHeight) / 2 : 0; });
     }
     function setGrid(value) {
@@ -111,10 +110,11 @@ const clipDuration = 119.88
       const img = await fly(b.querySelector('img').currentSrc || b.querySelector('img').src, from, target(), 440);
       frame.style.opacity = ''; img.remove();
     }));
+    const pointerMode = on => { dialog.toggleAttribute('data-pointer', on); document.querySelector('.wallpaper-entry')?.toggleAttribute('data-pointer', on); };
+    for (const el of [dialog, document.querySelector('.wallpaper-entry')]) { el?.addEventListener('pointerdown', () => pointerMode(true)); el?.addEventListener('keydown', e => { if (e.key === 'Tab') pointerMode(false); }); }
     let closing = false;
     async function close() {
       if (closing) return;
-      if(ownsFullscreen && document.fullscreenElement) await document.exitFullscreen().catch(() => {}); ownsFullscreen = false;
       const thumb = document.querySelector(`.wall-thumbs [data-open="${index}"] img`);
       if (thumb && !still() && !zoom && grid.hidden) {
         thumb.scrollIntoView({ block: 'nearest' });
@@ -141,13 +141,8 @@ const clipDuration = 119.88
     gridToggle.onclick = () => setGrid(grid.hidden); q('.grid-close').onclick = () => setGrid(false);
     grid.querySelectorAll('[data-index]').forEach(b => b.onclick = () => { show(Number(b.dataset.index)); setGrid(false); });
     zoomButton.onclick = () => setZoom(!zoom);
-    async function fullscreen() { try { if(document.fullscreenElement) await document.exitFullscreen(); else { await document.documentElement.requestFullscreen(); ownsFullscreen = true; } } catch (error) { console.warn('Fullscreen unavailable:', error); } }
-    if(!document.fullscreenEnabled) fullscreenButton.hidden = true;
-    fullscreenButton.onclick = fullscreen;
-    document.addEventListener('fullscreenchange', () => fullscreenButton.setAttribute('aria-pressed', String(Boolean(document.fullscreenElement))));
     dialog.addEventListener('keydown', e => {
       if(!grid.hidden || (e.target.matches('input') && e.key !== ' ')) return;
-      if(e.key.toLowerCase() === 'f') { e.preventDefault(); fullscreen(); return; }
       if(e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(index + (e.key === 'ArrowRight' ? 1 : -1)); }
       if(e.key.toLowerCase() === 'z') { e.preventDefault(); setZoom(!zoom); }
       if(e.key === 'Home') { e.preventDefault(); show(0); } if(e.key === 'End') { e.preventDefault(); show(wallpapers.length-1); }
@@ -205,4 +200,11 @@ const clipDuration = 119.88
 #wallpaper-viewer .edge-nav{display:grid;place-items:center;padding:0;font-size:0!important;color:#eef4ff}
 #wallpaper-viewer .edge-nav svg{display:block}
 #wallpaper-viewer .edge-nav:hover{border-color:#4cc9ff!important;color:#4cc9ff}
+#wallpaper-viewer[data-pointer] :focus,#wallpaper-viewer[data-pointer] :focus-visible,.wallpaper-entry[data-pointer] :focus,.wallpaper-entry[data-pointer] :focus-visible{outline:none!important}
+/* one height and one icon size for every control on the bottom bar */
+#wallpaper-viewer .viewer-bottom button,#wallpaper-viewer .viewer-bottom a{height:38px;min-height:0;padding:0 14px;gap:8px;line-height:1;box-sizing:border-box}
+:global(#wallpaper-viewer .vb-ico){width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+:global(#wallpaper-viewer .viewer-grid-toggle .vb-ico){fill:currentColor;stroke:none;width:13px;height:13px}
+#wallpaper-viewer .viewer-tools{align-items:center}
+#wallpaper-viewer .gallery-total{line-height:1;padding:3px 6px}
 </style>

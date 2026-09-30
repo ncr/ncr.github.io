@@ -52,7 +52,18 @@ const video = '/gallery/destiny/video/'
     });
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
-    const setWide = on => { root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on)); if (on) setTimeout(() => root.scrollIntoView({ block: 'center', behavior: 'smooth' }), 120); };
+    // the width animates between two pixel values (the column and the wide size), so the height follows smoothly
+    const wideWidth = () => Math.min(innerWidth - 64, (innerHeight - 48) * 16 / 9);
+    const setWide = on => {
+      const from = root.getBoundingClientRect().width, column = root.parentElement.getBoundingClientRect().width;
+      root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on));
+      const to = on ? Math.max(column, wideWidth()) : column;
+      root.style.transition = 'none'; root.style.width = `${from}px`; root.getBoundingClientRect();
+      root.style.transition = ''; root.style.width = `${to}px`;
+      if (on) root.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      root.addEventListener('transitionend', e => { if (e.propertyName === 'width' && !on) root.style.width = ''; }, { once: true });
+    };
+    addEventListener('resize', () => { if (root.classList.contains('is-wide')) root.style.width = `${Math.max(root.parentElement.getBoundingClientRect().width, wideWidth())}px`; });
     wide.onclick = () => setWide(!root.classList.contains('is-wide'));
     // fullscreen: the frame with its controls
     const setFull = () => { (document.fullscreenElement ? document.exitFullscreen() : (frame.requestFullscreen || frame.webkitRequestFullscreen)?.call(frame))?.catch?.(() => {}); };
@@ -69,8 +80,7 @@ const video = '/gallery/destiny/video/'
   })();
 </script>
 <style>
-  .mvi { margin: 1.4rem 0 2.6rem 50%; width: 100%; transform: translateX(-50%); transition: width .5s cubic-bezier(.2,.75,.2,1); }
-  .mvi.is-wide { width: min(calc(100vw - 64px), calc((100svh - 48px) * 16 / 9)); }
+  .mvi { margin: 1.4rem 0 2.6rem 50%; width: 100%; transform: translateX(-50%); transition: width .55s cubic-bezier(.3,.7,.2,1); }
   @media (prefers-reduced-motion: reduce) { .mvi { transition: none; } }
   .mvi-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
