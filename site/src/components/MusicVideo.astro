@@ -89,7 +89,9 @@ const video = '/gallery/destiny/video/'
     // window minus 40 px on each side and the picture fits inside it
     const wideBox = () => { const w = (innerWidth - innerHeight) * 16 / 7, col = root.parentElement.getBoundingClientRect().width;
       return w >= col && w <= innerWidth - 80 ? { w, h: w * 9 / 16 } : { w: innerWidth - 80, h: innerHeight - 80 }; };
-    const size = (w, h) => { root.style.width = `${w}px`; frame.style.height = `${h}px`; };
+    // centred on the text column with a computed margin (no transform: a transform on a resizing box left Chromium
+    // hit-testing the old position until the next scroll)
+    const size = (w, h) => { const col = root.parentElement.getBoundingClientRect().width; root.style.width = `${w}px`; root.style.marginLeft = `${(col - w) / 2}px`; frame.style.height = `${h}px`; };
     const setWide = on => {
       const r0 = frame.getBoundingClientRect(), col = root.parentElement.getBoundingClientRect().width;
       root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on));
@@ -101,7 +103,11 @@ const video = '/gallery/destiny/video/'
       // (Scrolling frame by frame during the resize left Chromium painting a stale picture until the next scroll.)
       const top = r0.top + scrollY, c0 = r0.top + r0.height / 2;
       window.scrollTo({ top: Math.max(0, on ? top + to.h / 2 - innerHeight / 2 : top + to.h / 2 - c0), behavior: 'smooth' });
-      if (!on) setTimeout(() => { if (!root.classList.contains('is-wide')) { root.style.width = ''; frame.style.height = ''; } }, 700);
+      setTimeout(() => {
+        if (!root.classList.contains('is-wide')) { root.style.width = ''; root.style.marginLeft = ''; frame.style.height = ''; }
+        // a 1 px scroll there and back makes every browser refresh hit-testing after the resize
+        const y = scrollY; window.scrollTo({ top: y + 1, behavior: 'instant' }); window.scrollTo({ top: y, behavior: 'instant' });
+      }, 700);
       wake(); setTimeout(wake, 700);
     };
     addEventListener('resize', () => { if (root.classList.contains('is-wide')) { const b = wideBox(); root.style.transition = frame.style.transition = 'none'; size(b.w, b.h); requestAnimationFrame(() => { root.style.transition = frame.style.transition = ''; }); } });
@@ -121,7 +127,7 @@ const video = '/gallery/destiny/video/'
   })();
 </script>
 <style>
-  .mvi { margin: 1.4rem 0 2.6rem 50%; width: 100%; transform: translateX(-50%); transition: width .55s cubic-bezier(.3,.7,.2,1); }
+  .mvi { margin: 1.4rem 0 2.6rem; width: 100%; transition: width .55s cubic-bezier(.3,.7,.2,1), margin-left .55s cubic-bezier(.3,.7,.2,1); }
   @media (prefers-reduced-motion: reduce) { .mvi { transition: none; } }
   .mvi-frame { position: relative; aspect-ratio: 16 / 9; transition: height .55s cubic-bezier(.3,.7,.2,1); border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
