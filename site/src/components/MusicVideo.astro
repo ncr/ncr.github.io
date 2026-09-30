@@ -53,6 +53,7 @@ const video = '/gallery/destiny/video/'
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
     // the width animates between two pixel values (the column and the wide size), so the height follows smoothly
+    let follow = 0;
     const wideWidth = () => Math.min(innerWidth - 64, (innerHeight - 48) * 16 / 9);
     const setWide = on => {
       const from = root.getBoundingClientRect().width, column = root.parentElement.getBoundingClientRect().width;
@@ -60,7 +61,16 @@ const video = '/gallery/destiny/video/'
       const to = on ? Math.max(column, wideWidth()) : column;
       root.style.transition = 'none'; root.style.width = `${from}px`; root.getBoundingClientRect();
       root.style.transition = ''; root.style.width = `${to}px`;
-      if (on) root.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      // scroll with the resize, frame by frame: going wide, the player's centre glides to the middle of the window;
+      // going back, its centre stays where it is on screen (no jump when the page gets shorter)
+      const mid = r => r.top + r.height / 2, c0 = mid(root.getBoundingClientRect()), c1 = on ? innerHeight / 2 : c0;
+      cancelAnimationFrame(follow); const t0 = performance.now();
+      const step = now => {
+        const r = root.getBoundingClientRect(), p = to === from ? 1 : Math.min(1, Math.max(0, (r.width - from) / (to - from)));
+        window.scrollBy({ top: mid(r) - (c0 + (c1 - c0) * p), behavior: 'instant' });
+        if (now - t0 < 800) follow = requestAnimationFrame(step);
+      };
+      follow = requestAnimationFrame(step);
       root.addEventListener('transitionend', e => { if (e.propertyName === 'width' && !on) root.style.width = ''; }, { once: true });
     };
     addEventListener('resize', () => { if (root.classList.contains('is-wide')) root.style.width = `${Math.max(root.parentElement.getBoundingClientRect().width, wideWidth())}px`; });
