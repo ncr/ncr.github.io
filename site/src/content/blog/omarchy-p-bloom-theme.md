@@ -23,7 +23,8 @@ try, and the horizon only kept getting wider.
 I made the song for the music video in Suno, and I haven't had this much fun
 in a long time. It feels like imagining straight into music: I can steer the
 song however I want, from the broad strokes down to the smallest details.
-Eleven versions fell by the wayside, and I wrote ten notes along the way.
+Thirty-nine versions fell by the wayside, and I wrote about thirty notes
+along the way.
 The song comes in two versions, electronic and rock, because I grew up on
 rock and metal as much as on electronic music, and I still love both.
 
@@ -110,5 +111,9 @@ at a glance.
 
 I started with Astra. It was slow, needed constant corrections, and the
 motion design was weak. Opus caught on quickly and matched my vision.
+
+They say taste is the moat. Mine came to about 250 notes: over a hundred on
+the wallpapers, about fifty on the video, forty on this post and thirty on
+the song.
 
 p(bloom) >> p(doom). What a great time to be alive!
