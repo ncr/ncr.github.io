@@ -84,7 +84,6 @@ const video = '/gallery/destiny/video/'
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
     // the width animates between two pixel values (the column and the wide size), so the height follows smoothly
-    let follow = 0;
     // wide: the same space on all four sides. When a 16:9 frame can have equal margins, it gets exactly that
     // (w = (innerWidth - innerHeight)·16/7); on windows as wide as 16:9 or wider, and on tall ones, the frame is the
     // window minus 40 px on each side and the picture fits inside it
@@ -97,16 +96,11 @@ const video = '/gallery/destiny/video/'
       const to = on ? wideBox() : { w: col, h: col * 9 / 16 };
       root.style.transition = frame.style.transition = 'none'; size(r0.width, r0.height); root.getBoundingClientRect();
       root.style.transition = frame.style.transition = ''; size(to.w, to.h);
-      // scroll with the resize, frame by frame: going wide, the player's centre glides to the middle of the window;
-      // going back, its centre stays where it is on screen (no jump when the page gets shorter)
-      const mid = r => r.top + r.height / 2, c0 = mid(r0), c1 = on ? innerHeight / 2 : c0;
-      cancelAnimationFrame(follow); const t0 = performance.now();
-      const step = now => {
-        const r = frame.getBoundingClientRect(), p = to.w === r0.width ? 1 : Math.min(1, Math.max(0, (r.width - r0.width) / (to.w - r0.width)));
-        window.scrollBy({ top: mid(r) - (c0 + (c1 - c0) * p), behavior: 'instant' });
-        if (now - t0 < 800) follow = requestAnimationFrame(step);
-      };
-      follow = requestAnimationFrame(step);
+      // one smooth scroll to where the player will end up (computed from its final size), started with the resize:
+      // going wide, its centre lands in the middle of the window; going back, its centre stays where it is on screen.
+      // (Scrolling frame by frame during the resize left Chromium painting a stale picture until the next scroll.)
+      const top = r0.top + scrollY, c0 = r0.top + r0.height / 2;
+      window.scrollTo({ top: Math.max(0, on ? top + to.h / 2 - innerHeight / 2 : top + to.h / 2 - c0), behavior: 'smooth' });
       if (!on) setTimeout(() => { if (!root.classList.contains('is-wide')) { root.style.width = ''; frame.style.height = ''; } }, 700);
       wake(); setTimeout(wake, 700);
     };
