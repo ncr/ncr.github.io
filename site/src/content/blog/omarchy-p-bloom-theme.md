@@ -1,7 +1,7 @@
 ---
 title: I Didn't Draw a Single Line
 date: 2026-09-26
-description: A theme for Omarchy with 42 wallpapers of machines from a hopeful future, and a music video.
+description: A theme for Omarchy with 42 wallpapers of machines from a future worth building, and a music video.
 draft: true
 ---
 
@@ -12,10 +12,10 @@ draft: true
 ## Why I made it
 
 p(bloom) is a theme for [Omarchy](https://omarchy.org) with 42 wallpapers of
-machines from a hopeful future. The look is inspired by Bungie's Destiny. I've always
+machines from a future worth building. The look is inspired by Bungie's Destiny. I've always
 loved its vision of future technology: machines that harness the Light. I
 wanted my desktop to feel like that, and to be full of inventions I would
-love to see built.
+love to see come true.
 
 Making it was pure joy. Every finished piece showed me three new things to
 try, and the horizon only kept getting wider.
