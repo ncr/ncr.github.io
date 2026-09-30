@@ -1,33 +1,47 @@
 ---
-// The music video, inline and simple: a still cover with a play button; once playing, only play/pause and a bar,
-// plus the choice of take (electronic or rock), which keeps the position when switched.
-// Double-click the picture for fullscreen. The file size follows the screen (720p or 1080p).
+// The music video, inline: a still cover with a play button, then controls laid over the picture — play/pause,
+// a bar, the time, the take (electronic or rock, keeps the position), wide (the whole browser width) and fullscreen.
+// The controls hide while playing when the pointer rests, and come back on any movement.
 const video = '/gallery/destiny/video/'
 ---
 <figure class="mvi" aria-label="Prepare to Walk, the p(bloom) music video">
   <div class="mvi-frame">
     <video class="mvi-video" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp`} aria-label="Prepare to Walk, the p(bloom) music video: the theme and its 42 wallpapers"></video>
     <button type="button" class="mvi-badge" aria-label="Play the music video"><svg viewBox="0 0 40 40" width="46" height="46" aria-hidden="true"><path d="M14 9.5 31 20 14 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></button>
-  </div>
-  <div class="mvi-bar">
-    <button type="button" class="mvi-play" aria-label="Play">▶</button>
-    <input class="mvi-seek" type="range" min="0" max="119.88" step="0.01" value="0" aria-label="Video position" />
-    <span class="mvi-time">0:00</span>
-    <div class="mvi-take" role="group" aria-label="Version of the song">
-      <button type="button" data-take="electronic" aria-pressed="true">Electronic</button><button type="button" data-take="rock" aria-pressed="false">Rock</button>
+    <div class="mvi-bar">
+      <button type="button" class="mvi-btn mvi-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+      <input class="mvi-seek" type="range" min="0" max="119.88" step="0.01" value="0" aria-label="Video position" />
+      <span class="mvi-time">0:00</span>
+      <div class="mvi-take" role="group" aria-label="Version of the song">
+        <button type="button" data-take="electronic" aria-pressed="true">Electronic</button><button type="button" data-take="rock" aria-pressed="false">Rock</button>
+      </div>
+      <button type="button" class="mvi-btn mvi-wide" aria-pressed="false" aria-label="Wide: the whole browser width" title="Wide (W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v10H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 12h10M7 12l2.5-2.5M7 12l2.5 2.5M17 12l-2.5-2.5M17 12l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <button type="button" class="mvi-btn mvi-full" aria-label="Fullscreen" title="Fullscreen (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
   <figcaption>Prepare to Walk · music: my own song, made with Suno</figcaption>
-  <noscript><p><a href={`${video}prepare-to-walk-av-1080p60.mp4`}>Music video (MP4)</a></p></noscript>
+  <noscript><p><a href={`${video}prepare-to-walk-av-1080p60.mp4`}>Music video (MP4)</a> · <a href={`${video}prepare-to-walk-rock-av-1080p60.mp4`}>rock version</a></p></noscript>
 </figure>
 <script define:vars={{ video }}>
   (() => {
-    const root = document.querySelector('.mvi'), v = root.querySelector('.mvi-video'), badge = root.querySelector('.mvi-badge');
-    const play = root.querySelector('.mvi-play'), seek = root.querySelector('.mvi-seek'), time = root.querySelector('.mvi-time');
-    let seeking = false, raf = 0, take = 'electronic';
+    const root = document.querySelector('.mvi'), frame = root.querySelector('.mvi-frame'), v = root.querySelector('.mvi-video');
+    const badge = root.querySelector('.mvi-badge'), play = root.querySelector('.mvi-play'), seek = root.querySelector('.mvi-seek'), time = root.querySelector('.mvi-time');
+    const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take button')];
+    let seeking = false, raf = 0, take = 'electronic', idle = 0;
     const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=2`; };
     const src = () => { if (!v.getAttribute('src')) v.src = file(take); };
-    const takes = [...root.querySelectorAll('.mvi-take button')];
+    const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    const tick = () => { if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
+    const state = () => { const p = v.paused; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); wake(); };
+    const toggle = () => { src(); if (v.paused) v.play().catch(() => {}); else v.pause(); };
+    // controls: visible while paused or when the pointer moves, hidden after 2.5 s of rest while playing
+    const wake = () => { root.classList.remove('is-idle'); clearTimeout(idle); if (!v.paused) idle = setTimeout(() => root.classList.add('is-idle'), 2500); };
+    for (const e of ['play', 'pause', 'ended', 'seeked', 'loadedmetadata']) v.addEventListener(e, state);
+    v.addEventListener('loadedmetadata', () => { if (isFinite(v.duration)) seek.max = String(v.duration); });
+    badge.onclick = toggle; play.onclick = toggle; v.onclick = toggle;
+    frame.addEventListener('pointermove', wake); frame.addEventListener('pointerdown', wake); frame.addEventListener('focusin', wake);
+    seek.addEventListener('input', () => { seeking = true; src(); v.currentTime = Number(seek.value); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); });
+    seek.addEventListener('change', () => { seeking = false; }); seek.addEventListener('pointerup', () => { seeking = false; });
     takes.forEach(b => b.onclick = () => {
       if (b.dataset.take === take) return;
       take = b.dataset.take; takes.forEach(x => x.setAttribute('aria-pressed', String(x === b)));
@@ -37,35 +51,54 @@ const video = '/gallery/destiny/video/'
       v.addEventListener('loadedmetadata', () => { v.currentTime = Math.min(at, v.duration - .5); if (playing) v.play().catch(() => {}); }, { once: true });
       v.preload = 'auto'; v.src = file(take); v.load();
     });
-    const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-    const tick = () => { if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); raf = v.paused ? 0 : requestAnimationFrame(tick); };
-    const state = () => { const p = v.paused; play.textContent = p ? (v.ended ? '↻' : '▶') : 'Ⅱ'; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); };
-    const toggle = () => { src(); if (v.paused) v.play().catch(() => {}); else v.pause(); };
-    for (const e of ['play', 'pause', 'ended', 'seeked', 'loadedmetadata']) v.addEventListener(e, state);
-    v.addEventListener('loadedmetadata', () => { if (isFinite(v.duration)) seek.max = String(v.duration); });
-    badge.onclick = toggle; play.onclick = toggle; v.onclick = toggle;
-    v.ondblclick = () => { (document.fullscreenElement ? document.exitFullscreen() : v.requestFullscreen?.())?.catch?.(() => {}); };
-    seek.addEventListener('input', () => { seeking = true; src(); v.currentTime = Number(seek.value); time.textContent = fmt(v.currentTime); });
-    seek.addEventListener('change', () => { seeking = false; }); seek.addEventListener('pointerup', () => { seeking = false; });
-    root.addEventListener('keydown', e => { if (e.code === 'Space' && !e.target.matches('button, input')) { e.preventDefault(); toggle(); } });
+    // wide: the player breaks out of the text column to the whole browser width (never taller than the window)
+    const setWide = on => { root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on)); if (on) root.scrollIntoView({ block: 'center', behavior: 'smooth' }); };
+    wide.onclick = () => setWide(!root.classList.contains('is-wide'));
+    // fullscreen: the frame with its controls
+    const setFull = () => { (document.fullscreenElement ? document.exitFullscreen() : (frame.requestFullscreen || frame.webkitRequestFullscreen)?.call(frame))?.catch?.(() => {}); };
+    full.onclick = setFull; v.ondblclick = setFull;
+    if (!document.fullscreenEnabled && !frame.webkitRequestFullscreen) full.hidden = true;
+    document.addEventListener('fullscreenchange', () => root.classList.toggle('is-full', document.fullscreenElement === frame));
+    frame.addEventListener('keydown', e => {
+      if (e.target.matches('input')) return;
+      if (e.code === 'Space' && !e.target.matches('button')) { e.preventDefault(); toggle(); }
+      else if (e.key.toLowerCase() === 'f') { e.preventDefault(); setFull(); }
+      else if (e.key.toLowerCase() === 'w') { e.preventDefault(); setWide(!root.classList.contains('is-wide')); }
+      else if (e.key === 'Escape' && root.classList.contains('is-wide')) setWide(false);
+    });
   })();
 </script>
 <style>
   .mvi { margin: 1.4rem 0 2.6rem; }
+  .mvi.is-wide { width: min(100vw, calc(100svh * 16 / 9)); margin-left: 50%; transform: translateX(-50%); }
   .mvi-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
+  .mvi.is-wide .mvi-frame { border-radius: 0; border-left: 0; border-right: 0; }
+  .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
   .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; }
-  .mvi-badge { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; display: grid; place-items: center; padding: 0 0 0 4px; border-radius: 50%; background: #070a11b3; border: 1.5px solid #ffffffd0; color: #fff; cursor: pointer; backdrop-filter: blur(6px); transition: transform .15s ease, opacity .2s ease; }
+  .mvi-frame:fullscreen .mvi-video { object-fit: contain; }
+  .mvi-badge { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; display: grid; place-items: center; padding: 0 0 0 4px; border-radius: 50%; background: #070a11b3; border: 1.5px solid #ffffffd0; color: #fff; cursor: pointer; backdrop-filter: blur(6px); transition: transform .15s ease, opacity .2s ease; z-index: 2; }
   .mvi-badge:hover { transform: scale(1.06); }
-  .mvi.is-playing .mvi-badge { opacity: 0; pointer-events: none; }
-  .mvi-bar { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-  .mvi-play { width: 36px; height: 36px; flex: none; border-radius: 50%; border: 1px solid var(--hairline); background: none; color: var(--fg); font-size: 14px; cursor: pointer; }
-  .mvi-play:hover { border-color: var(--link); color: var(--link); }
-  .mvi-seek { flex: 1; min-width: 0; margin: 0; accent-color: var(--link); cursor: pointer; }
-  .mvi-time { font-family: var(--mono); font-size: .72rem; color: var(--muted); min-width: 2.6rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .mvi.has-started .mvi-badge { opacity: 0; pointer-events: none; }
+  /* the controls sit on the picture, over a soft gradient; hidden until the video has started */
+  .mvi-bar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 34px 14px 12px; background: linear-gradient(transparent, #04060bd9 70%); color: #eef4ff; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
+  .mvi.has-started .mvi-bar { opacity: 1; transform: none; pointer-events: auto; }
+  .mvi.has-started.is-idle .mvi-bar { opacity: 0; transform: translateY(6px); pointer-events: none; }
+  .mvi.is-idle .mvi-video { cursor: none; }
+  .mvi-btn { width: 34px; height: 34px; flex: none; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer; }
+  .mvi-btn svg { width: 20px; height: 20px; fill: currentColor; }
+  .mvi-btn:hover, .mvi-btn[aria-pressed="true"] { background: #ffffff1f; }
+  .mvi-play .i-pause, .mvi.is-playing .mvi-play .i-play { display: none; } .mvi.is-playing .mvi-play .i-pause { display: inline; }
+  .mvi-seek { --p: 0%; flex: 1; min-width: 60px; height: 18px; margin: 0; -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; }
+  .mvi-seek::-webkit-slider-runnable-track { height: 3px; border-radius: 3px; background: linear-gradient(to right, #4cc9ff var(--p), #ffffff40 var(--p)); }
+  .mvi-seek::-moz-range-track { height: 3px; border-radius: 3px; background: #ffffff40; } .mvi-seek::-moz-range-progress { height: 3px; border-radius: 3px; background: #4cc9ff; }
+  .mvi-seek::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -4.5px; border-radius: 50%; background: #fff; border: 0; }
+  .mvi-seek::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 0; }
+  .mvi-time { font-family: var(--mono); font-size: .7rem; letter-spacing: .04em; color: #c9d6ea; min-width: 2.6rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .mvi-take { display: flex; flex: none; border: 1px solid #ffffff35; border-radius: 999px; padding: 2px; }
+  .mvi-take button { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 5px 9px; border: 0; border-radius: 999px; background: none; color: #c9d6ea; cursor: pointer; }
+  .mvi-take button[aria-pressed="true"] { background: #ffffff2b; color: #fff; }
+  .mvi-take button:hover { color: #4cc9ff; }
   .mvi figcaption { margin-top: 8px; }
-  .mvi-take { display: flex; flex: none; border: 1px solid var(--hairline); border-radius: 999px; padding: 2px; }
-  .mvi-take button { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; padding: 5px 10px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
-  .mvi-take button[aria-pressed="true"] { background: var(--code-bg); color: var(--fg); }
-  .mvi-take button:hover { color: var(--link); }
-  @media (max-width: 520px) { .mvi-bar { flex-wrap: wrap; } .mvi-take { order: 4; margin-left: 48px; } }
+  .mvi.is-wide figcaption { max-width: var(--measure); margin: 8px auto 0; padding: 0 1rem; }
+  @media (max-width: 560px) { .mvi-bar { gap: 4px; padding: 26px 8px 8px; } .mvi-time { display: none; } .mvi-wide { display: none; } .mvi-take button { padding: 4px 7px; font-size: .56rem; } }
 </style>
