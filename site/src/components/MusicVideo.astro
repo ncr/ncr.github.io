@@ -17,6 +17,7 @@ const video = '/gallery/destiny/video/'
         <button type="button" data-take="electronic" aria-pressed="true">Electronic</button><button type="button" data-take="rock" aria-pressed="false">Rock</button>
       </div>
       <button type="button" class="mvi-btn mvi-wide" aria-pressed="false" aria-label="Wide: the whole browser width" title="Wide (W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v10H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 12h10M7 12l2.5-2.5M7 12l2.5 2.5M17 12l-2.5-2.5M17 12l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+      <button type="button" class="mvi-btn mvi-back" aria-label="Back to the article's player" title="Back to the player"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button type="button" class="mvi-btn mvi-full" aria-label="Fullscreen" title="Fullscreen (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
@@ -84,6 +85,22 @@ const video = '/gallery/destiny/video/'
     // wide: the player breaks out of the text column to nearly the whole browser width, with a margin on both sides
     // (never taller than the window)
     // the width animates between two pixel values (the column and the wide size), so the height follows smoothly
+    // docked: while the film has started and its place in the article is off screen, the player sits in the right-hand
+    // margin, sized to that margin (never over the text column); it goes back when its place scrolls into view
+    const GAP = 20, dockW = () => { const col = root.parentElement.getBoundingClientRect(); return Math.min(480, innerWidth - col.right - 2 * GAP); };
+    let inView = true;
+    const dock = () => {
+      const w = dockW(), on = !inView && root.classList.contains('has-started') && !document.fullscreenElement && w >= 220;
+      if (on === root.classList.contains('is-docked')) { if (on) root.style.setProperty('--dock-w', `${w}px`); return; }
+      if (on) { root.style.minHeight = `${frame.getBoundingClientRect().height}px`; root.style.setProperty('--dock-w', `${w}px`); root.classList.add('is-docked'); }
+      else { root.classList.remove('is-docked'); root.style.minHeight = ''; }
+      wake();
+    };
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; dock(); }, { threshold: 0 }).observe(root);
+    addEventListener('resize', dock);
+    for (const x of Object.values(V)) x.addEventListener('play', dock);
+    root.querySelector('.mvi-back').onclick = () => root.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
     // wide: a 16:9 frame, centred (left = right, top = bottom), as large as the window allows with at least 40 px
     // of margin on the tighter pair of sides
     const wideBox = () => { const col = root.parentElement.getBoundingClientRect().width, w = Math.max(col, Math.min(innerWidth - 80, (innerHeight - 80) * 16 / 9)); return { w, h: w * 9 / 16 }; };
@@ -157,5 +174,14 @@ const video = '/gallery/destiny/video/'
   .mvi-take button { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 5px 9px; border: 0; border-radius: 999px; background: none; color: #c9d6ea; cursor: pointer; }
   .mvi-take button[aria-pressed="true"] { background: #ffffff2b; color: #fff; }
   .mvi-take button:hover { color: #4cc9ff; }
+  .mvi-back { display: none; }
+  /* docked in the right-hand margin while scrolling */
+  .mvi.is-docked .mvi-frame { position: fixed; right: 20px; bottom: 20px; z-index: 30; width: var(--dock-w) !important; height: calc(var(--dock-w) * 9 / 16) !important; aspect-ratio: auto; border-radius: 8px; box-shadow: 0 14px 40px #000a; animation: mvi-dock .35s cubic-bezier(.2,.75,.2,1); }
+  .mvi.is-docked .mvi-video { object-fit: cover; }
+  .mvi.is-docked .mvi-bar { gap: 4px; padding: 22px 6px 4px; }
+  .mvi.is-docked .mvi-time, .mvi.is-docked .mvi-take, .mvi.is-docked .mvi-wide, .mvi.is-docked .mvi-full { display: none; }
+  .mvi.is-docked .mvi-back { display: grid; }
+  @keyframes mvi-dock { from { opacity: 0; transform: translateY(16px) scale(.96); } }
+  @media (prefers-reduced-motion: reduce) { .mvi.is-docked .mvi-frame { animation: none; } }
   @media (max-width: 560px) { .mvi-bar { gap: 4px; padding: 26px 8px 8px; } .mvi-time { display: none; } .mvi-wide { display: none; } .mvi-take button { padding: 4px 7px; font-size: .56rem; } }
 </style>
