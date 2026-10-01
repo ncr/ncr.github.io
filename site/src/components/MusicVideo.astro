@@ -103,20 +103,26 @@ const video = '/gallery/destiny/video/'
 
     // wide: a 16:9 frame, centred (left = right, top = bottom), as large as the window allows with at least 40 px
     // of margin on the tighter pair of sides
-    const wideBox = () => { const col = root.parentElement.getBoundingClientRect().width, w = Math.max(col, Math.min(innerWidth - 80, (innerHeight - 80) * 16 / 9)); return { w, h: w * 9 / 16 }; };
+    // the resting size comes from the CSS (the breakout); measured with the inline sizes lifted for a moment
+    const baseW = () => { const w = root.style.width, m = root.style.marginLeft; root.style.width = root.style.marginLeft = ''; const b = root.getBoundingClientRect().width; root.style.width = w; root.style.marginLeft = m; return b; };
+    const wideBox = () => { const w = Math.max(baseW(), Math.min(innerWidth - 80, (innerHeight - 80) * 16 / 9)); return { w, h: w * 9 / 16 }; };
     const size = (w, h) => { const col = root.parentElement.getBoundingClientRect().width; root.style.width = `${w}px`; root.style.marginLeft = `${(col - w) / 2}px`; frame.style.height = `${h}px`; };
+    let sizing = 0;
     const setWide = on => {
-      const r0 = frame.getBoundingClientRect(), col = root.parentElement.getBoundingClientRect().width;
+      const r0 = frame.getBoundingClientRect();
+      root.classList.add('is-sizing'); clearTimeout(sizing);
+      root.style.transition = frame.style.transition = 'none';
+      const to = on ? wideBox() : (b => ({ w: b, h: b * 9 / 16 }))(baseW());
       root.classList.toggle('is-wide', on); wide.setAttribute('aria-pressed', String(on));
-      const to = on ? wideBox() : { w: col, h: col * 9 / 16 };
-      root.style.transition = frame.style.transition = 'none'; size(r0.width, r0.height); root.getBoundingClientRect();
+      size(r0.width, r0.height); root.getBoundingClientRect();
       root.style.transition = frame.style.transition = ''; size(to.w, to.h);
       // one smooth scroll to where the player will end up (computed from its final size), started with the resize:
       // going wide, its centre lands in the middle of the window; going back, its centre stays where it is on screen.
       // (Scrolling frame by frame during the resize left Chromium painting a stale picture until the next scroll.)
       const top = r0.top + scrollY, c0 = r0.top + r0.height / 2;
       window.scrollTo({ top: Math.max(0, on ? top + to.h / 2 - innerHeight / 2 : top + to.h / 2 - c0), behavior: 'smooth' });
-      setTimeout(() => {
+      sizing = setTimeout(() => {
+        root.classList.remove('is-sizing');
         if (!root.classList.contains('is-wide')) { root.style.width = ''; root.style.marginLeft = ''; frame.style.height = ''; }
         // a 1 px scroll there and back makes every browser refresh hit-testing after the resize
         const y = scrollY; window.scrollTo({ top: y + 1, behavior: 'instant' }); window.scrollTo({ top: y, behavior: 'instant' });
@@ -145,9 +151,12 @@ const video = '/gallery/destiny/video/'
   })();
 </script>
 <style>
-  .mvi { margin: 1.4rem 0 2.6rem; width: 100%; transition: width .55s cubic-bezier(.3,.7,.2,1), margin-left .55s cubic-bezier(.3,.7,.2,1); }
-  @media (prefers-reduced-motion: reduce) { .mvi { transition: none; } }
-  .mvi-frame { position: relative; aspect-ratio: 16 / 9; transition: height .55s cubic-bezier(.3,.7,.2,1); border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
+  .mvi { --w: max(min(100%, 100cqw), min(var(--pb-wide, 100%), 100cqw, calc((100svh - 24rem) * 16 / 9))); width: var(--w); margin: 1.4rem 0 2.6rem calc((100% - var(--w)) / 2); }
+  /* only the wide toggle animates; a window resize follows at once */
+  .mvi.is-sizing { transition: width .55s cubic-bezier(.3,.7,.2,1), margin-left .55s cubic-bezier(.3,.7,.2,1); }
+  .mvi.is-sizing .mvi-frame { transition: height .55s cubic-bezier(.3,.7,.2,1); }
+  @media (prefers-reduced-motion: reduce) { .mvi.is-sizing, .mvi.is-sizing .mvi-frame { transition: none; } }
+  .mvi-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; border: 1px solid var(--hairline); background: #04060b; }
   .mvi-frame:fullscreen { border: 0; border-radius: 0; aspect-ratio: auto; width: 100vw; height: 100vh; }
   .mvi-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; cursor: pointer; display: block; opacity: 0; pointer-events: none; }
   .mvi-video.is-on { opacity: 1; pointer-events: auto; }

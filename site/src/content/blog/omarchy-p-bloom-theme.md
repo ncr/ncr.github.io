@@ -81,7 +81,7 @@ caption are arranged again for that screen, so nothing is cut off.
 <figcaption>Part of a 5K screen. Drag the line.</figcaption>
 </figure>
 
-<figure class="compare-figure">
+<figure class="compare-figure wide">
 <p class="compare-title"><strong>Composition</strong></p>
 <div class="compare" style="--pos:50%;aspect-ratio:1600/675">
 <img class="compare-after" src="/draft-assets/destiny/cmp-comp-composed.webp" alt="The same screen with the wallpaper composed for 21:9: everything fits, with room around it." width="1600" height="675" loading="lazy" />
@@ -119,7 +119,7 @@ paper, with no lines or labels. Double-click Omarchy's bar to make it
 transparent and it stays perfectly readable. I always wanted to use that
 setting, but on most wallpapers the details behind the bar made it useless.
 
-<figure class="compare-figure">
+<figure class="compare-figure wide">
 <div class="compare compare-bottom" style="--pos:50%;aspect-ratio:1060/200">
 <img class="compare-after" src="/draft-assets/destiny/bar-clear.webp" alt="Omarchy's bar made see-through over Spin Table: the clock and the icons sit on plain paper." width="2120" height="400" loading="lazy" />
 <img class="compare-before" src="/draft-assets/destiny/bar-solid.webp" alt="Omarchy's bar with its dark background over the top of Spin Table." width="2120" height="400" loading="lazy" />
