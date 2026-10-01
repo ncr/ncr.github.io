@@ -94,14 +94,14 @@ caption are arranged again for that screen, so nothing is cut off.
 </figure>
 
 **p(bloom) Wallpapers.** The theme includes one set, 16:9 at 5K, about
-25 MB. With 18 screen shapes and sizes in three strengths, all the sets
-together would take about 680 MB on your disk, so the rest live in GitHub
+26 MB. With 18 screen shapes and sizes in three strengths, all the sets
+together would take about 690 MB on your disk, so the rest live in GitHub
 Releases. The companion app picks the set that fits your monitors, downloads
 only that one, and switches when you plug in another screen. If you want to
 choose yourself, it has one small settings screen:
 
 <figure class="inside-figure">
-<img src="/draft-assets/destiny/settings-screen.webp" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic picking 5120 × 2160 for my monitor and every other set listed with its size and a download marker." width="1884" height="2028" loading="lazy" />
+<img src="/draft-assets/destiny/settings-screen.webp" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic following the optimal set for my monitor, 5120 × 2160, which is also marked in the list, and every other set listed with its size and a download marker." width="942" height="1010" loading="lazy" />
 <figcaption>The settings screen on my 5120 × 2160 monitor.</figcaption>
 </figure>
 
