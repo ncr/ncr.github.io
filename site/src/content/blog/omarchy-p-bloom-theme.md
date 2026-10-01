@@ -101,7 +101,7 @@ only that one, and switches when you plug in another screen. If you want to
 choose yourself, it has one small settings screen:
 
 <figure class="inside-figure">
-<img src="/draft-assets/destiny/settings-screen.webp" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic following the optimal set for my monitor, 5120 × 2160, which is also marked in the list, and every other set listed with its size and a download marker." width="942" height="1010" loading="lazy" />
+<img src="/draft-assets/destiny/settings-screen.webp?v=2" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic following the optimal set for my monitor, 5120 × 2160, which is also marked in the list, and every other set listed with its size and a download marker." width="1885" height="2021" loading="lazy" />
 <figcaption>The settings screen on my 5120 × 2160 monitor.</figcaption>
 </figure>
 
