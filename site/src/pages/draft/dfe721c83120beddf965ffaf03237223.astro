@@ -157,7 +157,11 @@ const words = post.data.title.split(' '), last = words.pop()
       const update = () => {
         frame = 0;
         const past = toc.getBoundingClientRect().bottom < 0, text = document.querySelector('.pb').getBoundingClientRect(), fits = text.left >= rail.offsetWidth + 3 * 16 + 20;
-        rail.classList.toggle('is-on', past && fits);
+        // anything that breaks out of the column into the margin (a wide figure, the gallery, the film) takes the
+        // rail's place: the rail fades out while it passes and comes back after
+        const r = rail.getBoundingClientRect(), wides = document.querySelectorAll('.pb .content > .wide, .pb .wallpaper-entry, .pb .mvi:not(.is-docked)');
+        const covered = [...wides].some(el => { const b = el.getBoundingClientRect(); return b.left < r.right + 24 && b.top < r.bottom + 24 && b.bottom > r.top - 24; });
+        rail.classList.toggle('is-on', past && fits && !covered);
         rail.style.left = `${text.left - rail.offsetWidth - 3 * 16}px`;
         let cur = -1; heads.forEach((h, i) => { if (h.getBoundingClientRect().top < innerHeight * .4) cur = i; });
         links.forEach((a, i) => a.setAttribute('aria-current', String(i === cur)));
