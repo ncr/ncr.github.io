@@ -36,7 +36,8 @@ I'm betting on bloom.
 omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
 ```
 
-For the sets made for your screens, run the companion app's installer once:
+The companion app, p(bloom) Wallpapers, is a full-screen browser for the
+wallpapers. It also downloads the set made for your screens. Install it once:
 
 ```bash
 python3 ~/.config/omarchy/themes/p-bloom/companion/install.py
