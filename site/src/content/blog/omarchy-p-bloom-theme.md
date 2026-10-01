@@ -83,9 +83,9 @@ caption are arranged again for that screen, so nothing is cut off.
 
 <figure class="compare-figure wide">
 <p class="compare-title"><strong>Composition</strong></p>
-<div class="compare" style="--pos:50%;aspect-ratio:1600/675">
-<img class="compare-after" src="/draft-assets/destiny/cmp-comp-composed.webp" alt="The same screen with the wallpaper composed for 21:9: everything fits, with room around it." width="1600" height="675" loading="lazy" />
-<img class="compare-before" src="/draft-assets/destiny/cmp-comp-cropped.webp" alt="Fusion Transport on a 21:9 screen when the 16:9 wallpaper is cropped to fill it: the title block, the notes and the emblem are cut off at the bottom." width="1600" height="675" loading="lazy" />
+<div class="compare" style="--pos:50%;aspect-ratio:2400/1013">
+<img class="compare-after" src="/draft-assets/destiny/cmp-comp-composed.webp" alt="The same screen with the wallpaper composed for 21:9: everything fits, with room around it." width="2400" height="1013" loading="lazy" />
+<img class="compare-before" src="/draft-assets/destiny/cmp-comp-cropped.webp" alt="Fusion Transport on a 21:9 screen when the 16:9 wallpaper is cropped to fill it: the title block, the notes and the emblem are cut off at the bottom." width="2400" height="1013" loading="lazy" />
 <span class="compare-label compare-label-left">16:9, cropped to fit</span><span class="compare-label compare-label-right">Composed for 21:9</span>
 <span class="compare-handle" aria-hidden="true"></span>
 <input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Move the divider: 16:9, cropped to fit on the left, Composed for 21:9 on the right" />
@@ -95,24 +95,15 @@ caption are arranged again for that screen, so nothing is cut off.
 
 **p(bloom) Wallpapers.** The theme includes one set, 16:9 at 5K, about
 25 MB. With 18 screen shapes and sizes in three strengths, all the sets
-together would take about 570 MB on your disk, so the rest live in GitHub
+together would take about 680 MB on your disk, so the rest live in GitHub
 Releases. The companion app picks the set that fits your monitors, downloads
 only that one, and switches when you plug in another screen. If you want to
 choose yourself, it has one small settings screen:
 
-```
-P(BLOOM) / WALLPAPER SETTINGS
-
-BACKGROUND
-  Muted       Default     [ Vivid ]
-How strong the background colour is.
-
-RESOLUTION
-▶ Automatic · Optimal set
-  5120 × 2880 / 25.6 MB
-
-←→ Background   ↑↓ Resolution   ENTER Save   ESC Cancel
-```
+<figure class="inside-figure">
+<img src="/draft-assets/destiny/settings-screen.webp" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic picking 5120 × 2160 for my monitor and every other set listed with its size and a download marker." width="1884" height="2028" loading="lazy" />
+<figcaption>The settings screen on my 5120 × 2160 monitor.</figcaption>
+</figure>
 
 **Room for a see-through bar.** The top edge of every wallpaper is plain
 paper, with no lines or labels. Double-click Omarchy's bar to make it
