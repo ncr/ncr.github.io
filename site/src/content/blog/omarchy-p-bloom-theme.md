@@ -135,19 +135,19 @@ or play a note. Agents did all of that, and they did it well.
 
 But making something is more than producing it. It is deciding what it should
 be. Nobody asks whether the camera made the film; the director decides what
-ends up on screen. Here I made about 425 of those decisions:
+ends up on screen. Here I made about 460 of those decisions:
 
-- **Wallpapers:** 149 machines drafted, 42 kept, about 115 decisions.
+- **Wallpapers:** 149 machines drafted, 42 kept, about 125 decisions.
 - **Music:** 48 songs generated, 2 kept, about 45 decisions.
-- **Video:** 54 cuts, 2 kept, about 130 decisions.
-- **This post:** 40 drafts, 1 published, about 100 decisions.
+- **Video:** 58 cuts, 2 kept, about 130 decisions.
+- **This post:** 52 drafts, 1 published, about 120 decisions.
 
 Each one is a note I wrote down: “too static”, “that's not how I write”,
 “this dome could never close”.
 
 This is where taste comes in. Agents can make almost anything, and fast.
 Deciding what is worth keeping, and what is still wrong, stays my job. Taste
-isn't knowing what's beautiful. It's noticing, for the 425th time, that
+isn't knowing what's beautiful. It's noticing, for the 460th time, that
 something isn't yet.
 
 So yes, I made it, the way a director makes a film.
