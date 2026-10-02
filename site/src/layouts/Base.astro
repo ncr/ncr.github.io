@@ -1,13 +1,11 @@
 ---
 import { site } from '../site'
 import ThemePicker from '../components/ThemePicker.astro'
-interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string; image?: string; imageSize?: [number, number]; video?: string }
-const { title, description, home = false, lang = "en", robots, image, imageSize = [1200, 630], video } = Astro.props
+interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string; image?: string }
+const { title, description, home = false, lang = "en", robots, image } = Astro.props
 // a page with an image gets a link card (Open Graph, X); URLs absolute from the site's address
 const canonical = new URL(Astro.url.pathname, Astro.site).href
 const card = image && new URL(image, Astro.site).href
-// a page with a video plays it in the card (Discord and others), with the image as its poster
-const clip = video && new URL(video, Astro.site).href
 const pageTitle = title ? `${title} — ${site.name}` : site.name
 const cssv = import.meta.env.CSSV || Date.now().toString(36)
 const Name = home ? 'h1' : 'p'
@@ -30,21 +28,14 @@ const links = [
     {description && <meta name="description" content={description} />}
     {card && <>
       <link rel="canonical" href={canonical} />
-      <meta property="og:type" content={clip ? "video.other" : "article"} />
+      <meta property="og:type" content="article" />
       <meta property="og:site_name" content={site.name} />
       <meta property="og:title" content={title} />
       {description && <meta property="og:description" content={description} />}
       <meta property="og:url" content={canonical} />
       <meta property="og:image" content={card} />
-      <meta property="og:image:width" content={String(imageSize[0])} />
-      <meta property="og:image:height" content={String(imageSize[1])} />
-      {clip && <>
-        <meta property="og:video" content={clip} />
-        <meta property="og:video:secure_url" content={clip} />
-        <meta property="og:video:type" content="video/mp4" />
-        <meta property="og:video:width" content="1920" />
-        <meta property="og:video:height" content="1080" />
-      </>}
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       {description && <meta name="twitter:description" content={description} />}
