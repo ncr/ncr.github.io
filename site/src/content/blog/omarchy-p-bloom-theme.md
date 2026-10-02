@@ -150,6 +150,11 @@ Deciding what is worth keeping, and what is still wrong, stays my job. Taste
 isn't knowing what's beautiful. It's noticing, for the 460th time, that
 something isn't yet.
 
+Not everything needs 460 decisions. A one-shot, one prompt shared as it came
+out, is less mine, but it still counts: someone sees it, tries it, takes it
+further. Sprouts like that are how most things start. Some of them grow into a
+tree in bloom, with a flower for most decisions.
+
 So yes, I made it, the way a director makes a film.
 
 <p class="closer">Every line was drawn by an agent.<br />Every decision was <em>mine.</em></p>
