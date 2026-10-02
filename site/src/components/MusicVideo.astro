@@ -1,6 +1,7 @@
 ---
 // The music video, inline: a still cover with a play button, then controls laid over the picture — play/pause,
-// a bar, the time, the take (electronic or rock, keeps the position), wide (the whole browser width) and fullscreen.
+// a bar, the time, the take (electronic or rock, keeps the position), the quality (Auto, SD, HD, 4K), wide (the whole
+// browser width) and fullscreen.
 // The controls hide while playing when the pointer rests, and come back on any movement.
 const video = '/gallery/destiny/video/'
 ---
@@ -16,6 +17,9 @@ const video = '/gallery/destiny/video/'
       <div class="mvi-take" role="group" aria-label="Version of the song">
         <button type="button" data-take="electronic" aria-pressed="true">Electronic</button><button type="button" data-take="rock" aria-pressed="false">Rock</button>
       </div>
+      <div class="mvi-take mvi-quality" role="group" aria-label="Quality">
+        <button type="button" data-q="auto" aria-pressed="true" title="Automatic: by the size of the player">Auto</button><button type="button" data-q="0" aria-pressed="false" title="720p">SD</button><button type="button" data-q="1" aria-pressed="false" title="1080p">HD</button><button type="button" data-q="2" aria-pressed="false" title="2160p">4K</button>
+      </div>
       <button type="button" class="mvi-btn mvi-wide" aria-pressed="false" aria-label="Wide: the whole browser width" title="Wide (W)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v10H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 12h10M7 12l2.5-2.5M7 12l2.5 2.5M17 12l-2.5-2.5M17 12l-2.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
       <button type="button" class="mvi-btn mvi-back" aria-label="Back to the article's player" title="Back to the player"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button type="button" class="mvi-btn mvi-full" aria-label="Fullscreen" title="Fullscreen (F)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -30,7 +34,7 @@ const video = '/gallery/destiny/video/'
     const root = document.querySelector('.mvi'), frame = root.querySelector('.mvi-frame');
     const V = Object.fromEntries([...root.querySelectorAll('.mvi-video')].map(x => [x.dataset.take, x]));
     const badge = root.querySelector('.mvi-badge'), play = root.querySelector('.mvi-play'), seek = root.querySelector('.mvi-seek'), time = root.querySelector('.mvi-time');
-    const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take button')];
+    const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take:not(.mvi-quality) button')];
     let seeking = false, raf = 0, take = 'electronic', idle = 0, sync = 0;
     const cur = () => V[take], other = () => V[take === 'rock' ? 'electronic' : 'rock'];
     // three sizes, by the pixels the frame shows (its width, or the screen's in fullscreen, times the pixel ratio):
@@ -39,14 +43,19 @@ const video = '/gallery/destiny/video/'
     const av1 = document.createElement('video').canPlayType('video/mp4; codecs="av01.0.12M.10"') === 'probably';
     const need = () => Math.max(frame.getBoundingClientRect().width, document.fullscreenElement ? screen.width : 0) * devicePixelRatio;
     const pick = () => navigator.connection?.saveData ? 0 : need() > 2200 ? 2 : need() > 1200 ? 1 : 0;
+    // the quality switch: Auto (the size above, moving up as the frame grows) or a fixed size, up or down
+    const qs = [...root.querySelectorAll('.mvi-quality button')];
+    let quality = 'auto';
+    try { const q = localStorage.getItem('pbloom-quality'); if (['auto', '0', '1', '2'].includes(q)) quality = q; } catch {}
     let tier = -1;
     const file = t => tier === 2
       ? `https://media.jacekbecela.com/prepare-to-walk-${t === 'rock' ? 'rock-v10' : 'electronic-v30'}-${av1 ? 'av1-' : ''}2160p60.mp4`
       : `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${tier ? '1080' : '720'}p60.mp4?v=5`;
-    const src = () => { if (tier < 0) tier = pick(); for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
-    const upgrade = () => {
-      if (tier < 0 || pick() <= tier) return;
-      tier = pick();
+    const wanted = () => quality === 'auto' ? pick() : Number(quality);
+    const shown = () => { for (const b of qs) { b.setAttribute('aria-pressed', String(b.dataset.q === quality)); b.classList.toggle('is-auto', quality === 'auto' && b.dataset.q === String(tier < 0 ? pick() : tier)); } };
+    const src = () => { if (tier < 0) { tier = wanted(); shown(); } for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
+    const swap = n => {
+      tier = n; shown();
       for (const [t, x] of Object.entries(V)) {
         if (!x.getAttribute('src')) continue;
         const at = x.currentTime, was = !x.paused;
@@ -54,6 +63,13 @@ const video = '/gallery/destiny/video/'
         x.src = file(t);
       }
     };
+    const upgrade = () => { if (tier >= 0 && quality === 'auto' && pick() > tier) swap(pick()); };
+    for (const b of qs) b.addEventListener('click', () => {
+      quality = b.dataset.q;
+      try { localStorage.setItem('pbloom-quality', quality); } catch {}
+      if (tier < 0) shown(); else if (wanted() !== tier) swap(wanted()); else shown();
+    });
+    shown();
     const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
     const tick = () => { const v = cur(); if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
     const state = e => { if (e && e.target !== cur()) return; const v = cur(), p = v.paused; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); wake(); };
@@ -203,6 +219,7 @@ const video = '/gallery/destiny/video/'
   .mvi-take button { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; padding: 5px 9px; border: 0; border-radius: 999px; background: none; color: #c9d6ea; cursor: pointer; }
   .mvi-take button[aria-pressed="true"] { background: #ffffff2b; color: #fff; }
   .mvi-take button:hover { color: #4cc9ff; }
+  .mvi-quality button.is-auto { box-shadow: inset 0 0 0 1px #ffffff40; }   /* the size Auto is playing */
   .mvi-back { display: none; }
   /* docked in the right-hand margin while scrolling */
   .mvi.is-docked .mvi-frame { position: fixed; right: 20px; bottom: 20px; z-index: 30; width: var(--dock-w) !important; height: calc(var(--dock-w) * 9 / 16) !important; aspect-ratio: auto; border-radius: 8px; box-shadow: 0 14px 40px #000a; animation: mvi-dock .35s cubic-bezier(.2,.75,.2,1); }
@@ -212,5 +229,5 @@ const video = '/gallery/destiny/video/'
   .mvi.is-docked .mvi-back { display: grid; }
   @keyframes mvi-dock { from { opacity: 0; transform: translateY(16px) scale(.96); } }
   @media (prefers-reduced-motion: reduce) { .mvi.is-docked .mvi-frame { animation: none; } }
-  @media (max-width: 560px) { .mvi-bar { gap: 4px; padding: 26px 8px 8px; } .mvi-time { display: none; } .mvi-wide { display: none; } .mvi-take button { padding: 4px 7px; font-size: .56rem; } }
+  @media (max-width: 560px) { .mvi-bar { gap: 4px; padding: 26px 8px 8px; } .mvi-time { display: none; } .mvi-wide { display: none; } .mvi-quality { display: none; } .mvi-take button { padding: 4px 7px; font-size: .56rem; } }
 </style>
