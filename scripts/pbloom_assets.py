@@ -3,8 +3,8 @@
 
     python3 scripts/pbloom_assets.py /path/to/omarchy-p-bloom-theme
 
-- cmp-res-native / cmp-res-stretched: the same part of Fusion Transport on a 5K 16:9 screen, from the native 5K file and
-  from the 1080p file stretched to 5K (1400 x 788, 1:1 screen pixels)
+- cmp-res-native / cmp-res-stretched: the same part of Fusion Transport (the nozzle and its labels) on a 5K 16:9 screen,
+  from the native 5K file and from the 1080p file stretched to 5K (1400 x 788, 1:1 screen pixels)
 - cmp-comp-cropped / cmp-comp-composed: a 21:9 5K screen, the 16:9 file cropped to fill it vs the 21:9 composition
 - caption-tether-climber: Tether Climber's legend from the 5K 16:9 file, with a margin
 """
@@ -22,9 +22,12 @@ fusion = '03-fusion-transport.webp'
 
 native = Image.open(theme/'backgrounds'/fusion).convert('RGB')                     # 16:9, 5120 x 2880
 small = Image.open(rel/'16x9-1080p'/fusion).convert('RGB').resize(native.size, Image.BICUBIC)
-box = (1496, 760, 1496+1400, 760+788)
-native.crop(box).save(out/'cmp-res-native.webp', quality=94, method=6)
-small.crop(box).save(out/'cmp-res-stretched.webp', quality=94, method=6)
+# the same part in both: the nozzle and its labels (Magnetic nozzle to Droplet collector). The 1080p sheet is composed
+# for its own screen, so that part sits elsewhere and a little larger; each crop is centred on it, 1:1 on the 5K screen
+def around(cx, cy):
+    return (cx - 700, cy - 394, cx + 700, cy + 394)
+native.crop(around(3024, 1120)).save(out/'cmp-res-native.webp', quality=94, method=6)
+small.crop(around(4288, 1200)).save(out/'cmp-res-stretched.webp', quality=94, method=6)
 
 wide = Image.open(rel/'64x27-2160p'/fusion).convert('RGB')                          # 21:9, 5120 x 2160
 for name, im in (('cmp-comp-cropped', native.crop((0, 360, 5120, 2520))), ('cmp-comp-composed', wide)):
