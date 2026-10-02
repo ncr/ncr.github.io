@@ -125,6 +125,11 @@ Then the companion app, once:
 python3 ~/.config/omarchy/themes/p-bloom/companion/install.py
 ```
 
+To open it, press <kbd>Super</kbd> + <kbd>Space</kbd>, type `pbloom` and press
+<kbd>Enter</kbd>:
+
+<p class="app-launch"><img src="/draft-assets/destiny/p-bloom-wallpapers-128.png" srcset="/draft-assets/destiny/p-bloom-wallpapers-128.png 2x, /draft-assets/destiny/p-bloom-wallpapers-256.png 4x" width="64" height="64" alt="The p(bloom) Wallpapers icon: p( ) in thin type with a yellow flower between the parentheses, on magenta, framed by the sheets' corner marks." /><span>p(bloom) Wallpapers</span></p>
+
 **Next: a wallpaper for each screen.** Omarchy shows one wallpaper on all
 screens, so a laptop next to an ultrawide gets one picture for two shapes
 and two resolutions. The sets for both already exist; Omarchy only needs to
