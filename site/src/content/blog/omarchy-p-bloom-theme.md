@@ -52,7 +52,7 @@ wander around one and find something new. Each sheet also lists what still
 has to be invented before the machine can be built.
 
 <figure class="inside-figure">
-<img src="/draft-assets/destiny/caption-tether-climber.webp" alt="The caption of Tether Climber, a space elevator cargo car: it climbs a 100 000 km ribbon to geostationary orbit; it needs a carbon nanotube ribbon, megawatt lasers, photovoltaic cells tuned to one wavelength and orbit control; projected first service 2075." width="1180" height="560" loading="lazy" />
+<img src="/draft-assets/destiny/caption-tether-climber.webp?v=2" alt="The legend of Tether Climber, a space elevator cargo car: it climbs a ribbon from an ocean platform to geostationary orbit on beamed laser power; it needs materials science, photonics, photovoltaics and orbit control; projected first service 2075." width="1137" height="580" loading="lazy" />
 <figcaption>Tether Climber, a space elevator car: what it needs, and when it might first run.</figcaption>
 </figure>
 
@@ -73,8 +73,8 @@ caption are arranged again for that screen, so nothing is cut off.
 <figure class="compare-figure">
 <p class="compare-title"><strong>Resolution</strong></p>
 <div class="compare" style="--pos:50%;aspect-ratio:1400/788">
-<img class="compare-after" src="/draft-assets/destiny/cmp-res-native.webp" alt="The same area from the native 5K image: every line and caption is sharp." width="1400" height="788" loading="lazy" />
-<img class="compare-before" src="/draft-assets/destiny/cmp-res-stretched.webp" alt="Fusion Transport on a 5K screen from a 1080p image stretched to fit: lines and captions are soft and faint." width="1400" height="788" loading="lazy" />
+<img class="compare-after" src="/draft-assets/destiny/cmp-res-native.webp?v=2" alt="The same area from the native 5K image: every line and caption is sharp." width="1400" height="788" loading="lazy" />
+<img class="compare-before" src="/draft-assets/destiny/cmp-res-stretched.webp?v=2" alt="Fusion Transport on a 5K screen from a 1080p image stretched to fit: lines and captions are soft and faint." width="1400" height="788" loading="lazy" />
 <span class="compare-label compare-label-left">1080p image, stretched</span><span class="compare-label compare-label-right">Native 5K</span>
 <span class="compare-handle" aria-hidden="true"></span>
 <input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Move the divider: 1080p image, stretched on the left, Native 5K on the right" />
@@ -85,8 +85,8 @@ caption are arranged again for that screen, so nothing is cut off.
 <figure class="compare-figure wide">
 <p class="compare-title"><strong>Composition</strong></p>
 <div class="compare" style="--pos:50%;aspect-ratio:2400/1013">
-<img class="compare-after" src="/draft-assets/destiny/cmp-comp-composed.webp" alt="The same screen with the wallpaper composed for 21:9: everything fits, with room around it." width="2400" height="1013" loading="lazy" />
-<img class="compare-before" src="/draft-assets/destiny/cmp-comp-cropped.webp" alt="Fusion Transport on a 21:9 screen when the 16:9 wallpaper is cropped to fill it: the title block, the notes and the emblem are cut off at the bottom." width="2400" height="1013" loading="lazy" />
+<img class="compare-after" src="/draft-assets/destiny/cmp-comp-composed.webp?v=2" alt="The same screen with the wallpaper composed for 21:9: everything fits, with room around it." width="2400" height="1013" loading="lazy" />
+<img class="compare-before" src="/draft-assets/destiny/cmp-comp-cropped.webp?v=2" alt="Fusion Transport on a 21:9 screen when the 16:9 wallpaper is cropped to fill it: the title block, the notes and the emblem are cut off at the bottom." width="2400" height="1013" loading="lazy" />
 <span class="compare-label compare-label-left">16:9, cropped to fit</span><span class="compare-label compare-label-right">Composed for 21:9</span>
 <span class="compare-handle" aria-hidden="true"></span>
 <input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Move the divider: 16:9, cropped to fit on the left, Composed for 21:9 on the right" />
@@ -102,7 +102,7 @@ only that one, and switches when you plug in another screen. If you want to
 choose yourself, it has one small settings screen:
 
 <figure class="inside-figure">
-<img src="/draft-assets/destiny/settings-screen.webp?v=2" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic following the optimal set for my monitor, 5120 × 2160, which is also marked in the list, and every other set listed with its size and a download marker." width="1885" height="2021" loading="lazy" />
+<img src="/draft-assets/destiny/settings-screen.webp?v=3" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic following the optimal set for my monitor, 5120 × 2160, which is also marked in the list, and every other set listed with its size and a download marker." width="1885" height="2021" loading="lazy" />
 <figcaption>The settings screen on my 5120 × 2160 monitor.</figcaption>
 </figure>
 
@@ -139,7 +139,7 @@ ends up on screen. Here I made about 460 of those decisions:
 
 - **Wallpapers:** 149 machines drafted, 42 kept, about 125 decisions.
 - **Music:** 48 songs generated, 2 kept, about 45 decisions.
-- **Video:** 58 cuts, 2 kept, about 130 decisions.
+- **Video:** 60 cuts, 2 kept, about 130 decisions.
 - **This post:** 52 drafts, 1 published, about 120 decisions.
 
 Each one is a note I wrote down: “too static”, “that's not how I write”,

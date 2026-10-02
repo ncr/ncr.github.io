@@ -6,8 +6,8 @@ const video = '/gallery/destiny/video/'
 ---
 <figure class="mvi" aria-label="Prepare to Walk, the p(bloom) music video">
   <div class="mvi-frame">
-    <video class="mvi-video is-on" data-take="electronic" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp?v=4`} aria-label="Prepare to Walk, the p(bloom) music video (electronic): the theme and its 42 wallpapers"></video>
-    <video class="mvi-video" data-take="rock" playsinline muted preload="none" poster={`${video}prepare-to-walk-rock-poster.webp?v=4`} aria-label="Prepare to Walk, the p(bloom) music video (rock)" aria-hidden="true"></video>
+    <video class="mvi-video is-on" data-take="electronic" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp?v=5`} aria-label="Prepare to Walk, the p(bloom) music video (electronic): the theme and its 42 wallpapers"></video>
+    <video class="mvi-video" data-take="rock" playsinline muted preload="none" poster={`${video}prepare-to-walk-rock-poster.webp?v=5`} aria-label="Prepare to Walk, the p(bloom) music video (rock)" aria-hidden="true"></video>
     <button type="button" class="mvi-badge" aria-label="Play the music video"><svg viewBox="0 0 40 40" width="46" height="46" aria-hidden="true"><path d="M15.2 9.5 32 20 15.2 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></button>
     <div class="mvi-bar">
       <button type="button" class="mvi-btn mvi-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8.6 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
@@ -33,7 +33,7 @@ const video = '/gallery/destiny/video/'
     const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take button')];
     let seeking = false, raf = 0, take = 'electronic', idle = 0, sync = 0;
     const cur = () => V[take], other = () => V[take === 'rock' ? 'electronic' : 'rock'];
-    const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=4`; };
+    const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=5`; };
     const src = () => { for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
     const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
     const tick = () => { const v = cur(); if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
