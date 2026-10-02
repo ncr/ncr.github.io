@@ -7,8 +7,8 @@ const video = '/gallery/destiny/video/'
 ---
 <figure class="mvi" aria-label="Prepare to Walk, the p(bloom) music video">
   <div class="mvi-frame">
-    <video class="mvi-video is-on" data-take="electronic" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp?v=5`} aria-label="Prepare to Walk, the p(bloom) music video (electronic): the theme and its 42 wallpapers"></video>
-    <video class="mvi-video" data-take="rock" playsinline muted preload="none" poster={`${video}prepare-to-walk-rock-poster.webp?v=5`} aria-label="Prepare to Walk, the p(bloom) music video (rock)" aria-hidden="true"></video>
+    <video class="mvi-video is-on" data-take="electronic" playsinline preload="none" poster={`${video}prepare-to-walk-poster.webp?v=6`} aria-label="Prepare to Walk, the p(bloom) music video (electronic): the theme and its 42 wallpapers"></video>
+    <video class="mvi-video" data-take="rock" playsinline muted preload="none" poster={`${video}prepare-to-walk-rock-poster.webp?v=6`} aria-label="Prepare to Walk, the p(bloom) music video (rock)" aria-hidden="true"></video>
     <button type="button" class="mvi-badge" aria-label="Play the music video"><svg viewBox="0 0 40 40" width="46" height="46" aria-hidden="true"><path d="M15.2 9.5 32 20 15.2 30.5z" fill="currentColor" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg></button>
     <div class="mvi-bar">
       <button type="button" class="mvi-btn mvi-play" aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8.6 5.5v13l10.5-6.5z"/><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
@@ -49,8 +49,8 @@ const video = '/gallery/destiny/video/'
     try { const q = localStorage.getItem('pbloom-quality'); if (['auto', '0', '1', '2'].includes(q)) quality = q; } catch {}
     let tier = -1;
     const file = t => tier === 2
-      ? `https://media.jacekbecela.com/prepare-to-walk-${t === 'rock' ? 'rock-v10' : 'electronic-v30'}-${av1 ? 'av1-' : ''}2160p60.mp4`
-      : `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${tier ? '1080' : '720'}p60.mp4?v=5`;
+      ? `https://media.jacekbecela.com/prepare-to-walk-${t === 'rock' ? 'rock-v11' : 'electronic-v31'}-${av1 ? 'av1-' : ''}2160p60.mp4`
+      : `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${tier ? '1080' : '720'}p60.mp4?v=6`;
     const wanted = () => quality === 'auto' ? pick() : Number(quality);
     const shown = () => { for (const b of qs) { b.setAttribute('aria-pressed', String(b.dataset.q === quality)); b.classList.toggle('is-auto', quality === 'auto' && b.dataset.q === String(tier < 0 ? pick() : tier)); } };
     const src = () => { if (tier < 0) { tier = wanted(); shown(); } for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
