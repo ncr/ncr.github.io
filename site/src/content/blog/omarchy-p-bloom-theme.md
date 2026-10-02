@@ -83,7 +83,7 @@ your desktop. In the background it picks the set that fits your monitors,
 downloads only that one, and switches when you plug in another screen. The
 theme carries one set, 16:9 at 5K, about 26 MB. All 18 screen shapes and sizes
 at three intensities would take about 690 MB, so the rest live in GitHub
-Releases; the app's settings (S) fetch all three intensities of your set at once.
+Releases; the app can fetch all three intensities of your set at once.
 
 <figure class="compare-figure">
 <p class="compare-title"><strong>Intensity</strong></p>
