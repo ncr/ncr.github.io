@@ -6,8 +6,9 @@ import WallpaperGallery from './WallpaperGallery.astro'
 import MusicVideo from './MusicVideo.astro'
 import { render } from 'astro:content'
 import { readingLabel } from '../reading'
-interface Props { post: CollectionEntry<'blog'> }
-const { post } = Astro.props
+// videoOnly: the film alone (the post's /video/ page, a link that plays in place where it is shared)
+interface Props { post: CollectionEntry<'blog'>; videoOnly?: boolean }
+const { post, videoOnly = false } = Astro.props
 const { Content } = await render(post)
 // the title as in the video: condensed caps, the last word set light in Pollen
 const words = post.data.title.split(' '), last = words.pop()
@@ -15,13 +16,22 @@ const date = post.data.date.toLocaleDateString('en-US', { year: 'numeric', month
 ---
 <article class="post pb">
   <header>
-    <p class="date">{date} · {readingLabel(post.body)}</p>
-    <h1>{words.join(' ')} <span class="accent">{last.toLowerCase()}</span></h1>
+    {videoOnly ? (<>
+      <p class="date">The p(bloom) music video</p>
+      <h1>Prepare to <span class="accent">walk</span></h1>
+    </>) : (<>
+      <p class="date">{date} · {readingLabel(post.body)}</p>
+      <h1>{words.join(' ')} <span class="accent">{last.toLowerCase()}</span></h1>
+    </>)}
   </header>
   <MusicVideo />
-  <div class="content"><Content /></div>
-  <WallpaperGallery />
-  {post.data.x && <p class="discuss"><a href={post.data.x}>comments on X</a></p>}
+  {videoOnly ? (
+    <p class="discuss"><a href="/blog/omarchy-p-bloom-theme/">the post: 42 wallpapers for Omarchy, and how they were made</a></p>
+  ) : (<>
+    <div class="content"><Content /></div>
+    <WallpaperGallery />
+    {post.data.x && <p class="discuss"><a href={post.data.x}>comments on X</a></p>}
+  </>)}
 </article>
 
 
