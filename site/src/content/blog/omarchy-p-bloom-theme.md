@@ -36,8 +36,8 @@ I'm betting on bloom.
 omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
 ```
 
-The companion app, p(bloom) Wallpapers, is a full-screen browser for the
-wallpapers. It also downloads the set made for your screens. Install it once:
+The companion app, p(bloom) Wallpapers, is a browser for the wallpapers. It
+also downloads the set made for your screens. Install it once:
 
 ```bash
 python3 ~/.config/omarchy/themes/p-bloom/companion/install.py
@@ -98,12 +98,21 @@ caption are arranged again for that screen, so nothing is cut off.
 26 MB. With 18 screen shapes and sizes in three strengths, all the sets
 together would take about 690 MB on your disk, so the rest live in GitHub
 Releases. The companion app picks the set that fits your monitors, downloads
-only that one, and switches when you plug in another screen. If you want to
-choose yourself, it has one small settings screen:
+only that one, and switches when you plug in another screen. It is also a
+gallery, drawn like the sheets: ← → browse, ↑ ↓ show the same wallpaper in
+another strength, Enter puts it on your desktop. S downloads all three
+strengths of your set at once.
 
-<figure class="inside-figure">
-<img src="/draft-assets/destiny/settings-screen.webp?v=3" alt="The p(bloom) Wallpapers settings screen in a terminal: the background level (Muted, Default, Vivid) and the resolution list, with Automatic following the optimal set for my monitor, 5120 × 2160, which is also marked in the list, and every other set listed with its size and a download marker." width="1885" height="2021" loading="lazy" />
-<figcaption>The settings screen on my 5120 × 2160 monitor.</figcaption>
+<figure class="compare-figure">
+<p class="compare-title"><strong>Strength</strong></p>
+<div class="compare" style="--pos:50%;aspect-ratio:2560/1440">
+<img class="compare-after" src="/draft-assets/destiny/gallery-reef-vivid.webp" alt="Reef Nursery in the p(bloom) Wallpapers gallery, Vivid: a saturated violet ground; the strip along the bottom shows 10 / 42, VIVID and the keys." width="2560" height="1440" loading="lazy" />
+<img class="compare-before" src="/draft-assets/destiny/gallery-reef-muted.webp" alt="Reef Nursery in the p(bloom) Wallpapers gallery, Muted: a dark, greyed violet ground; the strip along the bottom shows 10 / 42, MUTED and the keys." width="2560" height="1440" loading="lazy" />
+<span class="compare-label compare-label-left">Muted</span><span class="compare-label compare-label-right">Vivid</span>
+<span class="compare-handle" aria-hidden="true"></span>
+<input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Move the divider: Muted on the left, Vivid on the right" />
+</div>
+<figcaption>Reef Nursery in the gallery, ↑ and ↓. Drag the line.</figcaption>
 </figure>
 
 **Room for a see-through bar.** The top edge of every wallpaper is plain
