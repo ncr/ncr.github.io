@@ -1,8 +1,8 @@
 ---
 title: I Didn't Draw a Single Line
-date: 2026-09-26
+date: 2026-10-02
 description: A theme for Omarchy with 42 wallpapers of machines from a future worth building, and a music video.
-draft: true
+draft: false
 ---
 
 1. [Why I made it](#why-i-made-it)

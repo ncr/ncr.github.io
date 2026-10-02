@@ -1,8 +1,11 @@
 ---
 import { site } from '../site'
 import ThemePicker from '../components/ThemePicker.astro'
-interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string }
-const { title, description, home = false, lang = "en", robots } = Astro.props
+interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string; image?: string }
+const { title, description, home = false, lang = "en", robots, image } = Astro.props
+// a page with an image gets a link card (Open Graph, X); URLs absolute from the site's address
+const canonical = new URL(Astro.url.pathname, Astro.site).href
+const card = image && new URL(image, Astro.site).href
 const pageTitle = title ? `${title} — ${site.name}` : site.name
 const cssv = import.meta.env.CSSV || Date.now().toString(36)
 const Name = home ? 'h1' : 'p'
@@ -23,6 +26,21 @@ const links = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
+    {card && <>
+      <link rel="canonical" href={canonical} />
+      <meta property="og:type" content="article" />
+      <meta property="og:site_name" content={site.name} />
+      <meta property="og:title" content={title} />
+      {description && <meta property="og:description" content={description} />}
+      <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={card} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      {description && <meta name="twitter:description" content={description} />}
+      <meta name="twitter:image" content={card} />
+    </>}
     <script is:inline>
       // Before first paint: apply the theme saved in the cookie.
       ;(() => {

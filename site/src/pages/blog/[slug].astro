@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import { getCollection, render } from 'astro:content'
 import { readingLabel } from '../../reading'
+import PBloomPost from '../../components/PBloomPost.astro'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', p => import.meta.env.DEV || !p.data.draft)
@@ -11,6 +12,11 @@ const { post } = Astro.props
 const { Content } = await render(post)
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
 ---
+{post.id === 'omarchy-p-bloom-theme' ? (
+<Base title={post.data.title} description={post.data.description} image="/blog-assets/p-bloom-card.jpg">
+  <PBloomPost post={post} />
+</Base>
+) : (
 <Base title={post.data.title} description={post.data.description}>
   <article class="post">
     <header>
@@ -25,3 +31,4 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10)
     )}
   </article>
 </Base>
+)}
