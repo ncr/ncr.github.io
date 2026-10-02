@@ -133,7 +133,7 @@ To open it, press <kbd>Super</kbd> + <kbd>Space</kbd>, type `pbloom` and press
 **Next: a wallpaper for each screen.** Omarchy shows one wallpaper on all
 screens, so a laptop next to an ultrawide gets one picture for two shapes
 and two resolutions. The sets for both already exist; Omarchy only needs to
-show each screen its own. I'd like to send that to Omarchy as a pull request.
+show each screen its own, and I'm planning a pull request for that.
 
 ## Pencils down
 
