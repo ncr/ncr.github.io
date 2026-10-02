@@ -27,19 +27,6 @@ Forty-six versions fell by the wayside, and I wrote about forty-five notes
 along the way. Two made it, one electronic and one rock, because I grew up on
 rock and metal as much as on electronic music, and I still love both.
 
-**Install it.** One line in a terminal:
-
-```bash
-omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
-```
-
-The companion app, p(bloom) Wallpapers, lets you browse them all and downloads
-the set made for your screens. Install it once:
-
-```bash
-python3 ~/.config/omarchy/themes/p-bloom/companion/install.py
-```
-
 ## What's inside
 
 **42 blueprint wallpapers.** Every machine is a 3D model, drawn as a
@@ -91,15 +78,15 @@ everything is arranged again to fit.
 </figure>
 
 **p(bloom) Wallpapers.** The companion app is a gallery drawn like the sheets:
-← → browse, ↑ ↓ show the same wallpaper in another strength, Enter puts it on
+← → browse, ↑ ↓ show the same wallpaper at another intensity, Enter puts it on
 your desktop. In the background it picks the set that fits your monitors,
 downloads only that one, and switches when you plug in another screen. The
 theme carries one set, 16:9 at 5K, about 26 MB. All 18 screen shapes and sizes
-in three strengths would take about 690 MB, so the rest live in GitHub
-Releases; the app's settings (S) fetch all three strengths of your set at once.
+at three intensities would take about 690 MB, so the rest live in GitHub
+Releases; the app's settings (S) fetch all three intensities of your set at once.
 
 <figure class="compare-figure">
-<p class="compare-title"><strong>Strength</strong></p>
+<p class="compare-title"><strong>Intensity</strong></p>
 <div class="compare" style="--pos:50%;aspect-ratio:2560/1440">
 <img class="compare-after" src="/draft-assets/destiny/gallery-reef-vivid.webp" alt="Reef Nursery in the p(bloom) Wallpapers gallery, Vivid: a saturated violet ground; the strip along the bottom shows 10 / 42, VIVID and the keys." width="2560" height="1440" loading="lazy" />
 <img class="compare-before" src="/draft-assets/destiny/gallery-reef-muted.webp" alt="Reef Nursery in the p(bloom) Wallpapers gallery, Muted: a dark, greyed violet ground; the strip along the bottom shows 10 / 42, MUTED and the keys." width="2560" height="1440" loading="lazy" />
@@ -126,6 +113,18 @@ the bar and it stays perfectly readable.
 <figcaption>My own bar, over Spin Table. Drag the line.</figcaption>
 </figure>
 
+**Install it.** One line in a terminal:
+
+```bash
+omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
+```
+
+Then the companion app, once:
+
+```bash
+python3 ~/.config/omarchy/themes/p-bloom/companion/install.py
+```
+
 **Next: a wallpaper for each screen.** Omarchy shows one wallpaper on all
 screens, so a laptop next to an ultrawide gets one picture for two shapes
 and two resolutions. The sets for both already exist; Omarchy only needs to
@@ -138,25 +137,26 @@ or play a note. Agents did all of that, and they did it well.
 
 But making something is more than producing it: it is deciding what it should
 be. Nobody asks whether the camera made the film; the director chooses what
-ends up on screen. Here I made about 460 of those decisions:
+ends up on screen. Here I made about 465 of those decisions:
 
 - **Wallpapers:** 149 machines drafted, 42 kept, about 125 decisions.
 - **Music:** 48 songs generated, 2 kept, about 45 decisions.
 - **Video:** 60 cuts, 2 kept, about 130 decisions.
-- **This post:** 52 drafts, 1 published, about 120 decisions.
+- **The app:** 5 settings screens, 1 kept, about 35 decisions.
+- **This post:** 59 drafts, 1 published, about 130 decisions.
 
 Each one is a note I wrote down: “too static”, “that's not how I write”,
 “this dome could never close”.
 
 Agents can make almost anything, and fast.
 Deciding what is worth keeping, and what is still wrong, stays my job. Taste
-isn't knowing what's beautiful. It's noticing, for the 460th time, that
+isn't knowing what's beautiful. It's noticing, for the 465th time, that
 something isn't yet.
 
-Not everything needs 460 decisions. A one-shot, a single prompt shared as it
+Not everything needs 465 decisions. A one-shot, a single prompt shared as it
 came out, is less mine, but it still counts: someone sees it, tries it and
 takes it further. Sprouts like that are how most things start. Some of them grow into a
-tree in bloom, with a flower for most decisions.
+tree in bloom.
 
 <p class="closer">Every line was drawn by an agent.<br />Every decision was <em>mine.</em></p>
 
