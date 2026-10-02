@@ -33,8 +33,27 @@ const video = '/gallery/destiny/video/'
     const wide = root.querySelector('.mvi-wide'), full = root.querySelector('.mvi-full'), takes = [...root.querySelectorAll('.mvi-take button')];
     let seeking = false, raf = 0, take = 'electronic', idle = 0, sync = 0;
     const cur = () => V[take], other = () => V[take === 'rock' ? 'electronic' : 'rock'];
-    const file = t => { const big = innerWidth * devicePixelRatio > 1400 && !navigator.connection?.saveData; return `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${big ? '1080' : '720'}p60.mp4?v=5`; };
-    const src = () => { for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
+    // three sizes, by the pixels the frame shows (its width, or the screen's in fullscreen, times the pixel ratio):
+    // 720p and 1080p from this site, 4K from media.jacekbecela.com (AV1 where the browser plays it, else H.264);
+    // a bigger frame (wide, fullscreen, a resize) moves up a size at the same moment, never down
+    const av1 = document.createElement('video').canPlayType('video/mp4; codecs="av01.0.12M.10"') === 'probably';
+    const need = () => Math.max(frame.getBoundingClientRect().width, document.fullscreenElement ? screen.width : 0) * devicePixelRatio;
+    const pick = () => navigator.connection?.saveData ? 0 : need() > 2200 ? 2 : need() > 1200 ? 1 : 0;
+    let tier = -1;
+    const file = t => tier === 2
+      ? `https://media.jacekbecela.com/prepare-to-walk-${t === 'rock' ? 'rock-v10' : 'electronic-v30'}-${av1 ? 'av1-' : ''}2160p60.mp4`
+      : `${video}prepare-to-walk${t === 'rock' ? '-rock' : ''}-av-${tier ? '1080' : '720'}p60.mp4?v=5`;
+    const src = () => { if (tier < 0) tier = pick(); for (const [t, x] of Object.entries(V)) if (!x.getAttribute('src')) { x.preload = 'auto'; x.src = file(t); } };
+    const upgrade = () => {
+      if (tier < 0 || pick() <= tier) return;
+      tier = pick();
+      for (const [t, x] of Object.entries(V)) {
+        if (!x.getAttribute('src')) continue;
+        const at = x.currentTime, was = !x.paused;
+        x.addEventListener('loadedmetadata', () => { x.currentTime = at; if (was) x.play().catch(() => {}); }, { once: true });
+        x.src = file(t);
+      }
+    };
     const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
     const tick = () => { const v = cur(); if (!seeking) seek.value = String(v.currentTime); time.textContent = fmt(v.currentTime); seek.style.setProperty('--p', `${(v.currentTime / (Number(seek.max) || 1)) * 100}%`); raf = v.paused ? 0 : requestAnimationFrame(tick); };
     const state = e => { if (e && e.target !== cur()) return; const v = cur(), p = v.paused; play.setAttribute('aria-label', p ? 'Play' : 'Pause'); root.classList.toggle('is-playing', !p); root.classList.toggle('has-started', v.currentTime > 0 || !p); cancelAnimationFrame(raf); tick(); wake(); };
@@ -126,10 +145,11 @@ const video = '/gallery/destiny/video/'
         if (!root.classList.contains('is-wide')) { root.style.width = ''; root.style.marginLeft = ''; frame.style.height = ''; }
         // a 1 px scroll there and back makes every browser refresh hit-testing after the resize
         const y = scrollY; window.scrollTo({ top: y + 1, behavior: 'instant' }); window.scrollTo({ top: y, behavior: 'instant' });
+        upgrade();                                         // wide on a big screen: the next size up
       }, 700);
       wake(); setTimeout(wake, 700);
     };
-    addEventListener('resize', () => { if (root.classList.contains('is-wide')) { const b = wideBox(); root.style.transition = frame.style.transition = 'none'; size(b.w, b.h); requestAnimationFrame(() => { root.style.transition = frame.style.transition = ''; }); } });
+    addEventListener('resize', () => { requestAnimationFrame(upgrade); if (root.classList.contains('is-wide')) { const b = wideBox(); root.style.transition = frame.style.transition = 'none'; size(b.w, b.h); requestAnimationFrame(() => { root.style.transition = frame.style.transition = ''; }); } });
     // from fullscreen, "wide" leaves fullscreen and lands in wide mode
     const wideClick = async () => {
       if (document.fullscreenElement) { await document.exitFullscreen().catch(() => {}); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); if (!root.classList.contains('is-wide')) setWide(true); return; }
@@ -140,7 +160,7 @@ const video = '/gallery/destiny/video/'
     const setFull = () => { (document.fullscreenElement ? document.exitFullscreen() : (frame.requestFullscreen || frame.webkitRequestFullscreen)?.call(frame))?.catch?.(() => {}); };
     full.onclick = setFull; Object.values(V).forEach(x => x.ondblclick = setFull);
     if (!document.fullscreenEnabled && !frame.webkitRequestFullscreen) full.hidden = true;
-    document.addEventListener('fullscreenchange', () => { const f = document.fullscreenElement === frame; root.classList.toggle('is-full', f); wide.setAttribute('aria-pressed', String(!f && root.classList.contains('is-wide'))); });
+    document.addEventListener('fullscreenchange', () => { requestAnimationFrame(upgrade); const f = document.fullscreenElement === frame; root.classList.toggle('is-full', f); wide.setAttribute('aria-pressed', String(!f && root.classList.contains('is-wide'))); });
     frame.addEventListener('keydown', e => {
       if (e.target.matches('input')) return;
       if (e.code === 'Space' && !e.target.matches('button')) { e.preventDefault(); toggle(); }
