@@ -7,7 +7,8 @@ draft: true
 
 1. [Why I made it](#why-i-made-it)
 2. [What's inside](#whats-inside)
-3. [Pencils down](#pencils-down)
+3. [Install it](#install-it)
+4. [Pencils down](#pencils-down)
 
 ## Why I made it
 
@@ -113,7 +114,14 @@ the bar and it stays perfectly readable.
 <figcaption>My own bar, over Spin Table. Drag the line.</figcaption>
 </figure>
 
-**Install it.** One line in a terminal:
+**Next: a wallpaper for each screen.** Omarchy shows one wallpaper on all
+screens, so a laptop next to an ultrawide gets one picture for two shapes
+and two resolutions. The sets for both already exist; Omarchy only needs to
+show each screen its own, and I'm planning a pull request for that.
+
+## Install it
+
+One line in a terminal:
 
 ```bash
 omarchy theme install https://github.com/ncr/omarchy-p-bloom-theme.git
@@ -129,11 +137,6 @@ To open it, press <kbd>Super</kbd> + <kbd>Space</kbd>, type `pbloom` and press
 <kbd>Enter</kbd>:
 
 <p class="app-launch"><img src="/draft-assets/destiny/p-bloom-wallpapers-128.png" srcset="/draft-assets/destiny/p-bloom-wallpapers-128.png 2x, /draft-assets/destiny/p-bloom-wallpapers-256.png 4x" width="64" height="64" alt="The p(bloom) Wallpapers icon: p( ) in thin type with a yellow flower between the parentheses, on magenta, framed by the sheets' corner marks." /><span>p(bloom) Wallpapers</span></p>
-
-**Next: a wallpaper for each screen.** Omarchy shows one wallpaper on all
-screens, so a laptop next to an ultrawide gets one picture for two shapes
-and two resolutions. The sets for both already exist; Omarchy only needs to
-show each screen its own, and I'm planning a pull request for that.
 
 ## Pencils down
 
