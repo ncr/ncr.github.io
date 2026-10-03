@@ -156,5 +156,7 @@ const links = [
       document.addEventListener('click', e => { if (!menu.hidden && !picker.contains(e.target as Node)) open(false, false) })
       picker.addEventListener('focusout', e => { if (!menu.hidden && !picker.contains(e.relatedTarget as Node | null) && e.relatedTarget) open(false, false) })
     </script>
+    <!-- Cloudflare Web Analytics: page views and referrers, no cookies -->
+    <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "05e61c1791b044e8aecc704c6703d7b8"}'></script>
   </body>
 </html>
