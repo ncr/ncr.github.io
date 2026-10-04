@@ -154,6 +154,14 @@ a.undecorated { color: inherit; text-decoration: none; }
   margin: 0 0 3rem;
   max-width: 34em;
 }
+.intro:has(+ .bio) { margin-bottom: 0.75rem; }
+.bio {
+  line-height: 1.6;
+  color: var(--soft);
+  margin: 0 0 3rem;
+  max-width: 38.25em; /* the intro's 34em at its 1.125rem */
+  text-wrap: pretty;
+}
 
 /* --- section labels --- */
 .section-label {

@@ -1,8 +1,11 @@
 ---
 import { site } from '../site'
 import ThemePicker from '../components/ThemePicker.astro'
-interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string; image?: string }
-const { title, description, home = false, lang = "en", robots, image } = Astro.props
+import { jsonLd } from '../agents'
+// schema: JSON-LD for the page; markdown: path of the page's markdown copy
+interface Props { title?: string; description?: string; home?: boolean; lang?: string; robots?: string; image?: string; schema?: object; markdown?: string }
+const { title, description, home = false, lang = "en", robots, image, schema, markdown } = Astro.props
+const bio = site.bio.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
 // a page with an image gets a link card (Open Graph, X); URLs absolute from the site's address
 const canonical = new URL(Astro.url.pathname, Astro.site).href
 const card = image && new URL(image, Astro.site).href
@@ -53,6 +56,8 @@ const links = [
     <link rel="stylesheet" href={`/themes.css?v=${cssv}`} />
     <link rel="icon" href={site.avatar} />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+    {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
+    {schema && <script type="application/ld+json" set:html={jsonLd(schema)} />}
   </head>
   <body>
     <div class="page">
@@ -75,6 +80,7 @@ const links = [
         <slot name="header-player" />
       </header>
       {home && <p class="intro">{site.intro}</p>}
+      {home && <p class="bio" set:html={bio} />}
       <main>
         <slot />
       </main>

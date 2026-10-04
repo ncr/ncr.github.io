@@ -27,6 +27,9 @@ jobs:
         env:
           SITE_URL: https://jacekbecela.com
         run: npm run build
+      - name: Test
+        working-directory: site
+        run: npm test
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist

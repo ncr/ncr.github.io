@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro'
 import { getCollection, render } from 'astro:content'
 import { readingLabel } from '../../reading'
 import PBloomPost from '../../components/PBloomPost.astro'
+import { postSchema, markdownPath } from '../../agents'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', p => import.meta.env.DEV || !p.data.draft)
@@ -11,13 +12,17 @@ export async function getStaticPaths() {
 const { post } = Astro.props
 const { Content } = await render(post)
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
+const origin = Astro.site!.origin
+// drafts (dev only) have no markdown copy
+const markdown = post.data.draft ? undefined : markdownPath(post)
+const card = post.id === 'omarchy-p-bloom-theme' ? '/blog-assets/p-bloom-card.jpg' : undefined
 ---
 {post.id === 'omarchy-p-bloom-theme' ? (
-<Base title={post.data.title} description={post.data.description} image="/blog-assets/p-bloom-card.jpg">
+<Base title={post.data.title} description={post.data.description} image={card} schema={postSchema(post, origin, card)} markdown={markdown}>
   <PBloomPost post={post} />
 </Base>
 ) : (
-<Base title={post.data.title} description={post.data.description}>
+<Base title={post.data.title} description={post.data.description} schema={postSchema(post, origin)} markdown={markdown}>
   <article class="post">
     <header>
       <div class="date">{fmt(post.data.date)} · {readingLabel(post.body)}</div>

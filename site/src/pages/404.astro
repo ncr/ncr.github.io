@@ -1,0 +1,16 @@
+---
+// GitHub Pages serves this as 404.html with status 404 for any missing path.
+import Base from '../layouts/Base.astro'
+---
+<Base title="Not found" description="This page doesn't exist." robots="noindex">
+  <p class="section-label">404</p>
+  <h1>Not found</h1>
+  <p>There is nothing at this address. Maybe a post moved, maybe the link has a typo.</p>
+  <p>Where to look next:</p>
+  <ul>
+    <li><a href="/writing/">/writing/</a>: every post, newest first</li>
+    <li><a href="/projects/">/projects/</a>: things I build and maintain</li>
+    <li><a href="/sitemap.xml">/sitemap.xml</a>: every page</li>
+    <li><a href="/llms.txt">/llms.txt</a>: the same for agents, with every post as markdown</li>
+  </ul>
+</Base>

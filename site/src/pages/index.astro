@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro'
 import { getCollection } from 'astro:content'
 import { site } from '../site'
+import { homeSchema } from '../agents'
 const posts = (await getCollection('blog', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 5)
@@ -15,7 +16,7 @@ const projects = [
 import { readingLabel } from '../reading'
 const fmt = (d: Date) => d.toISOString().slice(0, 10)
 ---
-<Base home description={site.intro}>
+<Base home description={site.intro} schema={homeSchema(Astro.site!.origin)}>
   <p class="section-label">latest</p>
   <ul class="postlist entries">
     {posts.map(p => (
